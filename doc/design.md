@@ -1,8 +1,8 @@
-# 后台管理模块
+# 后台管理模块-admin-front
 
 Python，操作界面
 
-# 算法模块
+# 算法模块-algorithm
 
 Python，实时分析视频流
 
@@ -38,10 +38,10 @@ yolo + mediapipe
 
 yolo + mediapipe
 
-# 流媒体模块
+# 流媒体模块-stream-media
 
 C++，流媒体服务
 
-# 分析器模块
+# 分析器模块-analyzer
 
 C++, 核心模块，实时分析视频流
