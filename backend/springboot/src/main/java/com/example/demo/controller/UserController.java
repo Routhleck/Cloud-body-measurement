@@ -1,34 +1,17 @@
 package com.example.demo.controller;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
 import com.example.demo.entity.*;
 import com.example.demo.enums.PwdEnum;
-import com.example.demo.enums.RoleEnum;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -41,9 +24,9 @@ public class UserController {
 
     @PostMapping("/login")
     public Result<?> login(@RequestBody User userParam) {
-        User userPwd = userMapper.selectByName(userParam.getUsername());
+        User userPwd = userMapper.selectByName(userParam.getName());
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", userParam.getUsername());
+        queryWrapper.eq("name", userParam.getName());
         queryWrapper.eq("password", userPwd.getPassword());
         User res = userMapper.selectOne(queryWrapper);
 
@@ -60,7 +43,7 @@ public class UserController {
 
     @PostMapping("/register")
     public Result<?> register(@RequestBody User user) {
-        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()));
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getName, user.getName()));
         if (res != null) {
             return Result.error("-1", "用户名重复");
         }
@@ -68,7 +51,7 @@ public class UserController {
 //            user.setPassword("123456");
 //        }
         User userInfo = User.builder()
-                .username(user.getUsername())
+                .name(user.getName())
                 .password(bCryptPasswordEncoder.encode(user.getPassword()))
                 .build();
 

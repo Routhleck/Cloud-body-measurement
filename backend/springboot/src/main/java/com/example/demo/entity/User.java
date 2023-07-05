@@ -20,8 +20,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class User {
     @TableId(type = IdType.AUTO)
-    private Integer id;
-    private String username;
+    private Integer userId;
+    private String name;
     private String password;
     private Boolean isAdmin;
 }

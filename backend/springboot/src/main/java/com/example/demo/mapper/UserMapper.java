@@ -13,9 +13,9 @@ import java.util.Map;
 
 public interface UserMapper extends BaseMapper<User> {
     // 查询用户名
-    @Select("select password from user where username=#{username}")
+    @Select("select password from user where name=#{name}")
     User selectByName(String username);
 
-    @Update("update user set password = #{newPass} where id = #{userId}")
+    @Update("update user set password = #{newPass} where userid = #{userId}")
     int updatePass(Map<String, Object> map);
 }
