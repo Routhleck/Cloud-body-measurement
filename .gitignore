@@ -1,3 +1,1 @@
-# ignore properties
-backend/springboot/src/main/resources/
-
+/backend/.idea

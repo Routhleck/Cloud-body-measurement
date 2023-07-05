@@ -1,6 +1,6 @@
 from flask import Flask, render_template, Response, request
 import cv2
-from flask_cors import *
+from flask_cors import CORS
 
 app = Flask(__name__, static_folder='./static')
 
