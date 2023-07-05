@@ -51,8 +51,10 @@ public class UserController {
 //            user.setPassword("123456");
 //        }
         User userInfo = User.builder()
+                .userId(user.getUserId())
                 .name(user.getName())
                 .password(bCryptPasswordEncoder.encode(user.getPassword()))
+                .isAdmin(user.getIsAdmin())
                 .build();
 
         userMapper.insert(userInfo);
