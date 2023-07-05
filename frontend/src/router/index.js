@@ -2,9 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from "@/views/LoginView";
 import LayOut from "@/layout/LayOut";
 import PersonView from "@/views/PersonView";
-import UserView from "@/views/UserView";
-import PreView from "@/views/PreView";
+// import UserView from "@/views/UserView";
+// import PreView from "@/views/PreView";
 import TestView from "@/views/TestView";
+import GradeView from "@/views/GradeView";
+import TrainView from "@/views/TrainView";
+import SubmitView from "@/views/SubmitView";
 
 const routes = [
   {
@@ -29,17 +32,22 @@ const routes = [
       {
         path: 'user',          
         name: 'user',
-        component: UserView
+        component: GradeView
       },
       {
         path: 'preview',             
         name: 'preview',
-        component: PreView
+        component: TrainView
       },
       {
         path: 'test',
         name: 'test',
         component: TestView
+      },
+      {
+        path: 'submit',
+        name: 'submit',
+        component: SubmitView
       }
     ]
   },
