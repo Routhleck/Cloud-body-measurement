@@ -1,8 +1,6 @@
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.indexing.NDArrayIndex
-import org.nd4j.linalg.ops.transforms.Transforms
-import org.nd4j.linalg.ops.transforms.Transforms.*
 import kotlin.math.max
 
 class PoseEmbedder(private val torsoSizeMultiplier: Double = 2.5) {
@@ -233,6 +231,31 @@ class PoseEmbedder(private val torsoSizeMultiplier: Double = 2.5) {
         计算两个3D点之间的距离。
         */
         return lmk_from.sub(lmk_to)
+    }
+
+    public fun call(landmarks: Array<DoubleArray>): INDArray {
+        /*
+        归一化姿势landmarks并转换为embedding
+
+        Args:
+          landmarks - NumPy array with 3D landmarks of shape (N, 3).
+
+        Result:
+          Numpy array with pose embedding of shape (M, 3) where `M` is the number of
+          pairwise distances defined in `_get_pose_distance_embedding`.
+          具有形状 (M, 3) 的姿势embedding的 Numpy 数组，其中“M”是“_get_pose_distance_embedding”中定义的成对距离的数量。
+        */
+        assert(landmarks.size == _landmark_names.size) { "Expected ${_landmark_names.size} landmarks, but got ${landmarks.size}" }
+
+        // Normalize landmarks.
+        var newLandmarks = _normalize_pose_landmarks(landmarks)
+
+        // 将newLandmarks转化为Array<DoubleArray>
+        val newLandmarksArray = newLandmarks.toDoubleMatrix()
+
+        // Get embedding.
+        return _get_pose_distance_embedding(newLandmarksArray)
+
     }
 
 }
