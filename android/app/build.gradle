@@ -98,4 +98,7 @@ dependencies {
 
     // MediaPipe Library
     implementation 'com.google.mediapipe:tasks-vision:0.10.0'
+
+    // math lib like numpy https://mavenlibs.com/maven/pom/org.nd4j/nd4j
+    implementation 'org.nd4j:nd4j-native-platform:1.0.0-beta7'
 }

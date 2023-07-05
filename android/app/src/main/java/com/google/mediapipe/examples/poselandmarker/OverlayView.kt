@@ -102,7 +102,6 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
 
             val jsonString = jsonObject.toString()
 
-            Log.d("landmarks", jsonString)
         }
     }
 
