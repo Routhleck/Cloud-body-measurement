@@ -1,9 +1,10 @@
+package com.google.mediapipe.examples.poselandmarker.algorithm
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.indexing.NDArrayIndex
 import kotlin.math.max
 
-class PoseEmbedder(private val torsoSizeMultiplier: Double = 2.5) {
+class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
     private val _torso_size_multiplier = torsoSizeMultiplier
 
     private val _landmark_names = listOf(
@@ -233,7 +234,7 @@ class PoseEmbedder(private val torsoSizeMultiplier: Double = 2.5) {
         return lmk_from.sub(lmk_to)
     }
 
-    public fun call(landmarks: Array<DoubleArray>): INDArray {
+    operator fun invoke(landmarks: Array<DoubleArray>): INDArray {
         /*
         归一化姿势landmarks并转换为embedding
 

@@ -1,6 +1,5 @@
 package com.google.mediapipe.examples.poselandmarker.algorithm
 
-import PoseEmbedder
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
@@ -14,7 +13,7 @@ import kotlin.math.abs
 class PoseClassifier(
     pose_samples_folder: String,
     pose_embedder: PoseEmbedder,
-    file_extension:String ="csv",
+    file_extension:String = "csv",
     file_separator:String = ",",
     n_landmarks:Int = 33,
     n_dimensions:Int = 3,
@@ -90,7 +89,7 @@ class PoseClassifier(
                     name = row[0],
                     landmarks = landmarks.toList(),
                     class_name = class_name,
-                    embedding = pose_embedder.call(landmarks)
+                    embedding = pose_embedder(landmarks)
                 )
 
                 pose_samples.add(poseSample)
@@ -108,18 +107,18 @@ class PoseClassifier(
         for (sample in _pose_samples) {
             // 为目标找到最近的姿势
             val pose_landmarks = sample.landmarks.toTypedArray()
-            val pose_classification = call(pose_landmarks)
+            val pose_classification = invoke(pose_landmarks)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun call(pose_landmarks: Array<DoubleArray>): Map<String, Int> {
+    operator fun invoke(pose_landmarks: Array<DoubleArray>): Map<String, Int> {
         check(pose_landmarks.size == _n_landmarks && pose_landmarks.all { it.size == _n_dimensions }) {
             "Expected $_n_landmarks landmarks with $_n_dimensions dimensions each."
         }
 
-        val pose_embedding: INDArray = _pose_embedder.call(pose_landmarks)
-        val flipped_pose_embedding: INDArray = _pose_embedder.call(pose_landmarks.map{ doubleArrayOf(-it[0], it[1], it[2])}.toTypedArray())
+        val pose_embedding: INDArray = _pose_embedder(pose_landmarks)
+        val flipped_pose_embedding: INDArray = _pose_embedder(pose_landmarks.map{ doubleArrayOf(-it[0], it[1], it[2])}.toTypedArray())
 
         // Convert _axes_weights to INDArray
         val axes_weights_array = Nd4j.create(_axes_weights.toDoubleArray())
