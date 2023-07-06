@@ -1,8 +1,8 @@
 package com.sepbf.backend.pojo;
+
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @TableName("user")
 @Data
