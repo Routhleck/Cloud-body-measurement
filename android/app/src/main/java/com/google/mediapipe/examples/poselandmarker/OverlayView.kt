@@ -19,10 +19,14 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.google.mediapipe.examples.poselandmarker.algorithm.PullUpActionCount
+import com.google.mediapipe.examples.poselandmarker.algorithm.RepetitionCounter
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
@@ -41,6 +45,9 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var scaleFactor: Float = 1f
     private var imageWidth: Int = 1
     private var imageHeight: Int = 1
+
+    public var count = 0
+    private val pullUp_action_count = PullUpActionCount()
 
     init {
         initPaints()
@@ -67,8 +74,14 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
+
+        // 将count绘制到屏幕上
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.textSize = 100f
+        canvas.drawText(count.toString(), 100f, 100f, paint)
+
         results?.let { poseLandmarkerResult ->
-            val jsonArray = JSONArray()
             for(landmark in poseLandmarkerResult.landmarks()) {
                 val landmarkArray = JSONArray()
                 for(normalizedLandmark in landmark) {
@@ -77,12 +90,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                         normalizedLandmark.y() * imageHeight * scaleFactor,
                         pointPaint
                     )
-                    val landmarkObject = JSONObject()
-                    landmarkObject.put("x", normalizedLandmark.x() * imageWidth * scaleFactor)
-                    landmarkObject.put("y", normalizedLandmark.y() * imageHeight * scaleFactor)
-                    landmarkArray.put(landmarkObject)
                 }
-                jsonArray.put(landmarkArray)
                 PoseLandmarker.POSE_LANDMARKS.forEach {
                     canvas.drawLine(
                         poseLandmarkerResult.landmarks().get(0).get(it!!.start())
@@ -97,14 +105,11 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                     )
                 }
             }
-            val jsonObject = JSONObject()
-            jsonObject.put("landmarks", jsonArray)
-
-            val jsonString = jsonObject.toString()
 
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setResults(
         poseLandmarkerResults: PoseLandmarkerResult,
         imageHeight: Int,
@@ -115,6 +120,17 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
 
         this.imageHeight = imageHeight
         this.imageWidth = imageWidth
+
+        // 将results.landmarks()转化为Array<DoubleArray>
+        var pose_landmarks = Array<DoubleArray>(33) { DoubleArray(3) }
+
+        for (i in 0..32) {
+            pose_landmarks[i][0] = poseLandmarkerResults.landmarks().get(0).get(i).x().toDouble()
+            pose_landmarks[i][1] = poseLandmarkerResults.landmarks().get(0).get(i).y().toDouble()
+            pose_landmarks[i][2] = poseLandmarkerResults.landmarks().get(0).get(i).z().toDouble()
+        }
+
+        count = pullUp_action_count(pose_landmarks, imageHeight, imageWidth)
 
         scaleFactor = when (runningMode) {
             RunningMode.IMAGE,
