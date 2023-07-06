@@ -129,9 +129,10 @@ class PoseClassifier(object):
               'pushups_up': 2,
             }
         """
+
         # 检查提供的姿势和目标姿势是否具有相同的形状.
-        assert pose_landmarks.shape == (self._n_landmarks, self._n_dimensions), 'Unexpected shape: {}'.format(
-            pose_landmarks.shape)
+
+        assert pose_landmarks.shape == (self._n_landmarks, self._n_dimensions), 'Unexpected shape: {}'.format(pose_landmarks.shape)
 
         # 获取给定姿势的 embedding.
         pose_embedding = self._pose_embedder(pose_landmarks)
@@ -167,6 +168,7 @@ class PoseClassifier(object):
         # Collect results into map: (class_name -> n_samples)
         class_names = [self._pose_samples[sample_idx].class_name for _, sample_idx in mean_dist_heap]
         result = {class_name: class_names.count(class_name) for class_name in set(class_names)}
+        print(self._pose_samples[sample_idx].class_name)
 
         return result
 
