@@ -57,7 +57,7 @@ class PullUpActionCount {
             val smoothed_pose_classification = ema_smoothing(pose_classification)
 
             // 用repetition_counter来计算重复次数
-            val repetition_count = repetition_counter(smoothed_pose_classification)
+            repetition_counter(smoothed_pose_classification)
 
         }
         return repetition_counter.get_n_repeats()

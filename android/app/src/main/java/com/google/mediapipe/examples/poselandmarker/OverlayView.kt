@@ -124,13 +124,17 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
         // 将results.landmarks()转化为Array<DoubleArray>
         var pose_landmarks = Array<DoubleArray>(33) { DoubleArray(3) }
 
-        for (i in 0..32) {
-            pose_landmarks[i][0] = poseLandmarkerResults.landmarks().get(0).get(i).x().toDouble()
-            pose_landmarks[i][1] = poseLandmarkerResults.landmarks().get(0).get(i).y().toDouble()
-            pose_landmarks[i][2] = poseLandmarkerResults.landmarks().get(0).get(i).z().toDouble()
+        if (!poseLandmarkerResults.landmarks().isEmpty()) {
+            for (i in 0..32) {
+                pose_landmarks[i][0] = poseLandmarkerResults.landmarks().get(0).get(i).x().toDouble()
+                pose_landmarks[i][1] = poseLandmarkerResults.landmarks().get(0).get(i).y().toDouble()
+                pose_landmarks[i][2] = poseLandmarkerResults.landmarks().get(0).get(i).z().toDouble()
+            }
+            count = pullUp_action_count(pose_landmarks, imageHeight, imageWidth)
         }
 
-        count = pullUp_action_count(pose_landmarks, imageHeight, imageWidth)
+
+
 
         scaleFactor = when (runningMode) {
             RunningMode.IMAGE,

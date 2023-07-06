@@ -1,7 +1,4 @@
 package com.google.mediapipe.examples.poselandmarker.algorithm
-import org.nd4j.linalg.api.ndarray.INDArray
-import org.nd4j.linalg.factory.Nd4j
-import org.nd4j.linalg.indexing.NDArrayIndex
 import kotlin.math.max
 
 class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {

@@ -29,6 +29,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.mediapipe.examples.poselandmarker.MainViewModel
@@ -57,6 +58,7 @@ class GalleryFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ScheduledExecutorService
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private val getContent =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
             // Handle the returned Uri
@@ -87,6 +89,7 @@ class GalleryFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         return fragmentGalleryBinding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fragmentGalleryBinding.fabGetContent.setOnClickListener {
@@ -249,6 +252,7 @@ class GalleryFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     }
 
     // Load and display the image.
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun runDetectionOnImage(uri: Uri) {
         setUiEnabled(false)
         backgroundExecutor = Executors.newSingleThreadScheduledExecutor()
@@ -302,6 +306,7 @@ class GalleryFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
             }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun runDetectionOnVideo(uri: Uri) {
         setUiEnabled(false)
         updateDisplayView(MediaType.VIDEO)
@@ -342,6 +347,7 @@ class GalleryFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     }
 
     // Setup and display the video.
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun displayVideoResult(result: PoseLandmarkerHelper.ResultBundle) {
 
         fragmentGalleryBinding.videoView.visibility = View.VISIBLE

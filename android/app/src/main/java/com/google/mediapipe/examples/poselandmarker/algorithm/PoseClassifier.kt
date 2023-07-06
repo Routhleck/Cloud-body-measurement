@@ -3,9 +3,6 @@ package com.google.mediapipe.examples.poselandmarker.algorithm
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import org.nd4j.linalg.api.ndarray.INDArray
-import org.nd4j.linalg.factory.Nd4j
-import org.nd4j.linalg.ops.transforms.Transforms
 import java.io.File
 import java.nio.file.Paths
 import kotlin.math.abs
