@@ -130,8 +130,8 @@ class PoseClassifier(object):
             }
         """
         # 检查提供的姿势和目标姿势是否具有相同的形状.
-        assert pose_landmarks.shape == (self._n_landmarks, self._n_dimensions), 'Unexpected shape: {}'.format(
-            pose_landmarks.shape)
+
+        assert pose_landmarks.shape == (self._n_landmarks, self._n_dimensions), 'Unexpected shape: {}'.format(pose_landmarks.shape)
 
         # 获取给定姿势的 embedding.
         pose_embedding = self._pose_embedder(pose_landmarks)
