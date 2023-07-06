@@ -1,0 +1,11 @@
+version: '3'
+services:
+  sports_squat:
+    container_name: sports_squat
+    image: windymuse/sports_squat:1.0.0
+    environment:
+      TZ: Asia/Shanghai
+    hostname: sports_squat
+    restart: always
+    ports:
+      - "5001:5001"

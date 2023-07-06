@@ -1,0 +1,15 @@
+Pillow
+matplotlib
+scipy
+requests
+flask
+flask-sqlalchemy
+flask_apscheduler
+oss2
+pymysql
+matplotlib==3.5.2
+mediapipe==0.8.10.1
+numpy==1.23.1
+opencv-contrib-python==4.6.0.66
+opencv-python==4.6.0.66
+tqdm==4.64.0
