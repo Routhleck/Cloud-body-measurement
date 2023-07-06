@@ -2,7 +2,6 @@ package com.sepbf.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.sepbf.backend.pojo.Test;
-import com.sepbf.backend.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
