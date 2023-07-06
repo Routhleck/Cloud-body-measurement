@@ -5,7 +5,7 @@
       <!-- <el-table-column prop="user_id" label="用户ID" width="100"></el-table-column> -->
       <el-table-column
         prop="test_time"
-        label="体侧时间"
+        label="体测时间"
         width="160"
       ></el-table-column>
       <el-table-column
@@ -62,18 +62,16 @@
       class="pagination"
     ></el-pagination>
   </div>
-
-  
 </template>
 
 <script>
 import axios from "axios";
-import { ElTable, ElPagination} from 'element-plus';
+import { ElTable, ElPagination } from "element-plus";
 
 export default {
   components: {
     ElTable,
-    ElPagination
+    ElPagination,
   },
   data() {
     return {
@@ -135,7 +133,7 @@ export default {
     },
     handlePageChange(currentPage) {
       this.currentPage = currentPage;
-    }
+    },
   },
 };
 </script>
@@ -153,12 +151,10 @@ export default {
 
 .test-items-table {
   width: 100%;
-  
 }
 
 .pagination {
   margin-top: 20px;
   text-align: center;
 }
-
 </style>
