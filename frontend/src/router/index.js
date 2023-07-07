@@ -1,53 +1,67 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/LoginView";
 import LayOut from "@/layout/LayOut";
 import PersonView from "@/views/PersonView";
-import UserView from "@/views/UserView";
-import PreView from "@/views/PreView";
+// import UserView from "@/views/UserView";
+// import PreView from "@/views/PreView";
 import TestView from "@/views/TestView";
+import GradeView from "@/views/GradeView";
+import TrainView from "@/views/TrainView";
+import SubmitView from "@/views/SubmitView";
+import AuthenticationView from "@/views/AuthenticationView";
 
 const routes = [
   {
-    path: '/',
-    redirect:'/login',   
+    path: "/",
+    redirect: "/login",
   },
   {
-    path: '/login',       
-    name: 'login',
-    component: LoginView
+    path: "/login",
+    name: "login",
+    component: LoginView,
   },
   {
-    path: '/layout',         
-    name: 'layout',
+    path: "/layout",
+    name: "layout",
     component: LayOut,
-    children:[
+    children: [
       {
-        path: 'person',          
-        name: 'person',
+        path: "authen",
+        name: "authen",
+        component: AuthenticationView,
+      },
+      {
+        path: "person",
+        name: "person",
         component: PersonView,
       },
       {
-        path: 'user',          
-        name: 'user',
-        component: UserView
+        path: "user",
+        name: "user",
+        component: GradeView,
       },
       {
-        path: 'preview',             
-        name: 'preview',
-        component: PreView
+        path: "preview",
+        name: "preview",
+        component: TrainView,
       },
       {
-        path: 'test',
-        name: 'test',
-        component: TestView
-      }
-    ]
+        path: "test",
+        name: "test",
+        component: TestView,
+      },
+      {
+        path: "submit",
+        name: "submit",
+        component: SubmitView,
+      },
+    ],
   },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
