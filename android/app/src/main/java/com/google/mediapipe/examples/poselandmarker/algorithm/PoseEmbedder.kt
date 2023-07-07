@@ -1,4 +1,6 @@
 package com.google.mediapipe.examples.poselandmarker.algorithm
+import com.google.mediapipe.examples.poselandmarker.algorithm.Util.ArrayOperation
+import com.google.mediapipe.examples.poselandmarker.algorithm.Util.MyArray
 import kotlin.math.max
 
 class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
@@ -33,7 +35,7 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         */
         val left_thumb_2 = landmarks[_landmark_names.indexOf("left_thumb_2")]
         val right_thumb_2 = landmarks[_landmark_names.indexOf("right_thumb_2")]
-        return (Nd4j.create(left_thumb_2).add(Nd4j.create(right_thumb_2))).div(2).toDoubleVector()
+        return ArrayOperation.averageDoubleArray(left_thumb_2, right_thumb_2)
     }
 
     private fun _get_pose_size(landmarks: Array<DoubleArray>, torso_size_multiplier: Double): Double {
@@ -44,55 +46,53 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
           * 从姿势中心到任何姿势地标的最大距离
         */
 
-        val newLandmarks: INDArray = Nd4j.createFromArray(landmarks)
-        val landmarks2d: INDArray = newLandmarks.get(NDArrayIndex.all(), NDArrayIndex.interval(0, 2))
+        val landmarks2d = ArrayOperation.getLandmarksByDimensionRange(landmarks, 0..1)
 
         // 两手中心
-        val left_hand = landmarks2d.get(NDArrayIndex.point(_landmark_names.indexOf("left_wrist").toLong()))
-        val right_hand = landmarks2d.get(NDArrayIndex.point(_landmark_names.indexOf("right_wrist").toLong()))
-        val hands = (left_hand.add(right_hand)).div(2).toDoubleVector()
+        val left_hand = landmarks[_landmark_names.indexOf("left_wrist")]
+        val right_hand = landmarks[_landmark_names.indexOf("right_wrist")]
+        val hands = ArrayOperation.averageDoubleArray(left_hand, right_hand)
 
         // 两臀中心
-        val left_hip = landmarks2d.get(NDArrayIndex.point(_landmark_names.indexOf("left_hip").toLong()))
-        val right_hip = landmarks2d.get(NDArrayIndex.point(_landmark_names.indexOf("right_hip").toLong()))
-        val hips = (left_hip.add(right_hip)).div(2).toDoubleVector()
+        val left_hip = landmarks2d[_landmark_names.indexOf("left_hip")]
+        val right_hip = landmarks2d[_landmark_names.indexOf("right_hip")]
+        val hips = ArrayOperation.averageDoubleArray(left_hip, right_hip)
 
         // 躯干尺寸作为最小的身体尺寸
-        val torso_size = (Nd4j.create(hands).sub(Nd4j.create(hips))).norm2Number().toDouble() * torso_size_multiplier
+        val torso_size = ArrayOperation.getNorm(MyArray(hands).sub(MyArray(hips)))
 
         // 到姿势中心的最大距离
         val pose_center = _get_pose_center(landmarks)
-        val diff: INDArray = newLandmarks.sub(Nd4j.createFromArray(*pose_center))
-        val norms: Double = diff.norm2Number().toDouble()
-        val max_dist: Double = norms
+        val diff = landmarks2d.map { ArrayOperation.getNorm(MyArray(it).sub(MyArray(pose_center))) }
+        val max_dist = diff.maxOrNull() ?: 0.0
 
         return max(torso_size, max_dist)
     }
 
-    private fun _normalize_pose_landmarks(landmarks: Array<DoubleArray>): INDArray {
+    private fun _normalize_pose_landmarks(landmarks: Array<DoubleArray>): Array<DoubleArray> {
         /*
         将姿势地标归一化为单位尺寸。
         1. 将姿势中心移动到原点。
         2. 将姿势缩放到单位大小。
         3. 将姿势移动到原始中心。
         */
-        val landmarks3d: INDArray = Nd4j.createFromArray(landmarks)
+        var landmarks3d = landmarks
 
         // 1. 将姿势中心移动到原点。
         val pose_center = _get_pose_center(landmarks)
-        landmarks3d.subi(Nd4j.createFromArray(*pose_center))
+        landmarks3d = ArrayOperation.subArrayDoubleArrayByDoubleArray(landmarks3d, pose_center)
 
         // 2. 将姿势缩放到单位大小。
         val pose_size = _get_pose_size(landmarks, _torso_size_multiplier)
-        landmarks3d.divi(pose_size)
+        landmarks3d = ArrayOperation.divArrayDoubleArrayByDouble(landmarks3d, pose_size)
 
         // Multiplication by 100 is not required, but makes it eaasier to debug
-        landmarks3d.muli(100)
+        landmarks3d = ArrayOperation.multiplyArrayDoubleArrayByDouble(landmarks3d, 100.0)
 
         return landmarks3d
     }
 
-    private fun _get_pose_distance_embedding(landmarks: Array<DoubleArray>): INDArray {
+    private fun _get_pose_distance_embedding(landmarks: Array<DoubleArray>): DoubleArray {
         /*
         将姿势landmarks转换为 3D embedding.
         我们使用几个成对的 3D 距离来形成姿势embedding。 所有距离都包括带符号的 X 和 Y 分量。
@@ -103,7 +103,7 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         Result:
           形状为 (M, 3) 的pose embedding的INDArray，其中 `M` 是成对距离的数量。
         */
-        val embeddingList: MutableList<INDArray> = mutableListOf()
+        val embeddingList: MutableList<Double> = mutableListOf()
 
         // one joint.
         val jointDistance = _get_distance(
@@ -181,10 +181,10 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         // 左手腕与右手腕的距离。
         embeddingList.add(_get_distance_by_names(landmarks, "left_wrist", "right_wrist"))
 
-        return Nd4j.vstack(embeddingList)
+        return ArrayOperation.vstack(embeddingList)
     }
 
-    private fun _get_average_by_names(landmarks: Array<DoubleArray>, name_from: String, name_to: String): INDArray {
+    private fun _get_average_by_names(landmarks: Array<DoubleArray>, name_from: String, name_to: String): DoubleArray {
         /*
         计算两个姿势地标之间的平均值。
         Args:
@@ -195,16 +195,15 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         Result:
           Numpy array with the average of the two landmarks.
         */
-        val newLandmarks: INDArray = Nd4j.createFromArray(landmarks)
-        val landmarks2d: INDArray = newLandmarks.get(NDArrayIndex.all(), NDArrayIndex.interval(0, 2))
+        val landmarks2d = ArrayOperation.getLandmarksByDimensionRange(landmarks, 0..1)
 
-        val lmk_from = landmarks2d.get(NDArrayIndex.point(_landmark_names.indexOf(name_from).toLong()))
-        val lmk_to = landmarks2d.get(NDArrayIndex.point(_landmark_names.indexOf(name_to).toLong()))
+        val lmk_from = landmarks2d[_landmark_names.indexOf(name_from)]
+        val lmk_to = landmarks2d[_landmark_names.indexOf(name_to)]
 
-        return (lmk_from.add(lmk_to)).div(2)
+        return ArrayOperation.averageDoubleArray(lmk_from, lmk_to)
     }
 
-    private fun _get_distance_by_names(landmarks: Array<DoubleArray>, name_from: String, name_to: String): INDArray {
+    private fun _get_distance_by_names(landmarks: Array<DoubleArray>, name_from: String, name_to: String): Double {
         /*
         计算两个姿势地标之间的距离。
         Args:
@@ -215,23 +214,22 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         Result:
           Numpy array with the distance between the two landmarks.
         */
-        val newLandmarks: INDArray = Nd4j.createFromArray(landmarks)
-        val landmarks2d: INDArray = newLandmarks.get(NDArrayIndex.all(), NDArrayIndex.interval(0, 2))
+        val landmarks2d = ArrayOperation.getLandmarksByDimensionRange(landmarks, 0..1)
 
-        val lmk_from = landmarks2d.get(NDArrayIndex.point(_landmark_names.indexOf(name_from).toLong()))
-        val lmk_to = landmarks2d.get(NDArrayIndex.point(_landmark_names.indexOf(name_to).toLong()))
+        val lmk_from = landmarks2d[_landmark_names.indexOf(name_from)]
+        val lmk_to = landmarks2d[_landmark_names.indexOf(name_to)]
 
         return _get_distance(lmk_from, lmk_to)
     }
 
-    private fun _get_distance(lmk_from: INDArray, lmk_to: INDArray): INDArray {
+    private fun _get_distance(lmk_from: DoubleArray, lmk_to: DoubleArray): Double {
         /*
         计算两个3D点之间的距离。
         */
-        return lmk_from.sub(lmk_to)
+        return MyArray(lmk_from).getDistance(MyArray(lmk_to))
     }
 
-    operator fun invoke(landmarks: Array<DoubleArray>): INDArray {
+    operator fun invoke(landmarks: Array<DoubleArray>): DoubleArray {
         /*
         归一化姿势landmarks并转换为embedding
 
@@ -248,11 +246,8 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         // Normalize landmarks.
         var newLandmarks = _normalize_pose_landmarks(landmarks)
 
-        // 将newLandmarks转化为Array<DoubleArray>
-        val newLandmarksArray = newLandmarks.toDoubleMatrix()
-
         // Get embedding.
-        return _get_pose_distance_embedding(newLandmarksArray)
+        return _get_pose_distance_embedding(newLandmarks)
 
     }
 

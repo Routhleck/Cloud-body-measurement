@@ -4,8 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import org.apache.commons.lang3.ObjectUtils.Null
-import org.nd4j.linalg.api.ndarray.INDArray
-import org.nd4j.linalg.factory.Nd4j
 
 
 class PullUpActionCount {
