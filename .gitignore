@@ -3,3 +3,4 @@ backend/oss-upload/src/main/java/com/example/demo/utils/SecretKey.java
 backend/backend/src/main/java/com/sepbf/backend/utils/SecretKey.java
 backend/backend/src/main/resources/application.properties
 backend/backend/src/main/resources/application.properties
+backend/backend/src/main/resources/application.properties

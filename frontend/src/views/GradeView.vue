@@ -2,52 +2,15 @@
   <div class="test-table">
     <!-- 表格展示 -->
     <el-table :data="filteredTestItems" class="test-items-table">
-      <!-- <el-table-column prop="user_id" label="用户ID" width="100"></el-table-column> -->
-      <el-table-column
-        prop="test_time"
-        label="体测时间"
-        width="160"
-      ></el-table-column>
-      <el-table-column
-        prop="height"
-        label="身高(cm)"
-        width="100"
-      ></el-table-column>
-      <el-table-column
-        prop="weight"
-        label="体重(kg)"
-        width="100"
-      ></el-table-column>
-      <el-table-column
-        prop="vital_capacity"
-        label="肺活量(ml)"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="standing_long_jump"
-        label="立定跳远(cm)"
-        width="140"
-      ></el-table-column>
-      <el-table-column
-        prop="sit_and_reach"
-        label="坐位体前屈(cm)"
-        width="140"
-      ></el-table-column>
-      <el-table-column
-        prop="pull_or_sit_up"
-        label="引体向上/仰卧起坐(time)"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="50m"
-        label="50米跑(second)"
-        width="140"
-      ></el-table-column>
-      <el-table-column
-        prop="800_or_1000m"
-        label="800或1000米(second)"
-        width="160"
-      ></el-table-column>
+      <el-table-column prop="testTime" label="体测时间" width="160"></el-table-column>
+      <el-table-column prop="height" label="身高(cm)" width="100"></el-table-column>
+      <el-table-column prop="weight" label="体重(kg)" width="100"></el-table-column>
+      <el-table-column prop="vitalCapacity" label="肺活量(ml)" width="120"></el-table-column>
+      <el-table-column prop="standingLongJump" label="立定跳远(cm)" width="140"></el-table-column>
+      <el-table-column prop="sitAndReach" label="坐位体前屈(cm)" width="140"></el-table-column>
+      <el-table-column prop="pullOrSitUp" label="引体向上/仰卧起坐(time)" width="180"></el-table-column>
+      <el-table-column prop="sprint50m" label="50米跑(second)" width="140"></el-table-column>
+      <el-table-column prop="longDistanceRun" label="800或1000米(second)" width="160"></el-table-column>
     </el-table>
 
     <!-- 分页 -->
@@ -86,14 +49,14 @@ export default {
       if (this.searchText) {
         return this.testItems.filter((item) => {
           return (
-            item.user_id.toString().includes(this.searchText) ||
-            item.test_time.includes(this.searchText) ||
+            item.userId.toString().includes(this.searchText) ||
+            item.testTime.includes(this.searchText) ||
             item.height.toString().includes(this.searchText) ||
             item.weight.toString().includes(this.searchText) ||
-            item.vital_capacity.toString().includes(this.searchText) ||
-            item.standing_long_jump.toString().includes(this.searchText) ||
-            item.sit_and_reach.toString().includes(this.searchText) ||
-            item.pull_or_sit_up.toString().includes(this.searchText) ||
+            item.vitalCapacity.toString().includes(this.searchText) ||
+            item.standingLongJump.toString().includes(this.searchText) ||
+            item.sitAndReach.toString().includes(this.searchText) ||
+            item.pullOrSitUp.toString().includes(this.searchText) ||
             item["50m"].toString().includes(this.searchText) ||
             item["800_or_1000m"].toString().includes(this.searchText)
           );
@@ -122,10 +85,18 @@ export default {
   },
   methods: {
     fetchTestItems() {
+      const userJson = sessionStorage.getItem("user");
+      const user = JSON.parse(userJson);
+      const userId = user.user_id;
+
       axios
-        .get("/api/test-items") // 替换为您的后端接口地址
+        .get("http://127.0.0.1:9090/test", {
+          params: {
+            UserId: userId,
+          },
+        })
         .then((response) => {
-          this.testItems = response.data;
+          this.testItems = [response.data.data];
         })
         .catch((error) => {
           console.error("Failed to fetch test items:", error);
