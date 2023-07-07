@@ -46,7 +46,11 @@
               <input type="password" v-model="form.password" />
               <div class="border"></div>
             </label>
+<<<<<<< Updated upstream
             <button type="button" @click="Login">登 录</button>
+=======
+            <button type="button" @click="login">登 录</button>
+>>>>>>> Stashed changes
           </section>
           <footer>
             <button type="button" class="forgotBtn">忘记密码？</button>
@@ -76,7 +80,11 @@
               <input type="password" v-model="form.confirm" />
               <div class="border"></div>
             </label>
+<<<<<<< Updated upstream
             <button type="button" @click="Register">注 册</button>
+=======
+            <button type="button" @click="register">注 册</button>
+>>>>>>> Stashed changes
           </section>
           <footer>
             <button type="button" class="registerBtn">返回</button>
@@ -101,6 +109,7 @@ export default {
     };
   },
   methods: {
+<<<<<<< Updated upstream
     Login() {
       const requestData = {
         name: this.form.name,
@@ -130,6 +139,44 @@ export default {
     },
 
     Register() {
+=======
+    login() {
+    const requestData = {
+      name: this.form.username,
+      password: this.form.password,
+    };
+
+    request
+      .post("http://127.0.0.1:9090/user/login", requestData)
+      .then((res) => {
+        if (res.code === "200") {
+          this.$message({
+            type: "success",
+            message: "登录成功",
+          });
+          sessionStorage.setItem("user", JSON.stringify({ user_id: res.user_id }));
+
+          // 根据需要进行页面跳转
+          // if (res.user_id === "admin") {
+          //   this.$router.push("/admin");
+          // } else {
+          //   this.$router.push("/user");
+          // }
+          this.$router.push("/layout");
+        } else {
+          this.$message({
+            type: "error",
+            message: res.message,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to login:", error);
+      });
+  },
+
+    register() {
+>>>>>>> Stashed changes
       if (this.form.password !== this.form.confirm) {
         this.$message({
           type: "error",
@@ -137,14 +184,24 @@ export default {
         });
       } else {
         const requestData = {
+<<<<<<< Updated upstream
           name: this.form.name,
+=======
+          name: this.form.username,
+>>>>>>> Stashed changes
           password: this.form.password,
         };
 
         request
+<<<<<<< Updated upstream
           .post("/api/user/register", requestData)
           .then((res) => {
             if (res) {
+=======
+          .post("http://127.0.0.1:9090/user/register", requestData)
+          .then((res) => {
+            if (res.code === "200") {
+>>>>>>> Stashed changes
               this.$message({
                 type: "success",
                 message: "注册成功",
@@ -167,7 +224,10 @@ export default {
     },
     revise() {
       request.put("/api/user/revise", this.form).then((res) => {
+<<<<<<< Updated upstream
         // console.log(res)
+=======
+>>>>>>> Stashed changes
         if (res.code === "0") {
           this.$message({
             type: "success",

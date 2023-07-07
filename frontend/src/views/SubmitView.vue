@@ -121,16 +121,28 @@ export default {
 .form-container {
   width: 100%;
   height: 100%;
+<<<<<<< Updated upstream
   display: flex;
   justify-content: center;
   /* align-items: center; */
+=======
+  position: absolute;
+  top: 150px;
+>>>>>>> Stashed changes
   height: 100vh;
 }
 
 .form {
   width: 100%;
+<<<<<<< Updated upstream
   display: flex;
   justify-content: center;
   align-items: center;
+=======
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  
+>>>>>>> Stashed changes
 }
 </style>
