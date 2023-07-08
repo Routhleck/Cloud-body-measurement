@@ -4,8 +4,13 @@ class EMADictSmoothing(private val windowSize: Int = 10, private val alpha: Doub
     private val dataInWindow: MutableList<Map<String, Double>> = mutableListOf()
 
     operator fun invoke(data: Map<String, Int>): Map<String, Double> {
+        // 平滑给定的姿势分类。
+        // 平滑是通过计算在给定时间窗口中观察到的每个姿势类别的指数移动平均值来完成的。错过的姿势类将替换为 0。
         dataInWindow.add(0, data.mapValues { it.value.toDouble() })
-        dataInWindow.subList(windowSize, dataInWindow.size).clear()
+        if (dataInWindow.size > windowSize) {
+            dataInWindow.subList(windowSize, dataInWindow.size).clear()
+        }
+
 
         val keys = dataInWindow.flatMap { it.keys }.toSet()
 

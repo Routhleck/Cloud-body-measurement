@@ -1,6 +1,6 @@
 package com.google.mediapipe.examples.poselandmarker.algorithm
 import com.google.mediapipe.examples.poselandmarker.algorithm.Util.ArrayOperation
-import com.google.mediapipe.examples.poselandmarker.algorithm.Util.MyArray
+import com.google.mediapipe.examples.poselandmarker.algorithm.Util.MyDoubleArray
 import kotlin.math.max
 
 class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
@@ -59,11 +59,11 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         val hips = ArrayOperation.averageDoubleArray(leftHip, rightHip)
 
         // 躯干尺寸作为最小的身体尺寸
-        val torsoSize = ArrayOperation.getNorm(MyArray(hands).sub(MyArray(hips)))
+        val torsoSize = ArrayOperation.getNorm(MyDoubleArray(hands).sub(MyDoubleArray(hips)))
 
         // 到姿势中心的最大距离
         val poseCenter = getPoseCenter(landmarks)
-        val diff = landmarks2d.map { ArrayOperation.getNorm(MyArray(it).sub(MyArray(poseCenter))) }
+        val diff = landmarks2d.map { ArrayOperation.getNorm(MyDoubleArray(it).sub(MyDoubleArray(poseCenter))) }
         val maxDist = diff.maxOrNull() ?: 0.0
 
         return max((torsoSize * torsoSizeMultiplier), maxDist)
@@ -92,7 +92,7 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         return landmarks3d
     }
 
-    private fun getPoseDistanceEmbedding(landmarks: Array<DoubleArray>): DoubleArray {
+    private fun getPoseDistanceEmbedding(landmarks: Array<DoubleArray>): Array<DoubleArray> {
         /*
         将姿势landmarks转换为 3D embedding.
         我们使用几个成对的 3D 距离来形成姿势embedding。 所有距离都包括带符号的 X 和 Y 分量。
@@ -103,7 +103,7 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         Result:
           形状为 (M, 3) 的pose embedding的INDArray，其中 `M` 是成对距离的数量。
         */
-        val embeddingList: MutableList<Double> = mutableListOf()
+        val embeddingList: MutableList<DoubleArray> = mutableListOf()
 
         // one joint.
         val jointDistance = getDistance(
@@ -195,15 +195,14 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         Result:
           Numpy array with the average of the two landmarks.
         */
-        val landmarks2d = ArrayOperation.getLandmarksByDimensionRange(landmarks, 0..1)
 
-        val lmkFrom = landmarks2d[_landmarkNames.indexOf(name_from)]
-        val lmkTo = landmarks2d[_landmarkNames.indexOf(name_to)]
+        val lmkFrom = landmarks[_landmarkNames.indexOf(name_from)]
+        val lmkTo = landmarks[_landmarkNames.indexOf(name_to)]
 
         return ArrayOperation.averageDoubleArray(lmkFrom, lmkTo)
     }
 
-    private fun getDistanceByNames(landmarks: Array<DoubleArray>, name_from: String, name_to: String): Double {
+    private fun getDistanceByNames(landmarks: Array<DoubleArray>, name_from: String, name_to: String): DoubleArray {
         /*
         计算两个姿势地标之间的距离。
         Args:
@@ -214,22 +213,20 @@ class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {
         Result:
           Numpy array with the distance between the two landmarks.
         */
-        val landmarks2d = ArrayOperation.getLandmarksByDimensionRange(landmarks, 0..1)
-
-        val lmkFrom = landmarks2d[_landmarkNames.indexOf(name_from)]
-        val lmkTo = landmarks2d[_landmarkNames.indexOf(name_to)]
+        val lmkFrom = landmarks[_landmarkNames.indexOf(name_from)]
+        val lmkTo = landmarks[_landmarkNames.indexOf(name_to)]
 
         return getDistance(lmkFrom, lmkTo)
     }
 
-    private fun getDistance(lmk_from: DoubleArray, lmk_to: DoubleArray): Double {
+    private fun getDistance(lmk_from: DoubleArray, lmk_to: DoubleArray): DoubleArray {
         /*
         计算两个3D点之间的距离。
         */
-        return MyArray(lmk_from).getDistance(MyArray(lmk_to))
+        return MyDoubleArray(lmk_to).getDistance(MyDoubleArray(lmk_from))
     }
 
-    operator fun invoke(landmarks: Array<DoubleArray>): DoubleArray {
+    operator fun invoke(landmarks: Array<DoubleArray>): Array<DoubleArray> {
         /*
         归一化姿势landmarks并转换为embedding
 

@@ -4,11 +4,11 @@ import numpy as np
 import tqdm
 from mediapipe.python.solutions import drawing_utils as mp_drawing
 from mediapipe.python.solutions import pose as mp_pose
-import poseembedding as pe                      # 姿态关键点编码模块
-import poseclassifier as pc                     # 姿态分类器
-import resultsmooth as rs                       # 分类结果平滑
-import counter                                  # 动作计数器
-import visualizer as vs                         # 可视化模块
+import poseembedding as pe  # 姿态关键点编码模块
+import poseclassifier as pc  # 姿态分类器
+import resultsmooth as rs  # 分类结果平滑
+import counter  # 动作计数器
+import visualizer as vs  # 可视化模块
 
 
 def show_image(img, figsize=(10, 10)):

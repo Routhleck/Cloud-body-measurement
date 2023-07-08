@@ -21,17 +21,16 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.google.mediapipe.examples.poselandmarker.algorithm.PullUpActionCount
-import com.google.mediapipe.examples.poselandmarker.algorithm.RepetitionCounter
+import com.google.mediapipe.examples.poselandmarker.debug.ToastDebug
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
 import org.json.JSONArray
-import org.json.JSONObject
 import kotlin.math.max
 import kotlin.math.min
 
@@ -46,9 +45,11 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var imageWidth: Int = 1
     private var imageHeight: Int = 1
 
+    public var lastCount = 0
     public var count = 0
-    private val pullUp_action_count = PullUpActionCount()
+    private val pullUp_action_count = PullUpActionCount(context)
 
+    private var toast: ToastDebug? = ToastDebug(context)
     init {
         initPaints()
     }
@@ -122,15 +123,19 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
         this.imageWidth = imageWidth
 
         // 将results.landmarks()转化为Array<DoubleArray>
-        var pose_landmarks = Array<DoubleArray>(33) { DoubleArray(3) }
+        val poseLandmarks = Array<DoubleArray>(33) { DoubleArray(3) }
 
-        if (!poseLandmarkerResults.landmarks().isEmpty()) {
+        if (poseLandmarkerResults.landmarks().isNotEmpty()) {
             for (i in 0..32) {
-                pose_landmarks[i][0] = poseLandmarkerResults.landmarks().get(0).get(i).x().toDouble()
-                pose_landmarks[i][1] = poseLandmarkerResults.landmarks().get(0).get(i).y().toDouble()
-                pose_landmarks[i][2] = poseLandmarkerResults.landmarks().get(0).get(i).z().toDouble()
+                poseLandmarks[i][0] = poseLandmarkerResults.landmarks()[0][i].x().toDouble()
+                poseLandmarks[i][1] = poseLandmarkerResults.landmarks()[0][i].y().toDouble()
+                poseLandmarks[i][2] = poseLandmarkerResults.landmarks()[0][i].z().toDouble()
             }
-            count = pullUp_action_count(pose_landmarks, imageHeight, imageWidth)
+            lastCount = count
+            count = pullUp_action_count(poseLandmarks, imageHeight, imageWidth)
+            if (lastCount != count) {
+                toast?.show("count: $count")
+            }
         }
 
 
