@@ -20,5 +20,5 @@ jobs:
       env:
         IMAGE_TAG: ${{ github.sha }} # 用于标记容器版本号
       run: |
-        docker build -f backend/backend/Dockerfile -t registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect:$IMAGE_TAG ./backend/backend
+        docker build -f backend/backend/DockerFile -t registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect:$IMAGE_TAG ./backend/backend
         docker push registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect:$IMAGE_TAG
