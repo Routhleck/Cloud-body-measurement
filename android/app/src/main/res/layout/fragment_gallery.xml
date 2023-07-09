@@ -51,7 +51,7 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-            <com.google.mediapipe.examples.poselandmarker.OverlayView
+            <com.cloudsports.actiondetect.actiondetect.OverlayView
                 android:id="@+id/overlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
