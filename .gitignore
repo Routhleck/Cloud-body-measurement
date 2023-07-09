@@ -4,3 +4,4 @@ backend/backend/src/main/java/com/sepbf/backend/utils/SecretKey.java
 backend/backend/src/main/resources/application.properties
 backend/backend/src/main/resources/application.properties
 backend/backend/src/main/resources/application.properties
+backend/demo/src/main/java/com/example/demo/FaceSecretKey.java

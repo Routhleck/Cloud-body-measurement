@@ -17,14 +17,17 @@
       <p>效果预览</p>
       <img :src="imgSrc" alt class="tx_img" />
     </div>
-    <div class="button">
-      <el-button @click="getCompetence()">打开摄像头</el-button>
-      <el-button @click="stopNavigator()">关闭摄像头</el-button>
-      <el-button @click="setImage()">拍照</el-button>
-    </div>
 
-    <div>
-      <el-button @click="openUploadDialog">上传照片</el-button>
+    <div class="button_container">
+      <div class="button">
+        <el-button @click="getCompetence()">打开摄像头</el-button>
+        <el-button @click="stopNavigator()">关闭摄像头</el-button>
+        <el-button @click="setImage()">拍照</el-button>
+      </div>
+
+      <div>
+        <el-button @click="openUploadDialog" class="upload">上传照片</el-button>
+      </div>
     </div>
 
     <el-dialog title="确认上传" v-model="dialogVisible" width="30%">
@@ -167,5 +170,18 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+.button_container{
+  max-width: 100%;
+  margin: 50px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.upload{
+  margin: 20px;
+  padding: 5px;
 }
 </style>
