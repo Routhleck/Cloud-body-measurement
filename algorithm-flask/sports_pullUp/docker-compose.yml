@@ -1,0 +1,11 @@
+version: '3'
+services:
+  sports_pull_up:
+    container_name: sports_pull_up
+    image: windymuse/sports_pull_up:1.0.0
+    environment:
+      TZ: Asia/Shanghai
+    hostname: sports_pull_up
+    restart: always
+    ports:
+      - "5001:5001"

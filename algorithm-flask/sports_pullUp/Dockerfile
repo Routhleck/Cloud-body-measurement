@@ -1,0 +1,25 @@
+FROM python:3.9-slim
+
+USER root
+ 
+ENV TZ=UTC
+ 
+RUN echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free' > /etc/apt/sources.list && \
+    echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free' >> /etc/apt/sources.list && \
+    echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free' >> /etc/apt/sources.list && \
+    echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free' >> /etc/apt/sources.list && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    apt update && \
+    apt install -y iptables iproute2 procps
+
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+
+COPY ./requirements.txt /opt/sports/
+WORKDIR /opt/sports
+
+RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+COPY . /opt/sports/
+ 
+ENTRYPOINT [ "/opt/sports/entrypoint.sh" ]
