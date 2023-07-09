@@ -1,7 +1,7 @@
 <template>
   <div class="test-table">
     <!-- 表格展示 -->
-    <el-table :data="filteredTestItems" class="test-items-table">
+    <el-table :data=testItems class="test-items-table">
       <el-table-column prop="testTime" label="体测时间" width="160"></el-table-column>
       <el-table-column prop="height" label="身高(cm)" width="100"></el-table-column>
       <el-table-column prop="weight" label="体重(kg)" width="100"></el-table-column>
@@ -45,26 +45,6 @@ export default {
     };
   },
   computed: {
-    filteredTestItems() {
-      if (this.searchText) {
-        return this.testItems.filter((item) => {
-          return (
-            item.userId.toString().includes(this.searchText) ||
-            item.testTime.includes(this.searchText) ||
-            item.height.toString().includes(this.searchText) ||
-            item.weight.toString().includes(this.searchText) ||
-            item.vitalCapacity.toString().includes(this.searchText) ||
-            item.standingLongJump.toString().includes(this.searchText) ||
-            item.sitAndReach.toString().includes(this.searchText) ||
-            item.pullOrSitUp.toString().includes(this.searchText) ||
-            item["50m"].toString().includes(this.searchText) ||
-            item["800_or_1000m"].toString().includes(this.searchText)
-          );
-        });
-      } else {
-        return this.testItems;
-      }
-    },
     totalItems() {
       return this.testItems.length;
     },

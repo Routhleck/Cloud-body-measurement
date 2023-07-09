@@ -1,6 +1,8 @@
 <template>
   <div style="height: 50px; line-height: 50px;border-bottom: 1px solid #ccc;display: flex">
-    <div style="width: 200px;padding-left: 60px;font-weight: bold;color: blue;font-size: medium">云体测</div>
+    <div style="width: 200px;padding-left: 60px">
+      <img src="../assets/云体测.png" alt="Logo" style="height: 100%;">
+    </div>
     <div style="flex: 1"></div>
     <div style="width: 150px">
       <el-icon><UserFilled /></el-icon>

@@ -1,247 +1,160 @@
 <template>
-  <div class="container">
-    <div class="test-table">
-      <!-- 表格展示 -->
-      <el-table :data="filteredTestItems" class="test-items-table">
-        <!-- <el-table-column prop="user_id" label="用户ID" width="100"></el-table-column> -->
-        <el-table-column
-          prop="test_time"
-          label="时间"
-          width="160"
-        ></el-table-column>
-        <el-table-column
-          prop="height"
-          label="身高(cm)"
-          width="100"
-        ></el-table-column>
-        <el-table-column
-          prop="weight"
-          label="体重(kg)"
-          width="100"
-        ></el-table-column>
-        <el-table-column
-          prop="vital_capacity"
-          label="肺活量(ml)"
-          width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="standing_long_jump"
-          label="立定跳远(cm)"
-          width="140"
-        ></el-table-column>
-        <el-table-column
-          prop="sit_and_reach"
-          label="坐位体前屈(cm)"
-          width="140"
-        ></el-table-column>
-        <el-table-column
-          prop="pull_or_sit_up"
-          label="引体向上/仰卧起坐(time)"
-          width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="50m"
-          label="50米跑(second)"
-          width="140"
-        ></el-table-column>
-        <el-table-column
-          prop="800_or_1000m"
-          label="800或1000米(second)"
-          width="160"
-        ></el-table-column>
-      </el-table>
-
-      <!-- 分页 -->
-      <el-pagination
-        v-show="shouldShowPagination"
-        v-model="currentPage"
-        :page-count="pageCount"
-        :page-size="pageSize"
-        layout="total, prev, pager, next,jumper"
-        :total="totalItems"
-        @current-change="handlePageChange"
-        class="pagination"
-      ></el-pagination>
-    </div>
-
-    <!-- 图表展示 -->
-    <div class="chart-container">
-      <div class="chart-item">
-        <el-card shadow="never">
-          <el-chart :data="getChartData('height')" type="bar"></el-chart>
-        </el-card>
-      </div>
-      <div class="chart-item">
-        <el-card shadow="never">
-          <el-chart :data="getChartData('weight')" type="bar"></el-chart>
-        </el-card>
-      </div>
-      <div class="chart-item">
-        <el-card shadow="never">
-          <el-chart
-            :data="getChartData('vital_capacity')"
-            type="bar"
-          ></el-chart>
-        </el-card>
-      </div>
-      <div class="chart-item">
-        <el-card shadow="never">
-          <el-chart
-            :data="getChartData('standing_long_jump')"
-            type="bar"
-          ></el-chart>
-        </el-card>
-      </div>
-      <div class="chart-item">
-        <el-card shadow="never">
-          <el-chart :data="getChartData('sit_and_reach')" type="bar"></el-chart>
-        </el-card>
-      </div>
-      <div class="chart-item">
-        <el-card shadow="never">
-          <el-chart
-            :data="getChartData('pull_or_sit-up')"
-            type="bar"
-          ></el-chart>
-        </el-card>
-      </div>
-      <div class="chart-item">
-        <el-card shadow="never">
-          <el-chart :data="getChartData('50m')" type="line"></el-chart>
-        </el-card>
-      </div>
-      <div class="chart-item">
-        <el-card shadow="never">
-          <el-chart :data="getChartData('800_or_1000m')" type="line"></el-chart>
-        </el-card>
-      </div>
-    </div>
+  <div class="line">
+    <v-header :name="name" :legendArr="legendArr" :myChart="myChart"></v-header>
+    <v-filter :myChart="myChart" v-if="myChart._dom"></v-filter>
+    <div class="main"></div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import { ElTable, ElPagination, ElCard, ElChart } from "element-plus";
+// import * as echarts from 'echarts';
+import header from '../components/header/header';
+import filter from '../components/filter/filter';
 
 export default {
-  components: {
-    ElTable,
-    ElPagination,
-    ElCard,
-    ElChart,
-  },
   data() {
     return {
-      testItems: [],
-      currentPage: 1,
-      pageSize: 10,
-      pageCount: 3,
+      legendArr: [],
+      charts: [],
+      color: 'rgba(255, 255, 255, 0.69)',
+      myChart: {},
+      name: '训练数据',
     };
   },
-  computed: {
-    filteredTestItems() {
-      if (this.searchText) {
-        return this.testItems.filter((item) => {
-          return (
-            item.user_id.toString().includes(this.searchText) ||
-            item.test_time.includes(this.searchText) ||
-            item.height.toString().includes(this.searchText) ||
-            item.weight.toString().includes(this.searchText) ||
-            item.vital_capacity.toString().includes(this.searchText) ||
-            item.standing_long_jump.toString().includes(this.searchText) ||
-            item.sit_and_reach.toString().includes(this.searchText) ||
-            item.pull_or_sit_up.toString().includes(this.searchText) ||
-            item["50m"].toString().includes(this.searchText) ||
-            item["800_or_1000m"].toString().includes(this.searchText)
-          );
-        });
-      } else {
-        return this.testItems;
-      }
+  methods: {
+    _init() {
+      this.legendArr = this.myChart.getOption().series;
+      this.legendArr.forEach((data) => {
+        data.selected = true;
+      });
+      this.charts.push(this.myChart);
+      window.addEventListener('resize', () => {
+        this.myChart.resize();
+      });
     },
-    totalItems() {
-      return this.testItems.length;
-    },
-    totalPages() {
-      return Math.ceil(this.totalItems / this.pageSize);
-    },
-    currentPageItems() {
-      const startIndex = (this.currentPage - 1) * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      return this.testItems.slice(startIndex, endIndex);
-    },
-    shouldShowPagination() {
-      return true;
-    },
+  },
+  components: {
+    'v-header': header,
+    'v-filter': filter,
   },
   mounted() {
-    this.fetchTestItems();
-  },
-  methods: {
-    fetchTestItems() {
-      axios
-        .get("/api/test-items") // 替换为您的后端接口地址
-        .then((response) => {
-          this.testItems = response.data;
-        })
-        .catch((error) => {
-          console.error("Failed to fetch test items:", error);
-        });
-    },
-    handlePageChange(currentPage) {
-      this.currentPage = currentPage;
-    },
-    getChartData(property) {
-      const data = [];
-      this.testItems.forEach((item) => {
-        data.push({
-          time: item.test_time,
-          value: item[property],
-        });
-      });
-      return data;
-    },
+    // 基于准备好的dom，初始化echarts实例
+    this.myChart = this.$echarts.init(document.querySelector('.line .main'));
+    this.myChart.setOption({
+      title: {
+        show: false,
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        show: false,
+      },
+      toolbox: {
+        show: false,
+      },
+      color: this.color,
+      calculable: true,
+      xAxis: [
+        {
+          name: '时间',
+          type: 'category',
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+          nameTextStyle: {
+            color: 'rgba(255, 255, 255, 0.69)',
+          },
+          axisLabel: {
+            textStyle: {
+              color: 'white',
+            },
+          },
+          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        },
+      ],
+      yAxis: [
+        {
+          axisLine: {
+            show: false,
+          },
+          nameLocation: 'end',
+          nameGap: 20,
+          nameRotate: 0,
+          axisTick: {
+            show: false,
+          },
+          splitLine: {
+            lineStyle: {
+              color: ['rgba(230, 230, 230, 0.2)'],
+            },
+          },
+          axisLabel: {
+            textStyle: {
+              color: 'white',
+              fontSize: 14,
+            },
+          },
+          name: '数值',
+          type: 'value',
+          nameTextStyle: {
+            color: 'rgba(255, 255, 255, 0.69)',
+          },
+        },
+      ],
+      series: [
+        {
+          name: '标签1',
+          type: 'line',
+          stack: '总量',
+          data: [120, 132, 101, 134, 90, 230, 210],
+        },
+        {
+          name: '标签2',
+          type: 'line',
+          stack: '总量',
+          data: [220, 182, 191, 234, 290, 330, 310],
+        },
+        {
+          name: '标签3',
+          type: 'line',
+          stack: '总量',
+          data: [150, 232, 201, 154, 190, 330, 410],
+        },
+        {
+          name: '标签4',
+          type: 'line',
+          stack: '总量',
+          data: [320, 332, 301, 334, 390, 330, 320],
+        },
+        {
+          name: '标签5',
+          type: 'line',
+          stack: '总量',
+          data: [820, 932, 901, 934, 1290, 1330, 1320],
+        },
+      ],
+    });
+    this._init();
   },
 };
 </script>
 
 <style scoped>
-.container {
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-}
-.test-table {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-}
+.line {
+  width: 1200px;
+  height: 800px;
+  /* background: url('../assets/bg.jpg') no-repeat; */
+  background: rgba(34,34,34,0.5);
+  background-size: 100% 100%;
 
-.test-items-table {
-  width: 100%;
-}
-
-.pagination {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.chart-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.chart-item {
-  width: 400px;
-  height: 300px;
-  margin: 10px;
+  .main {
+    width: 100%;
+    height: calc(100% - 100px);
+    margin-top: -15px;
+  }
 }
 </style>
