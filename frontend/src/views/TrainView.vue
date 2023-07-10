@@ -8,17 +8,17 @@
 
 <script>
 // import * as echarts from 'echarts';
-import header from '../components/header/header';
-import filter from '../components/filter/filter';
+import header from "../components/header/header";
+import filter from "../components/filter/filter";
 
 export default {
   data() {
     return {
       legendArr: [],
       charts: [],
-      color: 'rgba(255, 255, 255, 0.69)',
+      color: "rgba(255, 255, 255, 0.69)",
       myChart: {},
-      name: '训练数据',
+      name: "训练数据",
     };
   },
   methods: {
@@ -28,24 +28,24 @@ export default {
         data.selected = true;
       });
       this.charts.push(this.myChart);
-      window.addEventListener('resize', () => {
+      window.addEventListener("resize", () => {
         this.myChart.resize();
       });
     },
   },
   components: {
-    'v-header': header,
-    'v-filter': filter,
+    "v-header": header,
+    "v-filter": filter,
   },
   mounted() {
     // 基于准备好的dom，初始化echarts实例
-    this.myChart = this.$echarts.init(document.querySelector('.line .main'));
+    this.myChart = this.$echarts.init(document.querySelector(".line .main"));
     this.myChart.setOption({
       title: {
         show: false,
       },
       tooltip: {
-        trigger: 'axis',
+        trigger: "axis",
       },
       legend: {
         show: false,
@@ -57,8 +57,8 @@ export default {
       calculable: true,
       xAxis: [
         {
-          name: '时间',
-          type: 'category',
+          name: "时间",
+          type: "category",
           axisLine: {
             show: false,
           },
@@ -66,14 +66,14 @@ export default {
             show: false,
           },
           nameTextStyle: {
-            color: 'rgba(255, 255, 255, 0.69)',
+            color: "rgba(255, 255, 255, 0.69)",
           },
           axisLabel: {
             textStyle: {
-              color: 'white',
+              color: "white",
             },
           },
-          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
         },
       ],
       yAxis: [
@@ -81,7 +81,7 @@ export default {
           axisLine: {
             show: false,
           },
-          nameLocation: 'end',
+          nameLocation: "end",
           nameGap: 20,
           nameRotate: 0,
           axisTick: {
@@ -89,51 +89,51 @@ export default {
           },
           splitLine: {
             lineStyle: {
-              color: ['rgba(230, 230, 230, 0.2)'],
+              color: ["rgba(230, 230, 230, 0.2)"],
             },
           },
           axisLabel: {
             textStyle: {
-              color: 'white',
+              color: "white",
               fontSize: 14,
             },
           },
-          name: '数值',
-          type: 'value',
+          name: "数值",
+          type: "value",
           nameTextStyle: {
-            color: 'rgba(255, 255, 255, 0.69)',
+            color: "rgba(255, 255, 255, 0.69)",
           },
         },
       ],
       series: [
         {
-          name: '标签1',
-          type: 'line',
-          stack: '总量',
+          name: "标签1",
+          type: "line",
+          stack: "总量",
           data: [120, 132, 101, 134, 90, 230, 210],
         },
         {
-          name: '标签2',
-          type: 'line',
-          stack: '总量',
+          name: "标签2",
+          type: "line",
+          stack: "总量",
           data: [220, 182, 191, 234, 290, 330, 310],
         },
         {
-          name: '标签3',
-          type: 'line',
-          stack: '总量',
+          name: "标签3",
+          type: "line",
+          stack: "总量",
           data: [150, 232, 201, 154, 190, 330, 410],
         },
         {
-          name: '标签4',
-          type: 'line',
-          stack: '总量',
+          name: "标签4",
+          type: "line",
+          stack: "总量",
           data: [320, 332, 301, 334, 390, 330, 320],
         },
         {
-          name: '标签5',
-          type: 'line',
-          stack: '总量',
+          name: "标签5",
+          type: "line",
+          stack: "总量",
           data: [820, 932, 901, 934, 1290, 1330, 1320],
         },
       ],
@@ -145,16 +145,16 @@ export default {
 
 <style scoped>
 .line {
-  width: 1200px;
-  height: 800px;
+  width: 1000px;
+  height: 650px;
   /* background: url('../assets/bg.jpg') no-repeat; */
-  background: rgba(34,34,34,0.5);
+  background: rgba(34, 34, 34, 0.5);
   background-size: 100% 100%;
+}
 
-  .main {
-    width: 100%;
-    height: calc(100% - 100px);
-    margin-top: -15px;
-  }
+.main {
+  width: 100%;
+  height: calc(100% - 100px);
+  margin-top: -15px;
 }
 </style>
