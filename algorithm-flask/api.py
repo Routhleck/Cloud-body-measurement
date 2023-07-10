@@ -26,5 +26,12 @@ def sit_up():
     return jsonify({'push_up_count': push_up_count})
 
 
+@app.route('/squat')
+def squat():
+    video_stream_url = 'http://39.106.13.47:8080/live/111.live.flv'
+    push_up_count = push_up_video_stream(video_stream_url)
+    return jsonify({'push_up_count': push_up_count})
+
+
 if __name__ == '__main__':
     app.run()
