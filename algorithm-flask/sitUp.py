@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 
 
-def process_video_stream(video_steam_url):
+def sit_up_video_stream(video_steam_url):
     # 类名命名
     class_name = 'up'
 
@@ -124,16 +124,3 @@ def process_video_stream(video_steam_url):
     return repetition_count
 
 
-def main():
-    # 视频流URL定义
-    video_stream = 'http://39.106.13.47:8080/live/111.live.flv'
-
-    # 处理视频流同时计数
-    sit_up_count = process_video_stream(video_stream)
-
-    # 输出结果
-    print(f'Sit-up count: {sit_up_count}')
-
-
-if __name__ == '__main__':
-    main()
