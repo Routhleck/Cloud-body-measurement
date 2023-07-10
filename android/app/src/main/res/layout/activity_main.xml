@@ -36,7 +36,7 @@
             android:keepScreenOn="true"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph"
-            tools:context=".MainActivity" />
+            tools:context=".DetectActivity" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cloudsports.actiondetect.actiondetect.fragment
+package com.cloudsports.actiondetect.fragment
 
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -32,9 +32,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.cloudsports.actiondetect.actiondetect.MainViewModel
-import com.cloudsports.actiondetect.actiondetect.PoseLandmarkerHelper
-import com.google.mediapipe.examples.actiondetect.databinding.FragmentGalleryBinding
+import com.cloudsports.actiondetect.DetectViewModel
+import com.cloudsports.actiondetect.PoseLandmarkerHelper
+import com.cloudsports.actiondetect.databinding.FragmentGalleryBinding
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.*
 import java.util.concurrent.Executors
@@ -53,7 +53,7 @@ class GalleryFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     private val fragmentGalleryBinding
         get() = _fragmentGalleryBinding!!
     private lateinit var poseLandmarkerHelper: PoseLandmarkerHelper
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: DetectViewModel by activityViewModels()
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ScheduledExecutorService

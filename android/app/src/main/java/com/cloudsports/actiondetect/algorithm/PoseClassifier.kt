@@ -1,10 +1,10 @@
-package com.cloudsports.actiondetect.actiondetect.algorithm
+package com.cloudsports.actiondetect.algorithm
 
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.cloudsports.actiondetect.actiondetect.algorithm.Util.ArrayOperation
+import com.cloudsports.actiondetect.algorithm.Util.ArrayOperation
 import java.io.BufferedReader
 import java.io.InputStream
 import kotlin.math.min
@@ -191,9 +191,11 @@ class PoseClassifier(
 
         // 按maxDistHeap的maxDist从小到大排序,注意maxDist是key
         val sortedMaxDistHeap = maxDistHeap.toList().sortedBy { (key, _) -> key }.toMap()
-        // 截取前topNByMaxDist个
-        val topNByMaxDist = sortedMaxDistHeap.toList().subList(0, _topNByMaxDistance)
-
+        var topNByMaxDist = sortedMaxDistHeap.toList()
+        if (sortedMaxDistHeap.size > _topNByMaxDistance) {
+            // 截取前topNByMaxDist个
+            topNByMaxDist = sortedMaxDistHeap.toList().subList(0, _topNByMaxDistance)
+        }
 
         /*
         按平均距离过滤。

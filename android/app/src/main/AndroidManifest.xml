@@ -34,7 +34,7 @@
         tools:ignore="AllowBackup">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ChooseActionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,6 +47,12 @@
                 android:name="android.notch_support"
                 android:value="true" />
         </activity>
+        <activity
+            android:name=".DetectActivity"
+            android:exported="true">
+        </activity>
+
+
     </application>
 
 </manifest>

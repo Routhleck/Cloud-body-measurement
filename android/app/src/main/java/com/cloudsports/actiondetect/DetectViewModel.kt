@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cloudsports.actiondetect.actiondetect
+package com.cloudsports.actiondetect
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 /**
  *  This ViewModel is used to store pose landmarker helper settings
  */
-class MainViewModel : ViewModel() {
+class DetectViewModel : ViewModel() {
 
     private var _model = PoseLandmarkerHelper.MODEL_POSE_LANDMARKER_FULL
     private var _delegate: Int = PoseLandmarkerHelper.DELEGATE_CPU
@@ -61,5 +63,12 @@ class MainViewModel : ViewModel() {
 
     fun setModel(model: Int) {
         _model = model
+    }
+
+    private val _actionName = MutableLiveData<String?>()
+    val actionName : MutableLiveData<String?> get() = _actionName
+
+    fun setActionName(name: String?) {
+        _actionName.value = name
     }
 }
