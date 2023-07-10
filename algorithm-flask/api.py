@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from pullUp import pull_up_video_stream
-from pushup import push_up_video_stream
+from pushUp import push_up_video_stream
 
 app = Flask(__name__)
 
