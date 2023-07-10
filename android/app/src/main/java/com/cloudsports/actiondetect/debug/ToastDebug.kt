@@ -1,4 +1,4 @@
-package com.cloudsports.actiondetect.actiondetect.debug
+package com.cloudsports.actiondetect.debug
 
 import android.content.Context;
 import android.os.Handler;

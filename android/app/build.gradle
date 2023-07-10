@@ -21,11 +21,11 @@ plugins {
 }
 
 android {
-    namespace 'com.google.mediapipe.examples.poselandmarker'
+    namespace 'com.cloudsports.actiondetect'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.google.mediapipe.examples.poselandmarker"
+        applicationId "com.cloudsports.actiondetect"
         minSdk 24
         targetSdk 33
         versionCode 1

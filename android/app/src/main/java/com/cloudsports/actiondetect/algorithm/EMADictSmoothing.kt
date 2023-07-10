@@ -1,4 +1,4 @@
-package com.cloudsports.actiondetect.actiondetect.algorithm
+package com.cloudsports.actiondetect.algorithm
 
 class EMADictSmoothing(private val windowSize: Int = 10, private val alpha: Double = 0.2) {
     private val dataInWindow: MutableList<Map<String, Double>> = mutableListOf()

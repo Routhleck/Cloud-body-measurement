@@ -1,6 +1,6 @@
-package com.cloudsports.actiondetect.actiondetect.algorithm
-import com.cloudsports.actiondetect.actiondetect.algorithm.Util.ArrayOperation
-import com.cloudsports.actiondetect.actiondetect.algorithm.Util.MyDoubleArray
+package com.cloudsports.actiondetect.algorithm
+import com.cloudsports.actiondetect.algorithm.Util.ArrayOperation
+import com.cloudsports.actiondetect.algorithm.Util.MyDoubleArray
 import kotlin.math.max
 
 class PoseEmbedder(torsoSizeMultiplier: Double = 2.5) {

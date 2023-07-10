@@ -1,4 +1,4 @@
-package com.cloudsports.actiondetect.actiondetect.algorithm.Util
+package com.cloudsports.actiondetect.algorithm.Util
 
 import kotlin.math.abs
 import kotlin.math.pow
