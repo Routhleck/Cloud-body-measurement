@@ -1,6 +1,8 @@
 FROM openjdk:17-jdk-slim
 ARG JAR_FILE=build/libs/*.jar
 
+EXPOSE 9090
+
 # timezone
 RUN echo 'Asia/Shanghai' >> /etc/timezone
 
