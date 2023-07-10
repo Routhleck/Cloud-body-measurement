@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="video_container">
     <video ref="videoElement" controls></video>
   </div>
 </template>
@@ -22,3 +22,15 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.video_container{
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+</style>
