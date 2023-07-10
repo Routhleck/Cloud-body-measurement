@@ -1,10 +1,10 @@
-package com.cloudsports.actiondetect.actiondetect.algorithm
+package com.cloudsports.actiondetect.algorithm
 
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.cloudsports.actiondetect.actiondetect.algorithm.Util.ArrayOperation
+import com.cloudsports.actiondetect.algorithm.Util.ArrayOperation
 import java.io.BufferedReader
 import java.io.InputStream
 import kotlin.math.min

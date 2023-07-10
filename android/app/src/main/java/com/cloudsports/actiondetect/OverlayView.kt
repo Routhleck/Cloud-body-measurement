@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cloudsports.actiondetect.actiondetect
+package com.cloudsports.actiondetect
 
 import android.content.Context
 import android.graphics.Canvas
@@ -24,8 +24,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.cloudsports.actiondetect.actiondetect.algorithm.PullUpActionCount
-import com.cloudsports.actiondetect.actiondetect.debug.ToastDebug
+import com.cloudsports.actiondetect.algorithm.PullUpActionCount
+import com.cloudsports.actiondetect.debug.ToastDebug
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.cloudsports.actiondetect.actiondetect
+package com.cloudsports.actiondetect
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.mediapipe.examples.actiondetect.databinding.ActivityMainBinding
+import com.cloudsports.actiondetect.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class DetectActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
 

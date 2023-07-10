@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cloudsports.actiondetect.actiondetect.fragment
+package com.cloudsports.actiondetect.fragment
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -37,10 +37,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
-import com.cloudsports.actiondetect.actiondetect.PoseLandmarkerHelper
-import com.cloudsports.actiondetect.actiondetect.MainViewModel
-import com.google.mediapipe.examples.actiondetect.R
-import com.google.mediapipe.examples.actiondetect.databinding.FragmentCameraBinding
+import com.cloudsports.actiondetect.R
+import com.cloudsports.actiondetect.PoseLandmarkerHelper
+import com.cloudsports.actiondetect.MainViewModel
+import com.cloudsports.actiondetect.databinding.FragmentCameraBinding
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
 import java.util.concurrent.ExecutorService

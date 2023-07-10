@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/permissions_fragment"
-        android:name="com.cloudsports.actiondetect.actiondetect.fragment.PermissionsFragment"
+        android:name="com.cloudsports.actiondetect.fragment.PermissionsFragment"
         android:label="PermissionsFragment">
 
         <action
@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/camera_fragment"
-        android:name="com.cloudsports.actiondetect.actiondetect.fragment.CameraFragment"
+        android:name="com.cloudsports.actiondetect.fragment.CameraFragment"
         android:label="CameraFragment">
 
         <action
@@ -46,6 +46,6 @@
 
     <fragment
         android:id="@+id/gallery_fragment"
-        android:name="com.cloudsports.actiondetect.actiondetect.fragment.GalleryFragment"
+        android:name="com.cloudsports.actiondetect.fragment.GalleryFragment"
         android:label="GalleryFragment" />
 </navigation>

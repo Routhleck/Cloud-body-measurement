@@ -1,4 +1,4 @@
-package com.cloudsports.actiondetect.actiondetect.algorithm
+package com.cloudsports.actiondetect.algorithm
 
 import android.content.Context
 import android.os.Build

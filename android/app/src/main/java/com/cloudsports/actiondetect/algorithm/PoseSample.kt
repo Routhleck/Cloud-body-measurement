@@ -1,4 +1,4 @@
-package com.cloudsports.actiondetect.actiondetect.algorithm
+package com.cloudsports.actiondetect.algorithm
 
 class PoseSample(name: String, val landmarks: Array<DoubleArray>, val className: String,
                  val embedding: Array<DoubleArray>
