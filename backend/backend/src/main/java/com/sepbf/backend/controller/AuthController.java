@@ -1,6 +1,7 @@
 package com.sepbf.backend.controller;
 
 import com.sepbf.backend.utils.FaceSecretKey;
+import com.sepbf.backend.utils.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,7 @@ public class AuthController {
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
 
     @PostMapping("/auth")
-    public String auth(@RequestParam("userId") Integer userId) throws IOException {
+    public Result<?> auth(@RequestParam("userId") Integer userId) throws IOException {
         String userImagedir= "https://tcloud-1318685426.cos.ap-beijing.myqcloud.com/action%2FuserImages%2F" + userId.toString() + ".png";
         String checkImagedir= "https://tcloud-1318685426.cos.ap-beijing.myqcloud.com/action%2FcheckImages%2F" + userId + ".png";
         MediaType mediaType = MediaType.parse("application/json");
@@ -30,9 +31,16 @@ public class AuthController {
                 .addHeader("Content-Type", "application/json")
                 .build();
         Response response = HTTP_CLIENT.newCall(request).execute();
-        String responseBody = response.body().string();
-        System.out.println(responseBody);
-        return responseBody;
+        Double score = new JSONObject(response.body().string()).getJSONObject("result").getDouble("score");
+//        float number = Float.parseFloat(score);
+        if (score < 70) {
+            return Result.error("人脸识别失败");
+        }else {
+            return Result.success("人脸识别成功");
+        }
+//        String responseBody = response.body().string();
+//        System.out.println(responseBody);
+
 
     }
 

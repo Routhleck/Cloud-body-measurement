@@ -23,4 +23,10 @@ public class TestController {
             return Result.error("未找到测试数据");
         }
     }
+
+    @PostMapping
+    public Result addTest(@RequestBody Test test) {
+        testService.addTest(test);
+        return Result.success("添加成功");
+    }
 }
