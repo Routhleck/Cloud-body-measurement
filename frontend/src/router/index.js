@@ -2,13 +2,12 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/LoginView";
 import LayOut from "@/layout/LayOut";
 import PersonView from "@/views/PersonView";
-// import UserView from "@/views/UserView";
-// import PreView from "@/views/PreView";
 import TestView from "@/views/TestView";
 import GradeView from "@/views/GradeView";
 import TrainView from "@/views/TrainView";
 import SubmitView from "@/views/SubmitView";
 import AuthenticationView from "@/views/AuthenticationView";
+import PushstreamView from "@/views/PushstreamView";
 
 const routes = [
   {
@@ -26,6 +25,11 @@ const routes = [
     component: LayOut,
     children: [
       {
+        path: "push",
+        name: "push",
+        component: PushstreamView,
+      },
+      {
         path: "authen",
         name: "authen",
         component: AuthenticationView,
@@ -36,8 +40,8 @@ const routes = [
         component: PersonView,
       },
       {
-        path: "user",
-        name: "user",
+        path: "grade",
+        name: "grade",
         component: GradeView,
       },
       {

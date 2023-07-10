@@ -39,42 +39,9 @@ public class QCloudCosUtils {
     //存储桶访问域名
     private final String url = SecretKey.url;
 
-    //上传文件前缀路径(eg:/images/) 设置自己的主目录
-    private final String prefix = SecretKey.prefix;
 
-    /**
-     * 上传File类型的文件
-     *
-     * @param file 文件
-     * @return 上传文件在存储桶的链接
-     */
-    public String upload(File file) {
-        //生成唯一文件名
-        String newFileName = generateUniqueName(file.getName());
-        //文件在存储桶中的key
-        String key = prefix + newFileName;
-        //声明客户端
-        COSClient cosClient = null;
-        try {
-            //初始化用户身份信息(secretId,secretKey)
-            COSCredentials cosCredentials = new BasicCOSCredentials(secretId, secretKey);
-            //设置bucket的区域
-            ClientConfig clientConfig = new ClientConfig(new Region(region));
-            //生成cos客户端
-            cosClient = new COSClient(cosCredentials, clientConfig);
-            //创建存储对象的请求
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
 
-            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-            return url + key;
-        } catch (CosClientException e) {
-            e.printStackTrace();
-        } finally {
-            // 关闭客户端(关闭后台线程)
-            cosClient.shutdown();
-        }
-        return null;
-    }
+
 
     private String generateUniqueName(String name) {
         return name;
@@ -86,9 +53,9 @@ public class QCloudCosUtils {
      * @param multipartFile 文件对象
      * @return 上传文件在存储桶的链接
      */
-    public String upload(MultipartFile multipartFile) {
+    public String upload(MultipartFile multipartFile,String userId, String prefix) {
         //生成唯一文件名
-        String newFileName = generateUniqueName(multipartFile.getOriginalFilename());
+        String newFileName = userId +".png";
 
         //文件在存储桶中的key
         String key = prefix +  "/" + newFileName;
@@ -121,55 +88,7 @@ public class QCloudCosUtils {
         return null;
     }
 
-    /**
-     * upload()重载方法
-     * 流方式上传
-     *
-     * @param multipartFile
-     * @return 上传文件在存储桶的链接
-     */
-    public String uploadStream(MultipartFile multipartFile) {
-        //生成唯一文件名
-        String newFileName = generateUniqueName(multipartFile.getOriginalFilename());
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get(Calendar.DATE);
-        //文件在存储桶中的key
-        String key = prefix + year + "/" + month + "/" + day + "/" + newFileName;
-        //声明客户端
-        COSClient cosClient = null;
-        try {
-            //初始化用户身份信息(secretId,secretKey)
-            COSCredentials cosCredentials = new BasicCOSCredentials(secretId, secretKey);
-            //设置bucket的区域
-            ClientConfig clientConfig = new ClientConfig(new Region(region));
-            //生成cos客户端
-            cosClient = new COSClient(cosCredentials, clientConfig);
-            // 获取文件流
-            InputStream inputStream = multipartFile.getInputStream();
-            // 获取文件名
-            String fileName = multipartFile.getOriginalFilename();
-            // 创建上传Object的Metadata
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(inputStream.available());
-            objectMetadata.setCacheControl("no-cache");
-            objectMetadata.setHeader("Pragma", "no-cache");
-            objectMetadata.setContentType(getcontentType(fileName.substring(fileName.lastIndexOf("."))));
-            objectMetadata.setContentDisposition("inline;filename=" + fileName);
-            //创建存储对象的请求
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream, objectMetadata);
-            //执行上传并返回结果信息
-            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-            return url + key;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            // 关闭客户端(关闭后台线程)
-            cosClient.shutdown();
-        }
-        return null;
-    }
+
 
     /**
      * Description: 判断Cos服务文件上传时文件的contentType

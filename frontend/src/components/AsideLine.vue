@@ -34,6 +34,10 @@
           <el-icon><View /></el-icon>身份验证
         </el-menu-item>
 
+        <el-menu-item index="/layout/push">
+          <el-icon><View /></el-icon>视频推流
+        </el-menu-item>
+
         <el-menu-item index="/layout/test">
           <el-icon><View /></el-icon>引体向上
         </el-menu-item>

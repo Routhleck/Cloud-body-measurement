@@ -43,7 +43,19 @@
 </template>
 
 <script>
-// import { ElButton, ElDialog } from "element-plus";
+import axios from "axios";
+
+function dataURLtoFile(dataURL, filename) {
+  const arr = dataURL.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
 
 export default {
   data() {
@@ -56,6 +68,7 @@ export default {
       thisVideo: null,
       openVideo: false,
       dialogVisible: false,
+      capturedImageData: null,
     };
   },
   mounted() {
@@ -137,6 +150,7 @@ export default {
       // 获取图片base64链接
       var image = this.thisCancas.toDataURL("image/png");
       _this.imgSrc = image; //赋值并预览图片
+      _this.capturedImageData = dataURLtoFile(image, "captured_image.png"); // 转换为File对象并保存图像数据
     },
     // 关闭摄像头
     stopNavigator() {
@@ -152,11 +166,34 @@ export default {
     },
     // 上传照片
     uploadPhoto() {
-      // 执行上传逻辑
-      // 可以使用AJAX请求或其他适合您的后端方法
+      // 获取图像数据
+      const imageData = this.capturedImageData;
+      const userJson = sessionStorage.getItem("user");
+      const user = JSON.parse(userJson);
+      const userId = user.user_id;
 
-      // 上传完成后，关闭对话框
-      this.dialogVisible = false;
+      // 构建FormData对象
+      const formData = new FormData();
+      formData.append("file", imageData);
+      formData.append("userId", userId); // 替换为实际的用户ID
+      formData.append("prefix", "images"); // 替换为实际的文件前缀
+
+      // 发送POST请求
+      axios
+        .post("/upload", formData)
+        .then((response) => {
+          // 上传成功的处理逻辑
+          console.log("照片上传成功！");
+          console.log(response);
+        })
+        .catch((error) => {
+          // 上传失败的处理逻辑
+          console.error("照片上传失败！", error);
+        })
+        .finally(() => {
+          // 上传完成后，关闭对话框
+          this.dialogVisible = false;
+        });
     },
   },
 };
@@ -171,7 +208,7 @@ export default {
   align-items: center;
   height: 100vh;
 }
-.button_container{
+.button_container {
   max-width: 100%;
   margin: 50px;
   padding: 50px;
@@ -180,7 +217,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.upload{
+.upload {
   margin: 20px;
   padding: 5px;
 }
