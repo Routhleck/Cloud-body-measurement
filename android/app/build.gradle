@@ -108,6 +108,12 @@ dependencies {
 
     // CSV reader
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.1") // for JVM platform
+
+    // recyclerview
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+    // round corner
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
 }
 
 
