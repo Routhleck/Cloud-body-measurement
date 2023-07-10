@@ -18,10 +18,10 @@ class ChooseActionActivity : AppCompatActivity() {
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView.layoutManager = layoutManager
         val actions = listOf(
-            Action(R.drawable.sports_pullup, "引体向上"),
-            Action(R.drawable.sports_pushup, "俯卧撑"),
-            Action(R.drawable.sports_situp, "仰卧起坐"),
-            Action(R.drawable.sports_squat, "深蹲"),
+            Action(R.drawable.sports_pullup, "引体向上", name = "pullUp"),
+            Action(R.drawable.sports_pushup, "俯卧撑", name = "pushUp"),
+            Action(R.drawable.sports_situp, "仰卧起坐", name = "sitUp"),
+            Action(R.drawable.sports_squat, "深蹲", name = "squat"),
             // 添加更多的 actions
         )
         val adapter = ActionAdapter(actions)
