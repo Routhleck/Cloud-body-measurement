@@ -3,12 +3,12 @@ import mediapipe as mp
 import numpy as np
 
 
-def push_up_video_stream(video_steam_url):
+def squat_video_stream(video_steam_url):
     # 类名命名
-    class_name = 'down'
+    class_name = 'up'
 
     # 获取包含姿势类别的csv文件
-    pose_samples_folder = 'sports_pushUp/fitness_poses_csvs_out'
+    pose_samples_folder = 'sports_squat/fitness_poses_csvs_out'
     '''
     对所需要的所有组件进行初始化
     '''
@@ -18,11 +18,11 @@ def push_up_video_stream(video_steam_url):
     pose_tracker = my_pose.Pose()
 
     # 姿势嵌入器
-    from sports_pushUp import poseembedding as pe
+    from sports_sitUp import poseembedding as pe
     pose_embedder = pe.FullBodyPoseEmbedder()
 
     # 姿势分类器
-    from sports_pushUp import poseclassifier as pc
+    from sports_sitUp import poseclassifier as pc
     pose_classifier = pc.PoseClassifier(
         pose_samples_folder=pose_samples_folder,
         pose_embedder=pose_embedder,
@@ -31,14 +31,14 @@ def push_up_video_stream(video_steam_url):
     )
 
     # EMA平滑
-    from sports_pushUp import resultsmooth as rs
+    from sports_sitUp import resultsmooth as rs
     pose_classification_filter = rs.EMADictSmoothing(
         window_size=10,
         alpha=0.2
     )
 
     # 动作计数器
-    from sports_pushUp import counter
+    from sports_sitUp import counter
     repetition_counter = counter.RepetitionCounter(
         class_name=class_name,
         enter_threshold=6,
@@ -46,7 +46,7 @@ def push_up_video_stream(video_steam_url):
     )
 
     # 可视化模块
-    from sports_pullUp import visualizer as vs
+    from sports_sitUp import visualizer as vs
     pose_classification_visualizer = vs.PoseClassificationVisualizer(
         class_name=class_name,
         plot_y_max=15
@@ -87,31 +87,32 @@ def push_up_video_stream(video_steam_url):
                 pose_landmarks,
                 mp.solutions.pose.POSE_CONNECTIONS  # 使用POSE_CONNECTIONS 链接各个标记点
             )
+
         if pose_landmarks is not None:
             # 获取关键点坐标
             frame_height, frame_width = output_frame_rgb.shape[0], output_frame_rgb.shape[1]
             pose_landmarks = np.array([[lmk.x * frame_width, lmk.y * frame_height, lmk.z * frame_width]
                                        for lmk in pose_landmarks.landmark], dtype=np.float32)
+            assert pose_landmarks.shape == (33, 3), 'Unexpected landmarks shape: {}'.format(pose_landmarks.shape)
 
         '''
         关键点识别处理
         '''
         # 动作分类
-        class_label = pose_classifier(pose_landmarks)
+        pose_classification = pose_classifier(pose_landmarks)
 
         # 使用EMA进行平滑处理
-        pose_classification_filtered = pose_classification_filter(class_label)
+        pose_classification_filtered = pose_classification_filter(pose_classification)
 
         # 计数
         repetition_count = repetition_counter(pose_classification_filtered)
 
         # 根据图像计算俯卧撑个数
-        cv2.putText(frame, f"Push-ups: {repetition_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(frame, f"Squats: {repetition_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow("Viedo Stream", frame)
 
         # 释放资源
         del input_frame_rgb
-        del output_frame_rgb
         del results
 
         # 单击"q"键退出循环
@@ -121,3 +122,6 @@ def push_up_video_stream(video_steam_url):
     cv2.destroyAllWindows()
 
     return repetition_count
+
+
+
