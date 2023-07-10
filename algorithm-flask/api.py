@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/pullUp')
 def pull_up():
-    video_stream_url = 'http://39.106.13.47:8080/live/111.live.flv'
+    video_stream_url = 'http://39.106.13.47:8080/live/112.live.flv'
     pull_up_count = pull_up_video_stream(video_stream_url)
     return jsonify({'pull_up_count': pull_up_count})
 
