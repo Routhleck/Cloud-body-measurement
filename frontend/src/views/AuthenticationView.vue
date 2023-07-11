@@ -146,7 +146,7 @@ export default {
       const formData = new FormData();
       formData.append("file", imageData);
       formData.append("userId", userId);
-      formData.append("prefix", "images");
+      formData.append("prefix", "/action/userImages");
 
       axios
         .post("http://127.0.0.1:9090/upload", formData)
@@ -171,7 +171,7 @@ export default {
       const formData = new FormData();
       formData.append("file", imageData);
       formData.append("userId", userId);
-      formData.append("prefix", "images");
+      formData.append("prefix", "/action/checkImages");
 
       axios
         .post("http://127.0.0.1:9090/upload", formData)
@@ -192,15 +192,14 @@ export default {
         const userJson = sessionStorage.getItem("user");
         const user = JSON.parse(userJson);
         const userId = user.user_id;
+        const requestData = {
+          userId: userId,
+        };
 
         console.log("userid为=================》" + userId);
 
         axios
-          .post("http://127.0.0.1:9090/auth", {
-            params: {
-              UserId: userId,
-            },
-          })
+          .post("http://127.0.0.1:9090/auth", requestData)
           .then((response) => {
             console.log("认证成功！");
             console.log(response);
