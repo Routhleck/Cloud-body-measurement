@@ -1,0 +1,18 @@
+FROM centos:7
+WORKDIR /home
+ENV RUN_ENV="prd"
+RUN chmod 755 /home/ -R
+
+# timezone
+RUN echo 'Asia/Shanghai' >> /etc/timezone
+
+
+EXPOSE 443
+EXPOSE 9090
+EXPOSE 80
+
+# jvm
+RUN yum -y install java-1.8.0-openjdk.x86_64
+COPY ./build/libs/backend-0.0.1-SNAPSHOT.jar /home/actiondetect.jar
+
+CMD ["java", "-jar", "/home/actiondetect.jar" ]
