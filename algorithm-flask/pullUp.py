@@ -6,9 +6,10 @@ from sports_pullUp import poseembedding as pe
 from sports_pullUp import resultsmooth as rs
 from sports_pullUp import counter
 from sports_pullUp import visualizer as vs
+import time
 
 
-def pull_up_video_stream(video_stream_url):
+def pull_up_video_stream(video_stream_url, duration):
     class_name = 'pullUps_up'
     pose_samples_folder = 'sports_pullUp/fitness_poses_csvs_out'
     pose_embedder = pe.FullBodyPoseEmbedder()
@@ -31,20 +32,20 @@ def pull_up_video_stream(video_stream_url):
         class_name=class_name,
         plot_y_max=15
     )
-    pull_up_count = 0
+    repetitions_count = 0
 
     cap = cv2.VideoCapture(video_stream_url)
     if not cap.isOpened():
         print("Unable to open video stream!")
-        return pull_up_count
+        return repetitions_count
 
     mp_pose = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
     mp_drawing = mp.solutions.drawing_utils
 
-    repetitions_count = 0
-    pose_classification_filtered = None
+    start_time = time.time()
+    end_time = start_time + duration
 
-    while True:
+    while time.time() < end_time:
         ret, frame = cap.read()
         if not ret:
             break
