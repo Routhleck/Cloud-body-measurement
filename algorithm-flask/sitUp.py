@@ -6,9 +6,10 @@ from sports_sitUp import poseembedding as pe
 from sports_sitUp import resultsmooth as rs
 from sports_sitUp import counter
 from sports_sitUp import visualizer as vs
+import time
 
 
-def sit_up_video_stream(video_stream_url):
+def sit_up_video_stream(video_stream_url, duration):
     class_name = 'up'
     pose_samples_folder = 'sports_sitUp/fitness_poses_csvs_out'
 
@@ -28,10 +29,6 @@ def sit_up_video_stream(video_stream_url):
         enter_threshold=5,
         exit_threshold=4
     )
-    pose_classification_visualizer = vs.PoseClassificationVisualizer(
-        class_name=class_name,
-        plot_y_max=15
-    )
     repetition_count = 0
 
     cap = cv2.VideoCapture(video_stream_url)
@@ -42,7 +39,10 @@ def sit_up_video_stream(video_stream_url):
     mp_pose = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
     mp_drawing = mp.solutions.drawing_utils
 
-    while True:
+    start_time = time.time()
+    end_time = start_time + duration
+
+    while time.time() < end_time:
         ret, frame = cap.read()
         if not ret:
             break

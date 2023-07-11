@@ -6,9 +6,10 @@ from sports_squat import poseembedding as pe
 from sports_squat import resultsmooth as rs
 from sports_squat import counter
 from sports_squat import visualizer as vs
+import time
 
 
-def squat_video_stream(video_stream_url):
+def squat_video_stream(video_stream_url, duration):
     class_name = 'up'
     pose_samples_folder = 'sports_squat/fitness_poses_csvs_out'
 
@@ -28,10 +29,6 @@ def squat_video_stream(video_stream_url):
         enter_threshold=6,
         exit_threshold=4
     )
-    pose_classification_visualizer = vs.PoseClassificationVisualizer(
-        class_name=class_name,
-        plot_y_max=15
-    )
     repetition_count = 0
 
     cap = cv2.VideoCapture(video_stream_url)
@@ -41,6 +38,8 @@ def squat_video_stream(video_stream_url):
 
     mp_pose = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
     mp_drawing = mp.solutions.drawing_utils
+
+    start_time = time.time()
 
     while True:
         ret, frame = cap.read()
@@ -75,7 +74,7 @@ def squat_video_stream(video_stream_url):
         del frame_rgb
         del results
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q') or time.time() - start_time >= duration:
             break
 
     cap.release()

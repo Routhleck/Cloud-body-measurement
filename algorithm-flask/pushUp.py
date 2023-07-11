@@ -6,9 +6,10 @@ from sports_pushUp import poseembedding as pe
 from sports_pushUp import resultsmooth as rs
 from sports_pushUp import counter
 from sports_pushUp import visualizer as vs
+import time
 
 
-def push_up_video_stream(video_stream_url):
+def push_up_video_stream(video_stream_url, duration):
     class_name = 'down'
     pose_samples_folder = 'sports_pushUp/fitness_poses_csvs_out'
 
@@ -42,7 +43,10 @@ def push_up_video_stream(video_stream_url):
     mp_pose = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
     mp_drawing = mp.solutions.drawing_utils
 
-    while True:
+    start_time = time.time()
+    end_time = start_time + duration
+
+    while time.time() < end_time:
         ret, frame = cap.read()
         if not ret:
             break
