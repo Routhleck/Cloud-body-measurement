@@ -56,5 +56,8 @@
         <item>轻量级</item>
         <item>重量级</item>
     </string-array>
+
+    <string name="back_arrow_description">Back Arrow</string>
+    <string name="action_choose_title_description">选择运动动作</string>
 </resources>
 

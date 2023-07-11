@@ -1,4 +1,4 @@
-package com.cloudsports.actiondetect.actiondetect
+package com.cloudsports.actiondetect
 
 import org.junit.Test
 

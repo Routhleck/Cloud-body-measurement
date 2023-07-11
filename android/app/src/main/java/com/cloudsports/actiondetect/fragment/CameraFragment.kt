@@ -39,7 +39,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.cloudsports.actiondetect.R
 import com.cloudsports.actiondetect.PoseLandmarkerHelper
-import com.cloudsports.actiondetect.MainViewModel
+import com.cloudsports.actiondetect.DetectViewModel
 import com.cloudsports.actiondetect.databinding.FragmentCameraBinding
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
@@ -59,7 +59,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         get() = _fragmentCameraBinding!!
 
     private lateinit var poseLandmarkerHelper: PoseLandmarkerHelper
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: DetectViewModel by activityViewModels()
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
     private var camera: Camera? = null
@@ -68,6 +68,8 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ExecutorService
+
+    private lateinit var binding: FragmentCameraBinding
 
     override fun onResume() {
         super.onResume()
@@ -121,6 +123,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     ): View {
         _fragmentCameraBinding =
             FragmentCameraBinding.inflate(inflater, container, false)
+        fragmentCameraBinding.overlay.setViewModel(viewModel)
 
         return fragmentCameraBinding.root
     }
@@ -394,6 +397,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                     resultBundle.inputImageWidth,
                     RunningMode.LIVE_STREAM
                 )
+
 
                 // Force a redraw
                 fragmentCameraBinding.overlay.invalidate()

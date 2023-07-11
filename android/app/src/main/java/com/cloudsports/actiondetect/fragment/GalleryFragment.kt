@@ -32,7 +32,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.cloudsports.actiondetect.MainViewModel
+import com.cloudsports.actiondetect.DetectViewModel
 import com.cloudsports.actiondetect.PoseLandmarkerHelper
 import com.cloudsports.actiondetect.databinding.FragmentGalleryBinding
 import com.google.mediapipe.tasks.vision.core.RunningMode
@@ -53,7 +53,7 @@ class GalleryFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     private val fragmentGalleryBinding
         get() = _fragmentGalleryBinding!!
     private lateinit var poseLandmarkerHelper: PoseLandmarkerHelper
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: DetectViewModel by activityViewModels()
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ScheduledExecutorService

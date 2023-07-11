@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="通用设置">
+        <SwitchPreferenceCompat
+            android:key="notification_switch"
+            android:title="接收通知"
+            android:summary="开启或关闭通知"
+            android:defaultValue="true" />
+        <ListPreference
+            android:key="language_list"
+            android:title="语言"
+            android:summary="选择显示语言"
+            android:entries="@array/language_options"
+            android:entryValues="@array/language_values"
+            android:defaultValue="en" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="高级设置">
+        <EditTextPreference
+            android:key="username_edittext"
+            android:title="用户名"
+            android:summary="输入你的用户名"
+            android:dialogTitle="输入用户名"
+            android:defaultValue="" />
+    </PreferenceCategory>
+</PreferenceScreen>
+
+
