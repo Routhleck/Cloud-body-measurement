@@ -12,7 +12,7 @@ class ChooseActionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_action_choose)
+        setContentView(R.layout.fragment_sport_center)
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         val layoutManager = GridLayoutManager(this, 2)
