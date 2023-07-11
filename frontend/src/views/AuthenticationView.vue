@@ -189,12 +189,18 @@ export default {
     },
     submitAuthentication() {
       if (this.idCardImageData && this.cameraImageData) {
-        const formData = new FormData();
-        formData.append("idCardImage", this.idCardImageData);
-        formData.append("cameraImage", this.cameraImageData);
+        const userJson = sessionStorage.getItem("user");
+        const user = JSON.parse(userJson);
+        const userId = user.user_id;
+
+        console.log("userid为=================》" + userId);
 
         axios
-          .post("http://127.0.0.1:9090/auth", formData)
+          .post("http://127.0.0.1:9090/auth", {
+            params: {
+              UserId: userId,
+            },
+          })
           .then((response) => {
             console.log("认证成功！");
             console.log(response);
