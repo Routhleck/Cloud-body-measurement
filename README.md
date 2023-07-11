@@ -1,28 +1,28 @@
 # Cloud-body-measurement
-![云体测](README.assets/云体测.png)
+[English](README.md) | [中文](README_CN.md)
 
-北京交通大学 学期实训 云体测
+![Cloud-body-measurement](README.assets/cloud-body-measurement.png)
+
+Cloud-body-measurement is a project developed for the Semester Training at Beijing Jiaotong University.
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-该项目采用 AGPL-3.0 许可证，它是一种开源许可证，具有特定的使用限制和条款。请在使用该项目之前详细阅读许可证文本以确保你理解和遵守相关规定。
+This project is licensed under the AGPL-3.0 license, which is an open-source license with specific usage restrictions and terms. Please read the license text carefully before using the project to ensure that you understand and comply with the relevant provisions.
 
-## 许可证
+## License
 
-该项目使用 AGPL-3.0 许可证。许可证的完整文本可以在 [这里](https://www.gnu.org/licenses/agpl-3.0.html)找到。
+This project is licensed under the AGPL-3.0 license. The complete text of the license can be found [here](https://www.gnu.org/licenses/agpl-3.0.html).
 
-根据 AGPL-3.0 许可证，本项目的代码和衍生作品必须在相同的许可证下发布。这意味着任何使用、修改或分发本项目的人必须在相应代码中包含许可证的副本，并遵守许可证规定的义务和限制。
+According to the AGPL-3.0 license, the code and derivative works of this project must be released under the same license. This means that anyone using, modifying, or distributing this project must include a copy of the license in the corresponding code and comply with the obligations and limitations set forth in the license.
 
-## 商业用途限制
+## Commercial Use Restriction
 
-请注意，本项目的 AGPL-3.0 许可证不允许用于商业目的。这意味着你不得将本项目的代码或衍生作品用于商业产品、服务或任何盈利目的。如果你有意将该项目用于商业用途，请与我们联系以获得额外的许可或授权。
+Please note that the AGPL-3.0 license of this project does not allow it to be used for commercial purposes. This means that you are not permitted to use the code or derivative works of this project for commercial products, services, or any profit-oriented purposes. If you intend to use this project for commercial purposes, please contact us to obtain additional licenses or permissions.
 
-## 贡献
+## Contribution
 
-欢迎大家贡献代码和提出问题。请查阅 [贡献指南](CONTRIBUTING.md) 了解如何参与项目。
+Contributions and issue reports are welcome. Please refer to the [Contribution Guidelines](CONTRIBUTING.md) for instructions on how to participate in the project.
 
-## 免责声明
+## Disclaimer
 
-该项目按照 "原样" 提供，无任何明示或暗示的担保或条件。请在使用前自行判断适用性和风险。
-
-
+This project is provided "as is" without any express or implied warranties or conditions. Please use it at your own discretion and assess its suitability and risks before using it.
