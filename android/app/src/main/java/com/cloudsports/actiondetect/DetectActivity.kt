@@ -25,12 +25,15 @@ import com.cloudsports.actiondetect.databinding.ActivityMainBinding
 
 class DetectActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding
-    private val viewModel : MainViewModel by viewModels()
+    private val viewModel : DetectViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
+
+        val actionName = intent.getStringExtra("action_name")
+        viewModel.setActionName(actionName)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment

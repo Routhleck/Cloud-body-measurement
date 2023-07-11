@@ -15,6 +15,7 @@
  */
 package com.cloudsports.actiondetect
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -24,7 +25,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.cloudsports.actiondetect.algorithm.PullUpActionCount
+import androidx.lifecycle.LifecycleOwner
+import com.cloudsports.actiondetect.algorithm.MainActionCount
 import com.cloudsports.actiondetect.debug.ToastDebug
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
@@ -33,7 +35,10 @@ import org.json.JSONArray
 import kotlin.math.max
 import kotlin.math.min
 
-class OverlayView(context: Context?, attrs: AttributeSet?) :
+@SuppressLint("ViewConstructor")
+class OverlayView(
+    context: Context?,
+    attrs: AttributeSet?) :
     View(context, attrs) {
 
     private var results: PoseLandmarkerResult? = null
@@ -44,13 +49,29 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var imageWidth: Int = 1
     private var imageHeight: Int = 1
 
-    public var lastCount = 0
-    public var count = 0
-    private val pullUp_action_count = PullUpActionCount(context)
+    private var lastCount = 0
+    private var count = 0
+    private lateinit var mainActionCount: MainActionCount
 
     private var toast: ToastDebug? = ToastDebug(context)
+
+    private lateinit var actionName: String
+
+    private lateinit var viewModel: DetectViewModel
+
     init {
         initPaints()
+    }
+
+    fun setViewModel(viewModel: DetectViewModel) {
+        this.viewModel = viewModel
+        (context as? LifecycleOwner)?.let { owner ->
+            viewModel.actionName.observe(owner) { name ->
+                actionName = name!!
+            }
+        }
+        actionName = viewModel.actionName.value!!
+        mainActionCount = MainActionCount(context, actionName)
     }
 
     fun clear() {
@@ -131,7 +152,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                 poseLandmarks[i][2] = poseLandmarkerResults.landmarks()[0][i].z().toDouble()
             }
             lastCount = count
-            count = pullUp_action_count(poseLandmarks, imageHeight, imageWidth)
+            count = mainActionCount(poseLandmarks, imageHeight, imageWidth)
             if (lastCount != count) {
                 toast?.show("count: $count")
             }

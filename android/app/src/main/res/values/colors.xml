@@ -28,4 +28,14 @@
     <color name="icActive">#FFFFFFFF</color>
     <color name="icFocused">#DDFFFFFF</color>
     <color name="icPressed">#AAFFFFFF</color>
+
+    <color name="white">#FFFFFF</color>
+
+    <color name="colorPrimary">@color/green_500</color>
+    <color name="colorPrimaryDark">@color/green_700</color>
+    <color name="colorAccent">#E64A19</color>
+
+    <color name="green_200">#A5C5D6</color>
+    <color name="green_500">#4C74AF</color>
+    <color name="green_700">#4C90AF</color>
 </resources>
