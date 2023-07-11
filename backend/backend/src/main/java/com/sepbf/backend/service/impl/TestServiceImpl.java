@@ -16,6 +16,7 @@ public class TestServiceImpl extends ServiceImpl<TestMapper, Test> implements Te
 
     @Override
     public boolean addTest(Test test) {
+
         int result = testMapper.insert(test);
         return result == 0;
     }
