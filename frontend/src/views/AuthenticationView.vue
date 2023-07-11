@@ -3,7 +3,7 @@
     <div class="image_container">
       <div class="left_section">
         <div v-if="idCardImage" class="img_preview">
-          <img :src="idCardImage" alt="身份证照片预览" />
+          <img :src="idCardImage" alt="身份证照片预览" class="img_content" />
         </div>
         <h2>上传身份证照片</h2>
         <div class="upload_button_container">
@@ -14,12 +14,12 @@
             ref="idCardInput"
             style="display: none"
           />
-          <button @click="openIdCardInput" class="upload_button">
+          <el-button @click="openIdCardInput" class="upload_button">
             选择身份证照片
-          </button>
-          <button @click="openUploadIDcardDialog" class="upload_button">
+          </el-button>
+          <el-button @click="openUploadIDcardDialog" class="upload_button">
             上传身份证照片
-          </button>
+          </el-button>
         </div>
       </div>
       <div class="right_section">
@@ -30,28 +30,30 @@
           autoplay
         ></video>
         <div v-if="cameraImage" class="img_preview">
-          <img :src="cameraImage" alt="拍摄照片预览" />
+          <img :src="cameraImage" alt="拍摄照片预览" class="img_content" />
         </div>
         <h2>拍摄照片</h2>
         <div class="upload_button_container">
-          <button @click="toggleCamera" class="upload_button">
+          <el-button @click="toggleCamera" class="upload_button">
             {{ isCameraOpen ? "关闭摄像头" : "打开摄像头" }}
-          </button>
-          <button @click="captureImage" class="upload_button">拍照</button>
-          <button @click="openUploadPhotoDialog" class="upload_button">
+          </el-button>
+          <el-button @click="captureImage" class="upload_button"
+            >拍照</el-button
+          >
+          <el-button @click="openUploadPhotoDialog" class="upload_button">
             上传照片
-          </button>
+          </el-button>
         </div>
       </div>
     </div>
     <div class="submit_section">
-      <button
+      <el-button
         @click="submitAuthentication"
         class="submit_button"
         :disabled="!idCardImage || !cameraImage"
       >
         提交认证
-      </button>
+      </el-button>
     </div>
 
     <el-dialog title="确认上传" v-model="dialogVisible_1" width="30%">
@@ -278,7 +280,7 @@ export default {
   justify-content: flex-end;
   align-items: center;
   height: 80%;
-  margin-right: 60px;
+  margin-right: 100px;
   margin-left: 20px;
 }
 
@@ -289,7 +291,7 @@ export default {
   align-items: center;
   height: 80%;
   margin-right: 20px;
-  margin-left: 60px;
+  margin-left: 100px;
 }
 
 .upload_button_container {
@@ -299,7 +301,15 @@ export default {
 }
 
 .img_preview {
-  margin-top: 20px;
+  width: 100%;
+  /*background: #f2f2f2;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .img_content {
+    max-width: 100%;
+    max-height: 200px;
+  }
 }
 
 .submit_section {

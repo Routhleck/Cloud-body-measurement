@@ -38,32 +38,12 @@
           <el-icon><View /></el-icon>视频推流
         </el-menu-item>
 
+        <el-menu-item index="/layout/option">
+          <el-icon><View /></el-icon>体测
+        </el-menu-item>
+
         <el-menu-item index="/layout/test">
           <el-icon><View /></el-icon>引体向上
-        </el-menu-item>
-
-        <el-menu-item index="/layout/test">
-          <el-icon><View /></el-icon>仰卧起坐
-        </el-menu-item>
-
-        <el-menu-item index="/layout/test">
-          <el-icon><View /></el-icon>深蹲
-        </el-menu-item>
-
-        <el-menu-item index="/layout/test">
-          <el-icon><View /></el-icon>俯卧撑
-        </el-menu-item>
-
-        <el-menu-item index="/layout/test">
-          <el-icon><View /></el-icon>跳远
-        </el-menu-item>
-
-        <el-menu-item index="/layout/test">
-          <el-icon><View /></el-icon>1000/800米
-        </el-menu-item>
-
-        <el-menu-item index="/layout/test">
-          <el-icon><View /></el-icon>坐位体前屈
         </el-menu-item>
       </el-sub-menu>
 
