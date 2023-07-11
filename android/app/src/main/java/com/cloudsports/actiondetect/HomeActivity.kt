@@ -20,17 +20,18 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         supportActionBar?.title = "首页"
 
-        tvContent = findViewById(R.id.tv_content)
-        val intent = intent
         val account = intent.getStringExtra("account")
-        tvContent.text = "欢迎你：$account"
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_user_center -> {
                     // Replace the contents of the container with the new fragment
-                    val userCenterFragment = UserCenterFragment()
+                    val userCenterFragment = UserCenterFragment().apply {
+                        arguments = Bundle().apply {
+                            putString("account", account)
+                        }
+                    }
                     val transaction = supportFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragment_container, userCenterFragment)
                     transaction.commit()
@@ -58,13 +59,8 @@ class HomeActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        bottomNavigation.selectedItemId = R.id.nav_user_center
     }
 
-    //退出登录按钮点击事件
-    fun loginOut(view: View) {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
 }
 
