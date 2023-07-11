@@ -11,7 +11,7 @@
           <el-icon><location /></el-icon>
           <span style="padding: 20px; font-weight: bold">用户中心</span>
         </template>
-        <el-menu-item index="/layout/user">
+        <el-menu-item index="/layout/grade">
           <el-icon><User /></el-icon>体测成绩查询
         </el-menu-item>
 
