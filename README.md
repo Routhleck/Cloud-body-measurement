@@ -1,7 +1,7 @@
 # Cloud-body-measurement
 [English](README.md) | [中文](README_CN.md)
 
-![Cloud-body-measurement](README.assets/cloud-body-measurement.png)
+![Cloud-body-measurement](README.assets/云体测.png)
 
 Cloud-body-measurement is a project developed for the Semester Training at Beijing Jiaotong University.
 
