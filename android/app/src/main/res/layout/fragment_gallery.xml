@@ -51,7 +51,7 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-            <com.cloudsports.actiondetect.OverlayView
+            <com.cloudsports.actiondetect.view.OverlayView
                 android:id="@+id/overlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

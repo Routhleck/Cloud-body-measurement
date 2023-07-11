@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_test_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="测试项"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_test_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="测试结果"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_test_score"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="测试得分"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_score_level"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="得分等级"
+        android:textSize="20sp" />
+
+</LinearLayout>

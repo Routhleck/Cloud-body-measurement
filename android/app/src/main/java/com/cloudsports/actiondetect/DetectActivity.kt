@@ -22,6 +22,7 @@ import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.cloudsports.actiondetect.databinding.ActivityMainBinding
+import com.cloudsports.actiondetect.model.DetectViewModel
 
 class DetectActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding

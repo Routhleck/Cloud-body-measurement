@@ -59,12 +59,17 @@
         </activity>
 
         <activity
-            android:name=".ChooseActionActivity"
+            android:name=".DetectActivity"
             android:exported="true">
         </activity>
 
         <activity
-            android:name=".DetectActivity"
+            android:name=".TestGradeActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".SportsHistoryActivity"
             android:exported="true">
         </activity>
 

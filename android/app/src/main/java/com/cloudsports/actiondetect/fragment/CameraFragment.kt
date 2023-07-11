@@ -38,8 +38,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.cloudsports.actiondetect.R
-import com.cloudsports.actiondetect.PoseLandmarkerHelper
-import com.cloudsports.actiondetect.DetectViewModel
+import com.cloudsports.actiondetect.algorithm.PoseLandmarkerHelper
+import com.cloudsports.actiondetect.model.DetectViewModel
 import com.cloudsports.actiondetect.databinding.FragmentCameraBinding
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale

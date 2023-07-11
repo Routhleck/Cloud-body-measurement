@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cloudsports.actiondetect
+package com.cloudsports.actiondetect.model
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.cloudsports.actiondetect.algorithm.PoseLandmarkerHelper
 
 /**
  *  This ViewModel is used to store pose landmarker helper settings
