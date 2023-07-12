@@ -75,6 +75,24 @@
         <el-button @click="cancelPhotoUpload">取消</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog title="认证结果" v-model="dialogVisible_3" width="20%">
+      <template #default>
+        <span>认证通过</span>
+      </template>
+      <template #footer>
+        <el-button @click="comfirm_3">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="认证结果" v-model="dialogVisible_4" width="20%">
+      <template #default>
+        <span>认证未通过</span>
+      </template>
+      <template #footer>
+        <el-button @click="comfirm_4">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -85,7 +103,7 @@ export default {
   data() {
     return {
       videoWidth: 250,
-      videoHeight: 350,
+      videoHeight: 250,
       idCardImage: null,
       cameraImage: null,
       idCardImageData: null,
@@ -93,6 +111,8 @@ export default {
       isCameraOpen: false,
       dialogVisible_1: false,
       dialogVisible_2: false,
+      dialogVisible_3: false,
+      dialogVisible_4: false,
     };
   },
   methods: {
@@ -112,12 +132,20 @@ export default {
     cancelPhotoUpload() {
       this.dialogVisible_2 = false;
     },
+    comfirm_3() {
+      this.dialogVisible_3 = false;
+    },
+    comfirm_4() {
+      this.dialogVisible_4 = false;
+    },
     captureImage() {
       const video = document.getElementById("videoCamera");
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
-      canvas.width = this.videoWidth;
-      canvas.height = this.videoHeight;
+      // this.videoWidth = video.videoWidth;
+      // this.videoHeight = video.videoHeight;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
 
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -189,6 +217,7 @@ export default {
           this.dialogVisible_2 = false;
         });
     },
+    //提交认证
     submitAuthentication() {
       if (this.idCardImageData && this.cameraImageData) {
         const userJson = sessionStorage.getItem("user");
@@ -205,6 +234,13 @@ export default {
           .then((response) => {
             console.log("认证成功！");
             console.log(response);
+            if (response.data.result.score > 60) {
+              this.authResult = "认证通过";
+              this.dialogVisible_3 = true;
+            } else {
+              this.authResult = "认证未通过";
+              this.dialogVisible_4 = true;
+            }
           })
           .catch((error) => {
             console.error("认证失败！", error);
