@@ -40,7 +40,7 @@ public class StreamController {
         ));
 
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:5000/exercise")
+                .url("http://39.106.13.47:5000/exercise")
                 .method("POST", body)
                 .addHeader("Content-Type", "application/json")
                 .build();
