@@ -5,34 +5,51 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.cloudsports.actiondetect.adapter.TestGradeAdapter
+import com.cloudsports.actiondetect.adapter.ViewPagerAdapter
 import com.cloudsports.actiondetect.data.Grade
 import com.cloudsports.actiondetect.data.GradeItem
+import com.cloudsports.actiondetect.fragment.YearFragment
 
 class TestGradeActivity : AppCompatActivity() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
+
+    private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_grade)
 
-        val grade = getGrade(2021, 175.0, 60.0, 3000, 220.0, 20.0, 20, 6.0, 200.0) // 提供具体的数据来获取 Grade 对象
 
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = TestGradeAdapter(grade.items)
+        viewPager = findViewById(R.id.viewpager)
 
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerview).apply {
-            setHasFixedSize(true)
-            layoutManager = viewManager
-            adapter = viewAdapter
-        }
+        viewPager.adapter = ViewPagerAdapter(supportFragmentManager)
 
-        // 在获取到数据后，设置得分和等级的文本
-        findViewById<TextView>(R.id.tv_grade).text = "得分：${grade.score}"
-        findViewById<TextView>(R.id.tv_grade_level).text = "等级：${grade.level}"
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+                // no-op
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                // no-op
+            }
+
+            override fun onPageSelected(position: Int) {
+                // 当用户滑动到新的页面时调用
+                // 在这里，你可以更新你的Grade数据
+                val year = 2023 - position
+                updateGradeForYear(year)
+            }
+        })
+
+
+
+    }
+
+    fun updateGradeForYear(year: Int): Grade {
+        // 更新Grade数据
+        return getGrade(year, 175.0, 60.0, 3000, 220.0, 20.0, 20, 6.0, 200.0)
     }
 
     private fun getGrade(
@@ -61,14 +78,5 @@ class TestGradeActivity : AppCompatActivity() {
         return Grade(year, gradeItemList)
     }
 
-    // 根据具体逻辑计算总得分等级
-    private fun calculateOverallScoreLevel(score: Int): String {
-        // 这里根据具体的总得分等级逻辑进行计算
-        return when (score) {
-            in 90..100 -> "优秀"
-            in 80..89 -> "良好"
-            in 60..79 -> "及格"
-            else -> "不及格"
-        }
-    }
+
 }

@@ -14,30 +14,6 @@
         android:background="#FFFFFF"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_grade"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:text="得分："
-        android:textSize="25sp"
-        android:layout_margin="10dp" />
 
-    <TextView
-        android:id="@+id/tv_grade_level"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:text="等级："
-        android:textSize="25sp"
-        android:layout_margin="10dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#FFFFFF"
-        android:padding="10dp" />
 
 </LinearLayout>
