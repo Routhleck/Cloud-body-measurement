@@ -10,6 +10,7 @@ app = Flask(__name__)
 @app.route('/exercise', methods=['POST'])
 def exercise():
     data = request.get_json()
+    print(data)
     exercise_type = data['actionName']
     flv_code = data['streamCode']
     video_stream_url = 'http://39.106.13.47:8080/live/' + flv_code + '.live.flv'
