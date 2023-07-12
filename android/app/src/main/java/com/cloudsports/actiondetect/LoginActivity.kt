@@ -39,10 +39,6 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             val account = etAccount.text.toString()
             val password = etPassword.text.toString()
-            if (userName.isEmpty()) {
-                toast.show("还没有注册账号！")
-                return@setOnClickListener
-            }
             if (check(account,password)==1) {
                 toast.show("恭喜你，登录成功！")
                 val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)

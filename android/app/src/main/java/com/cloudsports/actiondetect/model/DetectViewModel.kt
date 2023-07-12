@@ -18,6 +18,8 @@ class DetectViewModel : ViewModel() {
     private var _minPosePresenceConfidence: Float =
         PoseLandmarkerHelper.DEFAULT_POSE_PRESENCE_CONFIDENCE
 
+    private var _count = 0
+
     val currentDelegate: Int get() = _delegate
     val currentModel: Int get() = _model
     val currentMinPoseDetectionConfidence: Float
@@ -55,5 +57,13 @@ class DetectViewModel : ViewModel() {
 
     fun setActionName(name: String?) {
         _actionName.value = name
+    }
+
+    fun setCount(count: Int) {
+        _count = count
+    }
+
+    fun getCount(): Int {
+        return _count
     }
 }

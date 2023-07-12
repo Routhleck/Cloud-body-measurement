@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -45,6 +46,10 @@ class OverlayView(
 
     private lateinit var viewModel: DetectViewModel
 
+    private var isStarted = false
+    private var isStoped = false
+
+
     init {
         initPaints()
     }
@@ -58,6 +63,23 @@ class OverlayView(
         }
         actionName = viewModel.actionName.value!!
         mainActionCount = MainActionCount(context, actionName)
+    }
+
+    fun start() {
+        isStarted = true
+        isStoped = false
+    }
+
+    fun reset() {
+        mainActionCount = MainActionCount(context, actionName)
+        isStarted = false
+        isStoped = false
+        lastCount = 0
+        count = 0
+    }
+
+    fun stop() {
+        isStoped = true
     }
 
     fun clear() {
@@ -109,6 +131,7 @@ class OverlayView(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
     fun setResults(
         poseLandmarkerResults: PoseLandmarkerResult,
@@ -124,21 +147,24 @@ class OverlayView(
         // 将results.landmarks()转化为Array<DoubleArray>
         val poseLandmarks = Array(33) { DoubleArray(3) }
 
-        if (poseLandmarkerResults.landmarks().isNotEmpty()) {
-            for (i in 0..32) {
-                poseLandmarks[i][0] = poseLandmarkerResults.landmarks()[0][i].x().toDouble()
-                poseLandmarks[i][1] = poseLandmarkerResults.landmarks()[0][i].y().toDouble()
-                poseLandmarks[i][2] = poseLandmarkerResults.landmarks()[0][i].z().toDouble()
-            }
-            lastCount = count
-            count = mainActionCount(poseLandmarks, imageHeight, imageWidth)
-            if (lastCount != count) {
-                toast?.show("count: $count")
+        if (isStarted) {
+            if (!isStoped) {
+                if (poseLandmarkerResults.landmarks().isNotEmpty()) {
+                    for (i in 0..32) {
+                        poseLandmarks[i][0] = poseLandmarkerResults.landmarks()[0][i].x().toDouble()
+                        poseLandmarks[i][1] = poseLandmarkerResults.landmarks()[0][i].y().toDouble()
+                        poseLandmarks[i][2] = poseLandmarkerResults.landmarks()[0][i].z().toDouble()
+                    }
+                    lastCount = count
+                    count = mainActionCount(poseLandmarks, imageHeight, imageWidth)
+                    if (lastCount != count) {
+                        toast?.show("count: $count")
+                        // 将count传递给DetectViewModel
+                        viewModel.setCount(count)
+                    }
+                }
             }
         }
-
-
-
 
         scaleFactor = when (runningMode) {
             RunningMode.IMAGE,
