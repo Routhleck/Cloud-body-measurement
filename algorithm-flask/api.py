@@ -10,10 +10,10 @@ app = Flask(__name__)
 @app.route('/exercise', methods=['POST'])
 def exercise():
     data = request.get_json()
-    exercise_type = data['type']
-    flv_code = data['flv_code']
+    exercise_type = data['actionName']
+    flv_code = data['streamCode']
     video_stream_url = 'http://39.106.13.47:8080/live/' + flv_code + '.live.flv'
-    duration = data['duration']
+    duration = data['limitTime']
 
     if exercise_type == 'pullUp':
         count = pull_up_video_stream(video_stream_url, duration)
@@ -36,4 +36,5 @@ def exercise():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.config['JSONIFY_TIMEOUT'] = 60  # 设置超时时间为60秒
+    app.run(threaded=True, port=5000, host='0.0.0.0', debug=True)
