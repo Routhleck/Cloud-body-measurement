@@ -2,6 +2,7 @@ package com.cloudsports.actiondetect.fragment
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -444,10 +445,15 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         val overlayView = view.findViewById<OverlayView>(R.id.overlay)
         val startStopButton = requireView().findViewById<FloatingActionButton>(R.id.start_stop_button)
 
+        val countdownSound = MediaPlayer.create(view.context, R.raw.countdown_3)
+
         val countDownTimer = object: CountDownTimer(4000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsUntilFinished = millisUntilFinished / 1000
                 countdownText.text = secondsUntilFinished.toString()
+
+                // 播放倒数音效
+                countdownSound.start()
             }
 
             override fun onFinish() {
@@ -457,6 +463,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 // 开始你的任务
                 overlayView.start()
 
+                countdownSound.reset()
             }
         }
 

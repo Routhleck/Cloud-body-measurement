@@ -5,10 +5,10 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.media.MediaPlayer
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -47,7 +47,9 @@ class OverlayView(
     private lateinit var viewModel: DetectViewModel
 
     private var isStarted = false
-    private var isStoped = false
+    private var isStopped = false
+
+    private val detectSound = MediaPlayer.create(context, R.raw.action_detect)
 
 
     init {
@@ -67,19 +69,19 @@ class OverlayView(
 
     fun start() {
         isStarted = true
-        isStoped = false
+        isStopped = false
     }
 
     fun reset() {
         mainActionCount = MainActionCount(context, actionName)
         isStarted = false
-        isStoped = false
+        isStopped = false
         lastCount = 0
         count = 0
     }
 
     fun stop() {
-        isStoped = true
+        isStopped = true
     }
 
     fun clear() {
@@ -148,7 +150,7 @@ class OverlayView(
         val poseLandmarks = Array(33) { DoubleArray(3) }
 
         if (isStarted) {
-            if (!isStoped) {
+            if (!isStopped) {
                 if (poseLandmarkerResults.landmarks().isNotEmpty()) {
                     for (i in 0..32) {
                         poseLandmarks[i][0] = poseLandmarkerResults.landmarks()[0][i].x().toDouble()
@@ -158,9 +160,10 @@ class OverlayView(
                     lastCount = count
                     count = mainActionCount(poseLandmarks, imageHeight, imageWidth)
                     if (lastCount != count) {
-                        toast?.show("count: $count")
                         // 将count传递给DetectViewModel
                         viewModel.setCount(count)
+                        // 播放音效
+                        detectSound.start()
                     }
                 }
             }
