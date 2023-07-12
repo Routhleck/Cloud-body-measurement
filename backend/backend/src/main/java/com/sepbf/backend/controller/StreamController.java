@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/stream")
 public class StreamController {
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
-            .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(360, TimeUnit.SECONDS)
+            .writeTimeout(360, TimeUnit.SECONDS)
+            .connectTimeout(360, TimeUnit.SECONDS)
             .build();
 
     @Resource
@@ -38,11 +38,9 @@ public class StreamController {
                 actionName,
                 limitTime
         ));
-        toFlask flask = new toFlask(streamCode, actionName, limitTime);
-//        Request request = new Request.Builder()
-//                .url("http://
+
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:5000/exercise")
+                .url("http://39.106.13.47:5000/exercise")
                 .method("POST", body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -50,5 +48,32 @@ public class StreamController {
         String responseBody = response.body().string();
         System.out.println(responseBody);
     return Result.success(responseBody);
+    }
+
+    @PostMapping("/testTime")
+    public Result testTime (@org.springframework.web.bind.annotation.RequestBody Map<String,Object> map) throws IOException {
+        System.out.println(map);
+        Integer streamCode =Integer.parseInt( String.valueOf(map.get("streamCode")));
+        String actionName = String.valueOf(map.get("actionName"));
+        Integer limitTime = Integer.parseInt( String.valueOf(map.get("limitTime")));
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, String.format(
+                "{\"streamCode\":\"%s\",\"actionName\":\"%s\",\"limitTime\":%d}",
+                streamCode,
+                actionName,
+                limitTime
+        ));
+//        toFlask flask = new toFlask(streamCode, actionName, limitTime);
+//        Request request = new Request.Builder()
+//                .url("http://
+        Request request = new Request.Builder()
+                .url("http://39.106.13.47:5000/exercise")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        Response response = HTTP_CLIENT.newCall(request).execute();
+        String responseBody = response.body().string();
+        System.out.println(responseBody);
+        return Result.success(responseBody);
     }
 }
