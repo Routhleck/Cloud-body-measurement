@@ -25,6 +25,6 @@ jobs:
         docker push registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect:$IMAGE_TAG
         # flask
         docker build -f algorithm-flask/DockerFile -t registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect_flask:$IMAGE_TAG ./algorithm-flask
-        docker push registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect_flask:$IAMGE_TAG
+        docker push registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect_flask:$IMAGE_TAG
         
         
