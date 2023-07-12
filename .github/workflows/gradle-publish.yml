@@ -20,5 +20,9 @@ jobs:
       env:
         IMAGE_TAG: ${{ github.sha }} # 用于标记容器版本号
       run: |
+        # springboot
         docker build -f backend/backend/DockerFile -t registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect:$IMAGE_TAG ./backend/backend
         docker push registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect:$IMAGE_TAG
+        # flask
+        docker build -f algorithm-flask/DockerFile -t docker push registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect_flask:$IMAGE_TAG ./algorithm-falsk
+        docker push docker push registry.cn-hangzhou.aliyuncs.com/bjtu_project/actiondetect_flask:$IAMGE_TAG
