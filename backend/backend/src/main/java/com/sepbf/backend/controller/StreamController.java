@@ -1,6 +1,5 @@
 package com.sepbf.backend.controller;
 
-import com.sepbf.backend.pojo.domain.toFlask;
 import com.sepbf.backend.service.ActionService;
 import com.sepbf.backend.utils.Result;
 import okhttp3.*;
@@ -63,9 +62,7 @@ public class StreamController {
                 actionName,
                 limitTime
         ));
-//        toFlask flask = new toFlask(streamCode, actionName, limitTime);
-//        Request request = new Request.Builder()
-//                .url("http://
+
         Request request = new Request.Builder()
                 .url("http://39.106.13.47:5000/exercise")
                 .method("POST", body)
