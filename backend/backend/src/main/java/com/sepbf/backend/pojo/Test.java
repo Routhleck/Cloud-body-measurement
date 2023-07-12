@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @TableName("test")
 @Data
 public class Test {
-    @TableId
+
     private int UserId;
 
     private Date TestTime;
@@ -32,7 +32,10 @@ public class Test {
 
     private float LongDistanceRun;
 
-    public Test (int UserId,Date TestTime, float Height, float Weight, int VitalCapacity, float StandingLongJump, float SitAndReach, int PullOrSitUp, float Sprint50m, float LongDistanceRun) {
+    @TableId
+    private int TestId;
+
+    public Test (int UserId,Date TestTime, float Height, float Weight, int VitalCapacity, float StandingLongJump, float SitAndReach, int PullOrSitUp, float Sprint50m, float LongDistanceRun,int TestId) {
         this.UserId = UserId;
         this.TestTime = TestTime;
         this.Height = Height;
@@ -43,6 +46,7 @@ public class Test {
         this.PullOrSitUp = PullOrSitUp;
         this.Sprint50m = Sprint50m;
         this.LongDistanceRun = LongDistanceRun;
+        this.TestId = TestId;
     }
 
 }

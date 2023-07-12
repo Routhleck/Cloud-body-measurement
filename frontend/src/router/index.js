@@ -8,6 +8,7 @@ import TrainView from "@/views/TrainView";
 import SubmitView from "@/views/SubmitView";
 import AuthenticationView from "@/views/AuthenticationView";
 import PushstreamView from "@/views/PushstreamView";
+import OptionView from "@/views/OptionView";
 
 const routes = [
   {
@@ -24,6 +25,16 @@ const routes = [
     name: "layout",
     component: LayOut,
     children: [
+      {
+        path: "option",
+        name: "option",
+        component: OptionView,
+      },
+      {
+        path: "submit",
+        name: "submit",
+        component: SubmitView,
+      },
       {
         path: "push",
         name: "push",
@@ -53,11 +64,6 @@ const routes = [
         path: "test",
         name: "test",
         component: TestView,
-      },
-      {
-        path: "submit",
-        name: "submit",
-        component: SubmitView,
       },
     ],
   },

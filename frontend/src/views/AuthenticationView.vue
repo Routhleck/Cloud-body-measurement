@@ -1,42 +1,96 @@
 <template>
-  <div class="camera_outer">
-    <video
-      id="videoCamera"
-      :width="videoWidth"
-      :height="videoHeight"
-      autoplay
-    ></video>
-    <canvas
-      style="display: none"
-      id="canvasCamera"
-      :width="videoWidth"
-      :height="videoHeight"
-    ></canvas>
-
-    <div v-if="imgSrc" class="img_bg_camera">
-      <p>效果预览</p>
-      <img :src="imgSrc" alt class="tx_img" />
+  <div class="main">
+    <div class="image_container">
+      <div class="left_section">
+        <div v-if="idCardImage" class="img_preview">
+          <img :src="idCardImage" alt="身份证照片预览" class="img_content" />
+        </div>
+        <h2>上传身份证照片</h2>
+        <div class="upload_button_container">
+          <input
+            type="file"
+            accept="image/*"
+            @change="selectIdCardImage"
+            ref="idCardInput"
+            style="display: none"
+          />
+          <el-button @click="openIdCardInput" class="upload_button">
+            选择身份证照片
+          </el-button>
+          <el-button @click="openUploadIDcardDialog" class="upload_button">
+            上传身份证照片
+          </el-button>
+        </div>
+      </div>
+      <div class="right_section">
+        <video
+          id="videoCamera"
+          :width="videoWidth"
+          :height="videoHeight"
+          autoplay
+        ></video>
+        <div v-if="cameraImage" class="img_preview">
+          <img :src="cameraImage" alt="拍摄照片预览" class="img_content" />
+        </div>
+        <h2>拍摄照片</h2>
+        <div class="upload_button_container">
+          <el-button @click="toggleCamera" class="upload_button">
+            {{ isCameraOpen ? "关闭摄像头" : "打开摄像头" }}
+          </el-button>
+          <el-button @click="captureImage" class="upload_button"
+            >拍照</el-button
+          >
+          <el-button @click="openUploadPhotoDialog" class="upload_button">
+            上传照片
+          </el-button>
+        </div>
+      </div>
+    </div>
+    <div class="submit_section">
+      <el-button
+        @click="submitAuthentication"
+        class="submit_button"
+        :disabled="!idCardImage || !cameraImage"
+      >
+        提交认证
+      </el-button>
     </div>
 
-    <div class="button_container">
-      <div class="button">
-        <el-button @click="getCompetence()">打开摄像头</el-button>
-        <el-button @click="stopNavigator()">关闭摄像头</el-button>
-        <el-button @click="setImage()">拍照</el-button>
-      </div>
+    <el-dialog title="确认上传" v-model="dialogVisible_1" width="30%">
+      <template #default>
+        <span>确定要上传身份证吗？</span>
+      </template>
+      <template #footer>
+        <el-button @click="uploadIdCard">确定</el-button>
+        <el-button @click="cancelIDcardUpload">取消</el-button>
+      </template>
+    </el-dialog>
 
-      <div>
-        <el-button @click="openUploadDialog" class="upload">上传照片</el-button>
-      </div>
-    </div>
-
-    <el-dialog title="确认上传" v-model="dialogVisible" width="30%">
+    <el-dialog title="确认上传" v-model="dialogVisible_2" width="30%">
       <template #default>
         <span>确定要上传照片吗？</span>
       </template>
       <template #footer>
         <el-button @click="uploadPhoto">确定</el-button>
-        <el-button @click="cancelUpload">取消</el-button>
+        <el-button @click="cancelPhotoUpload">取消</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="认证结果" v-model="dialogVisible_3" width="20%">
+      <template #default>
+        <span>认证通过</span>
+      </template>
+      <template #footer>
+        <el-button @click="comfirm_3">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="认证结果" v-model="dialogVisible_4" width="20%">
+      <template #default>
+        <span>认证未通过</span>
+      </template>
+      <template #footer>
+        <el-button @click="comfirm_4">确定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -45,180 +99,272 @@
 <script>
 import axios from "axios";
 
-function dataURLtoFile(dataURL, filename) {
-  const arr = dataURL.split(",");
-  const mime = arr[0].match(/:(.*?);/)[1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new File([u8arr], filename, { type: mime });
-}
-
 export default {
   data() {
     return {
       videoWidth: 250,
-      videoHeight: 350,
-      imgSrc: "",
-      thisCancas: null,
-      thisContext: null,
-      thisVideo: null,
-      openVideo: false,
-      dialogVisible: false,
-      capturedImageData: null,
+      videoHeight: 250,
+      idCardImage: null,
+      cameraImage: null,
+      idCardImageData: null,
+      cameraImageData: null,
+      isCameraOpen: false,
+      dialogVisible_1: false,
+      dialogVisible_2: false,
+      dialogVisible_3: false,
+      dialogVisible_4: false,
     };
   },
-  mounted() {
-    // this.getCompetence()//进入页面就调用摄像头
-  },
   methods: {
-    // 调用权限（打开摄像头功能）
-    getCompetence() {
-      var _this = this;
-      _this.thisCancas = document.getElementById("canvasCamera");
-      _this.thisContext = this.thisCancas.getContext("2d");
-      _this.thisVideo = document.getElementById("videoCamera");
-      _this.thisVideo.style.display = "block";
-      // 获取媒体属性，旧版本浏览器可能不支持mediaDevices，我们首先设置一个空对象
-      if (navigator.mediaDevices === undefined) {
-        navigator.mediaDevices = {};
-      }
-      // 一些浏览器实现了部分mediaDevices，我们不能只分配一个对象
-      // 使用getUserMedia，因为它会覆盖现有的属性。
-      // 这里，如果缺少getUserMedia属性，就添加它。
-      if (navigator.mediaDevices.getUserMedia === undefined) {
-        navigator.mediaDevices.getUserMedia = function (constraints) {
-          // 首先获取现存的getUserMedia(如果存在)
-          var getUserMedia =
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia ||
-            navigator.getUserMedia;
-          // 有些浏览器不支持，会返回错误信息
-          // 保持接口一致
-          if (!getUserMedia) {
-            // 不存在则报错
-            return Promise.reject(
-              new Error("getUserMedia is not implemented in this browser")
-            );
-          }
-          // 否则，使用Promise将调用包装到旧的navigator.getUserMedia
-          return new Promise(function (resolve, reject) {
-            getUserMedia.call(navigator, constraints, resolve, reject);
-          });
+    // 打开上传身份证对话框
+    openUploadIDcardDialog() {
+      this.dialogVisible_1 = true;
+    },
+    // 取消上传身份证
+    cancelIDcardUpload() {
+      this.dialogVisible_1 = false;
+    },
+    // 打开上传摄像头照片对话框
+    openUploadPhotoDialog() {
+      this.dialogVisible_2 = true;
+    },
+    // 取消上传摄像头照片
+    cancelPhotoUpload() {
+      this.dialogVisible_2 = false;
+    },
+    comfirm_3() {
+      this.dialogVisible_3 = false;
+    },
+    comfirm_4() {
+      this.dialogVisible_4 = false;
+    },
+    captureImage() {
+      const video = document.getElementById("videoCamera");
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      // this.videoWidth = video.videoWidth;
+      // this.videoHeight = video.videoHeight;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const image = canvas.toDataURL("image/png");
+      this.cameraImage = image;
+      this.cameraImageData = this.dataURLtoFile(image, "camera_image.png");
+    },
+    selectIdCardImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.idCardImage = reader.result;
+          this.idCardImageData = file;
         };
+        reader.readAsDataURL(file);
       }
-      var constraints = {
-        audio: false,
-        video: {
-          width: this.videoWidth,
-          height: this.videoHeight,
-          transform: "scaleX(-1)",
-        },
-      };
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(function (stream) {
-          // 旧的浏览器可能没有srcObject
-          if ("srcObject" in _this.thisVideo) {
-            _this.thisVideo.srcObject = stream;
-          } else {
-            // 避免在新的浏览器中使用它，因为它正在被弃用。
-            _this.thisVideo.src = window.URL.createObjectURL(stream);
-          }
-          _this.thisVideo.onloadedmetadata = function () {
-            _this.thisVideo.play();
-          };
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     },
-    //  绘制图片（拍照功能）
-    setImage() {
-      var _this = this;
-      // canvas画图
-      _this.thisContext.drawImage(
-        _this.thisVideo,
-        0,
-        0,
-        _this.videoWidth,
-        _this.videoHeight
-      );
-      // 获取图片base64链接
-      var image = this.thisCancas.toDataURL("image/png");
-      _this.imgSrc = image; //赋值并预览图片
-      _this.capturedImageData = dataURLtoFile(image, "captured_image.png"); // 转换为File对象并保存图像数据
+    openIdCardInput() {
+      this.$refs.idCardInput.click();
     },
-    // 关闭摄像头
-    stopNavigator() {
-      this.thisVideo.srcObject.getTracks()[0].stop();
-    },
-    // 打开上传照片对话框
-    openUploadDialog() {
-      this.dialogVisible = true;
-    },
-    // 取消上传照片
-    cancelUpload() {
-      this.dialogVisible = false;
-    },
-    // 上传照片
-    uploadPhoto() {
-      // 获取图像数据
-      const imageData = this.capturedImageData;
+    uploadIdCard() {
+      const imageData = this.idCardImageData;
       const userJson = sessionStorage.getItem("user");
       const user = JSON.parse(userJson);
       const userId = user.user_id;
 
-      // 构建FormData对象
       const formData = new FormData();
       formData.append("file", imageData);
-      formData.append("userId", userId); // 替换为实际的用户ID
-      formData.append("prefix", "images"); // 替换为实际的文件前缀
+      formData.append("userId", userId);
+      formData.append("prefix", "/action/userImages");
 
-      // 发送POST请求
       axios
-        .post("/upload", formData)
+        .post("http://127.0.0.1:9090/upload", formData)
         .then((response) => {
-          // 上传成功的处理逻辑
-          console.log("照片上传成功！");
+          console.log("身份证照片上传成功！");
           console.log(response);
         })
         .catch((error) => {
-          // 上传失败的处理逻辑
-          console.error("照片上传失败！", error);
+          console.error("身份证照片上传失败！", error);
         })
         .finally(() => {
           // 上传完成后，关闭对话框
-          this.dialogVisible = false;
+          this.dialogVisible_1 = false;
         });
+    },
+    uploadPhoto() {
+      const imageData = this.cameraImageData;
+      const userJson = sessionStorage.getItem("user");
+      const user = JSON.parse(userJson);
+      const userId = user.user_id;
+
+      const formData = new FormData();
+      formData.append("file", imageData);
+      formData.append("userId", userId);
+      formData.append("prefix", "/action/checkImages");
+
+      axios
+        .post("http://127.0.0.1:9090/upload", formData)
+        .then((response) => {
+          console.log("拍摄照片上传成功！");
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("拍摄照片上传失败！", error);
+        })
+        .finally(() => {
+          // 上传完成后，关闭对话框
+          this.dialogVisible_2 = false;
+        });
+    },
+    //提交认证
+    submitAuthentication() {
+      if (this.idCardImageData && this.cameraImageData) {
+        const userJson = sessionStorage.getItem("user");
+        const user = JSON.parse(userJson);
+        const userId = user.user_id;
+        const requestData = {
+          userId: userId,
+        };
+
+        console.log("userid为=================》" + userId);
+
+        axios
+          .post("http://127.0.0.1:9090/auth", requestData)
+          .then((response) => {
+            console.log("认证成功！");
+            console.log(response);
+            if (response.data.result.score > 60) {
+              this.authResult = "认证通过";
+              this.dialogVisible_3 = true;
+            } else {
+              this.authResult = "认证未通过";
+              this.dialogVisible_4 = true;
+            }
+          })
+          .catch((error) => {
+            console.error("认证失败！", error);
+          });
+      }
+    },
+    dataURLtoFile(dataURL, filename) {
+      const arr = dataURL.split(",");
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, { type: mime });
+    },
+    //开关摄像头
+    toggleCamera() {
+      const video = document.getElementById("videoCamera");
+      const stream = video.srcObject;
+
+      if (this.isCameraOpen) {
+        if (stream && stream.getTracks) {
+          const tracks = stream.getTracks();
+
+          tracks.forEach((track) => {
+            track.stop();
+          });
+
+          video.srcObject = null;
+
+          this.isCameraOpen = false;
+        }
+      } else {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then((stream) => {
+            video.srcObject = stream;
+            video.play();
+            this.isCameraOpen = true;
+          })
+          .catch((error) => {
+            console.error("无法打开摄像头：", error);
+          });
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-.camera_outer {
+.main {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.image_container {
+  display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
-.button_container {
-  max-width: 100%;
-  margin: 50px;
-  padding: 50px;
+
+.left_section {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 80%;
+  margin-right: 100px;
+  margin-left: 20px;
+}
+
+.right_section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 80%;
+  margin-right: 20px;
+  margin-left: 100px;
+}
+
+.upload_button_container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.img_preview {
+  width: 100%;
+  /*background: #f2f2f2;*/
+  display: flex;
   justify-content: center;
   align-items: center;
+  .img_content {
+    max-width: 100%;
+    max-height: 200px;
+  }
 }
-.upload {
-  margin: 20px;
-  padding: 5px;
+
+.submit_section {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.submit_button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.submit_button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 </style>
