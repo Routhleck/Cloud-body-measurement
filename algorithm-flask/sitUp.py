@@ -5,7 +5,6 @@ from sports_sitUp import poseclassifier as pc
 from sports_sitUp import poseembedding as pe
 from sports_sitUp import resultsmooth as rs
 from sports_sitUp import counter
-from sports_sitUp import visualizer as vs
 import time
 
 
@@ -33,11 +32,10 @@ def sit_up_video_stream(video_stream_url, duration):
 
     cap = cv2.VideoCapture(video_stream_url)
     if not cap.isOpened():
-        print("Unable to open video stream!")
+        print("无法打开视频流！")
         return repetition_count
 
     mp_pose = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
-    mp_drawing = mp.solutions.drawing_utils
 
     start_time = time.time()
     end_time = start_time + duration
@@ -50,17 +48,9 @@ def sit_up_video_stream(video_stream_url, duration):
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = mp_pose.process(frame_rgb)
         pose_landmarks = results.pose_landmarks
-        output_frame = frame.copy()
 
         if pose_landmarks is not None:
-            mp_drawing.draw_landmarks(
-                frame,
-                pose_landmarks,
-                mp.solutions.pose.POSE_CONNECTIONS
-            )
-
-        if pose_landmarks is not None:
-            frame_height, frame_width = output_frame.shape[0], output_frame.shape[1]
+            frame_height, frame_width = frame.shape[0], frame.shape[1]
             pose_landmarks = np.array([[lmk.x * frame_width, lmk.y * frame_height, lmk.z * frame_width]
                                        for lmk in pose_landmarks.landmark], dtype=np.float32)
             assert pose_landmarks.shape == (33, 3), 'Unexpected landmarks shape: {}'.format(pose_landmarks.shape)
@@ -69,16 +59,9 @@ def sit_up_video_stream(video_stream_url, duration):
             pose_classification_filtered = pose_classification_filter(pose_classification)
             repetition_count = repetition_counter(pose_classification_filtered)
 
-        cv2.putText(frame, f"Sit-ups: {repetition_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        cv2.imshow("Video Stream", frame)
-
         del frame_rgb
         del results
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
     cap.release()
-    cv2.destroyAllWindows()
 
     return repetition_count
