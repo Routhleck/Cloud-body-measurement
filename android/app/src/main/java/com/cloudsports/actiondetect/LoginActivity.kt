@@ -1,5 +1,6 @@
 package com.cloudsports.actiondetect
 
+import UserLogin
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,6 +10,8 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.cloudsports.actiondetect.data.User
+import kotlinx.coroutines.runBlocking
 
 class LoginActivity : AppCompatActivity() {
 
@@ -40,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             if (TextUtils.equals(account, userName)) {
-                if (TextUtils.equals(password, pass)) {
+                if (check(account,password)==1) {
                     Toast.makeText(this@LoginActivity, "恭喜你，登录成功！", Toast.LENGTH_LONG).show()
                     val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
                     val edit = spf.edit()
@@ -55,8 +58,12 @@ class LoginActivity : AppCompatActivity() {
                     intent.putExtra("account", account)
                     startActivity(intent)
                     this@LoginActivity.finish()
-                } else {
-                    Toast.makeText(this@LoginActivity, "密码错误！", Toast.LENGTH_LONG).show()
+                }
+                else if (check(account,password)==0) {
+                    Toast.makeText(this@LoginActivity, "密码错误或用户名和密码不匹配", Toast.LENGTH_LONG).show()
+                }
+                else if (check(account,password)==2){
+                    Toast.makeText(this@LoginActivity, "传输过程出现问题，请检查网络或练习服务器管理员", Toast.LENGTH_LONG).show()
                 }
             } else {
                 Toast.makeText(this@LoginActivity, "用户名错误", Toast.LENGTH_LONG).show()
@@ -64,6 +71,32 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun check(name : String,password : String ):Int{
+        val repository = UserLogin()
+        val loginRequest = User.LoginRequest(name,password)
+        val judge = runBlocking {
+            val result = repository.userLogin(loginRequest)
+            if (result != null){
+                val code_judge=result.get("code")
+                /*
+                1:表示用户名和密码匹配并传递成功
+                2:传输过程出现问题
+                0：用户名和密码不匹配
+                 */
+                if (code_judge=="200"){
+
+                    return@runBlocking 1
+                }
+                else{
+                    return@runBlocking 0
+                }
+            }
+            else {
+                return@runBlocking 2
+            }
+        }
+        return judge
+    }
     private fun initData() {
         val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
         val isRemember = spf.getBoolean("isRemember", false)
