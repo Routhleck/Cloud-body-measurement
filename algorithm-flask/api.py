@@ -17,19 +17,19 @@ def exercise():
 
     if exercise_type == 'pullUp':
         count = pull_up_video_stream(video_stream_url, duration)
-        return jsonify({'pull_up_count': count})
+        return str(count)
 
     elif exercise_type == 'pushUp':
         count = push_up_video_stream(video_stream_url, duration)
-        return jsonify({'push_up_count': count})
+        return str(count)
 
     elif exercise_type == 'sitUp':
         count = sit_up_video_stream(video_stream_url, duration)
-        return jsonify({'sit_up_count': count})
+        return str(count)
 
     elif exercise_type == 'squat':
         count = squat_video_stream(video_stream_url, duration)
-        return jsonify({'squat_count': count})
+        return str(count)
 
     else:
         return jsonify({'error': 'Invalid exercise type.'}), 400
