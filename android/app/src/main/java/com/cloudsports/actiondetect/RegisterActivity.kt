@@ -9,6 +9,9 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.cloudsports.actiondetect.data.User
+import com.cloudsports.actiondetect.netWorkUtils.UserRegister
+import kotlinx.coroutines.runBlocking
 
 class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -64,15 +67,24 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 edit.putString("account", name)
                 edit.putString("password", pass)
                 edit.apply()
-
-                val intent = Intent()
-                val bundle = Bundle()
-                bundle.putString("account", name)
-                bundle.putString("password", pass)
-                intent.putExtras(bundle)
-                setResult(RESULT_CODE_REGISTER, intent)
-                Toast.makeText(this@RegisterActivity, "注册成功！", Toast.LENGTH_LONG).show()
-                finish()
+                val registerRequest= User.RegisterRequest(name,pass)
+                val repository = UserRegister()
+                runBlocking {
+                    val result = repository.userRegitser(registerRequest)
+                    if (result != null) {
+                        val intent = Intent()
+                        val bundle = Bundle()
+                        bundle.putString("account", name)
+                        bundle.putString("password", pass)
+                        intent.putExtras(bundle)
+                        setResult(RESULT_CODE_REGISTER, intent)
+                        Toast.makeText(this@RegisterActivity, "注册成功！", Toast.LENGTH_LONG).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this@RegisterActivity, "注册失败！", Toast.LENGTH_LONG).show()
+                    }
+                }
+                
             }
         }
     }

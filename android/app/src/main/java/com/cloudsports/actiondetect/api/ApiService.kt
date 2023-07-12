@@ -10,5 +10,5 @@ interface ApiService {
     suspend fun userlogin(@Body request: User.LoginRequest):Response<Map<String,Any>>
 
     @POST("user/register")
-    suspend fun userRegister(@Body request: User.RegisterRequest)
+    suspend fun userRegister(@Body request: User.RegisterRequest):Response<Map<String,Any>>
 }

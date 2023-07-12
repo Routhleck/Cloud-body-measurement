@@ -2,6 +2,7 @@ package com.cloudsports.actiondetect.actiondetect
 
 import UserLogin
 import com.cloudsports.actiondetect.data.User
+import com.cloudsports.actiondetect.netWorkUtils.UserLogin
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.junit.Test
