@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.cloudsports.actiondetect.data.User
+import com.cloudsports.actiondetect.debug.ToastDebug
 import com.cloudsports.actiondetect.netWorkUtils.UserRegister
 import kotlinx.coroutines.runBlocking
 
@@ -24,6 +25,8 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var etPass: EditText
     private lateinit var etPassConfirm: EditText
     private lateinit var cbAgree: CheckBox
+
+    private val toast = ToastDebug(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,19 +49,19 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
         when {
             TextUtils.isEmpty(name) -> {
-                Toast.makeText(this@RegisterActivity, "用户名不能为空！", Toast.LENGTH_LONG).show()
+                toast.show("用户名不能为空！")
                 return
             }
             TextUtils.isEmpty(pass) -> {
-                Toast.makeText(this@RegisterActivity, "密码不能为空！", Toast.LENGTH_LONG).show()
+                toast.show("密码不能为空！")
                 return
             }
             !TextUtils.equals(pass, passConfirm) -> {
-                Toast.makeText(this@RegisterActivity, "密码不一致！", Toast.LENGTH_LONG).show()
+                toast.show("密码不一致！")
                 return
             }
             !cbAgree.isChecked -> {
-                Toast.makeText(this@RegisterActivity, "请同意用户协议！", Toast.LENGTH_LONG).show()
+                toast.show("请同意用户协议！")
                 return
             }
             else -> {
@@ -78,10 +81,10 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                         bundle.putString("password", pass)
                         intent.putExtras(bundle)
                         setResult(RESULT_CODE_REGISTER, intent)
-                        Toast.makeText(this@RegisterActivity, "注册成功！", Toast.LENGTH_LONG).show()
+                        toast.show("注册成功！")
                         finish()
                     } else {
-                        Toast.makeText(this@RegisterActivity, "注册失败！", Toast.LENGTH_LONG).show()
+                        toast.show("注册失败！")
                     }
                 }
                 

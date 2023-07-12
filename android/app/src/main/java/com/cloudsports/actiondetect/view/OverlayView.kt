@@ -98,12 +98,6 @@ class OverlayView(
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        // 将count绘制到屏幕上
-        val paint = Paint()
-        paint.color = Color.RED
-        paint.textSize = 100f
-        canvas.drawText(count.toString(), 100f, 100f, paint)
-
         results?.let { poseLandmarkerResult ->
             for(landmark in poseLandmarkerResult.landmarks()) {
                 val landmarkArray = JSONArray()

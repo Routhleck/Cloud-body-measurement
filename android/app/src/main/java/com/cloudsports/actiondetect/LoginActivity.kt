@@ -1,6 +1,6 @@
 package com.cloudsports.actiondetect
 
-import UserLogin
+import com.cloudsports.actiondetect.netWorkUtils.UserLogin
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -11,9 +11,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.cloudsports.actiondetect.data.User
+import com.cloudsports.actiondetect.debug.ToastDebug
 import kotlinx.coroutines.runBlocking
 
 class LoginActivity : AppCompatActivity() {
+
+    private val toast = ToastDebug(this)
 
     companion object {
         const val REQUEST_CODE_REGISTER = 1
@@ -39,34 +42,30 @@ class LoginActivity : AppCompatActivity() {
             val account = etAccount.text.toString()
             val password = etPassword.text.toString()
             if (userName.isEmpty()) {
-                Toast.makeText(this@LoginActivity, "还没有注册账号！", Toast.LENGTH_LONG).show()
+                toast.show("还没有注册账号！")
                 return@setOnClickListener
             }
-            if (TextUtils.equals(account, userName)) {
-                if (check(account,password)==1) {
-                    Toast.makeText(this@LoginActivity, "恭喜你，登录成功！", Toast.LENGTH_LONG).show()
-                    val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
-                    val edit = spf.edit()
-                    edit.putBoolean("isRemember", cbRemember.isChecked)
-                    if (cbRemember.isChecked) {
-                        edit.putString("account", account)
-                        edit.putString("password", password)
-                    }
-                    edit.apply()
+            if (check(account,password)==1) {
+                toast.show("恭喜你，登录成功！")
+                val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
+                val edit = spf.edit()
+                edit.putBoolean("isRemember", cbRemember.isChecked)
+                if (cbRemember.isChecked) {
+                    edit.putString("account", account)
+                    edit.putString("password", password)
+                }
+                edit.apply()
 
-                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                    intent.putExtra("account", account)
-                    startActivity(intent)
-                    this@LoginActivity.finish()
-                }
-                else if (check(account,password)==0) {
-                    Toast.makeText(this@LoginActivity, "密码错误或用户名和密码不匹配", Toast.LENGTH_LONG).show()
-                }
-                else if (check(account,password)==2){
-                    Toast.makeText(this@LoginActivity, "传输过程出现问题，请检查网络或练习服务器管理员", Toast.LENGTH_LONG).show()
-                }
-            } else {
-                Toast.makeText(this@LoginActivity, "用户名错误", Toast.LENGTH_LONG).show()
+                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                intent.putExtra("account", account)
+                startActivity(intent)
+                this@LoginActivity.finish()
+            }
+            else if (check(account,password)==0) {
+                toast.show("密码错误或用户名和密码不匹配")
+            }
+            else if (check(account,password)==2){
+                toast.show("传输过程出现问题，请检查网络或练习服务器管理员")
             }
         }
     }

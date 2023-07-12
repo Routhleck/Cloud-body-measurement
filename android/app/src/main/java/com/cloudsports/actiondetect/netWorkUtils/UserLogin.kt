@@ -41,22 +41,23 @@ class UserLogin {
 
 
 }
-fun main(){
-    val repository= UserLogin()
-    // 创建一个 User.LoginRequest 对象
-    val loginRequest = User.LoginRequest("admin", "admin")
 
-    // 使用 runBlocking 函数来在主线程中执行协程代码
-    runBlocking {
-        val result = repository.userLogin(loginRequest)
-
-        if (result != null) {
-            println("请求成功，返回结果：$result")
-        } else {
-            println("请求失败")
-        }
-    }
-
-}
+//fun main(){
+//    val repository= UserLogin()
+//    // 创建一个 User.LoginRequest 对象
+//    val loginRequest = User.LoginRequest("admin", "admin")
+//
+//    // 使用 runBlocking 函数来在主线程中执行协程代码
+//    runBlocking {
+//        val result = repository.userLogin(loginRequest)
+//
+//        if (result != null) {
+//            println("请求成功，返回结果：$result")
+//        } else {
+//            println("请求失败")
+//        }
+//    }
+//
+//}
 
 

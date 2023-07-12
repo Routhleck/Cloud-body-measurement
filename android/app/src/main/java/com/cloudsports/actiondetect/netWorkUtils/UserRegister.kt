@@ -42,22 +42,22 @@ class UserRegister {
 
 
 }
-fun main(){
-    val repository= UserRegister()
-    // 创建一个 User.LoginRequest 对象
-    val registRequest = User.RegisterRequest("xuexidaziqusi", "admin")
-
-    // 使用 runBlocking 函数来在主线程中执行协程代码
-    runBlocking {
-        val result = repository.userRegitser(registRequest)
-
-        if (result != null) {
-            println("请求成功，返回结果：$result")
-        } else {
-            println("请求失败")
-        }
-    }
-
-}
+//fun main(){
+//    val repository= UserRegister()
+//    // 创建一个 User.LoginRequest 对象
+//    val registRequest = User.RegisterRequest("xuexidaziqusi", "admin")
+//
+//    // 使用 runBlocking 函数来在主线程中执行协程代码
+//    runBlocking {
+//        val result = repository.userRegitser(registRequest)
+//
+//        if (result != null) {
+//            println("请求成功，返回结果：$result")
+//        } else {
+//            println("请求失败")
+//        }
+//    }
+//
+//}
 
 
