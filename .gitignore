@@ -10,3 +10,4 @@ backend/demo/src/main/java/com/example/demo/FaceSecretKey.java
 backend/backend/src/main/java/com/sepbf/backend/utils/FaceSecretKey.java
 backend/backend/src/main/resources/application.properties
 algorithm-flask/.idea/workspace.xml
+frontend/node_modules/
