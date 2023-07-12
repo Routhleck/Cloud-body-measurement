@@ -32,8 +32,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.cloudsports.actiondetect.DetectViewModel
-import com.cloudsports.actiondetect.PoseLandmarkerHelper
+import com.cloudsports.actiondetect.model.DetectViewModel
+import com.cloudsports.actiondetect.algorithm.PoseLandmarkerHelper
 import com.cloudsports.actiondetect.databinding.FragmentGalleryBinding
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.*

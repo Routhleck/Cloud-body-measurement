@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cloudsports.actiondetect
+package com.cloudsports.actiondetect.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -26,8 +26,10 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.cloudsports.actiondetect.R
 import com.cloudsports.actiondetect.algorithm.MainActionCount
 import com.cloudsports.actiondetect.debug.ToastDebug
+import com.cloudsports.actiondetect.model.DetectViewModel
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
@@ -95,12 +97,6 @@ class OverlayView(
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-
-        // 将count绘制到屏幕上
-        val paint = Paint()
-        paint.color = Color.RED
-        paint.textSize = 100f
-        canvas.drawText(count.toString(), 100f, 100f, paint)
 
         results?.let { poseLandmarkerResult ->
             for(landmark in poseLandmarkerResult.landmarks()) {
