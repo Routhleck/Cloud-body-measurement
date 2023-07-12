@@ -1,10 +1,12 @@
 package com.cloudsports.actiondetect.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.cloudsports.actiondetect.R
 import com.cloudsports.actiondetect.data.GradeItem
 
@@ -30,7 +32,29 @@ class TestGradeAdapter(private val myDataset: List<GradeItem>) :
         holder.tvTestItem.text = gradeItem.testName
         holder.tvTestResult.text = gradeItem.testResult.toString()
         holder.tvTestScore.text = gradeItem.testScore.toString()
-        holder.tvScoreLevel.text = gradeItem.scoreLevel
+        when (gradeItem.scoreLevel) {
+            "flunk" -> {
+                holder.tvScoreLevel.text = "不及格"
+                // textView背景色设置为浅红色
+                holder.tvScoreLevel.setBackgroundColor(0xFFFFC0CB.toInt())
+            }
+            "pass" -> {
+                holder.tvScoreLevel.text = "及格"
+                // textView背景色设置为浅黄色
+                holder.tvScoreLevel.setBackgroundColor(0xFFFFFF00.toInt())
+            }
+            "good" -> {
+                holder.tvScoreLevel.text = "良好"
+                // textView背景色设置为浅蓝色
+                holder.tvScoreLevel.setBackgroundColor(0xFF00FFFF.toInt())
+
+            }
+            "excellent" -> {
+                holder.tvScoreLevel.text = "优秀"
+                // textView背景色设置为浅绿色
+                holder.tvScoreLevel.setBackgroundColor(0xFF00FF00.toInt())
+            }
+        }
     }
 
     override fun getItemCount() = myDataset.size
