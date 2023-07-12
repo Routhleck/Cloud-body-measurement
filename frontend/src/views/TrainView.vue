@@ -1,160 +1,231 @@
 <template>
-  <div class="line">
-    <v-header :name="name" :legendArr="legendArr" :myChart="myChart"></v-header>
-    <v-filter :myChart="myChart" v-if="myChart._dom"></v-filter>
-    <div class="main"></div>
+  <div class="option_container">
+    <div class="left-panel">
+      <div class="option_item">
+        <label for="stream-code">选择摄像机:</label>
+        <el-select v-model="selectedStreamCode" placeholder="请选择">
+          <el-option
+            v-for="code in streamCodes"
+            :key="code"
+            :value="code"
+            :label="code"
+          ></el-option>
+        </el-select>
+      </div>
+      <div class="option_item">
+        <label for="fitness-test">选择体测项目:</label>
+        <el-select v-model="selectedFitnessTest" placeholder="请选择">
+          <el-option
+            v-for="test in fitnessTests"
+            :key="test"
+            :value="test"
+            :label="test"
+          ></el-option>
+        </el-select>
+      </div>
+      <div class="option_item">
+        <label for="time">选择训练时长（单位：秒）:</label>
+        <el-select v-model="selectedTestTime" placeholder="请选择">
+          <el-option
+            v-for="time in TestTime"
+            :key="time"
+            :value="time"
+            :label="time"
+          ></el-option>
+        </el-select>
+      </div>
+      <div class="center-panel">
+        <el-button
+          type="primary"
+          :disabled="
+            !selectedStreamCode || !selectedFitnessTest || !selectedTestTime
+          "
+          @click="startFitnessTest"
+          >开始体测</el-button
+        >
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="result_container">
+        <h3>测试结果值:</h3>
+        <ul>
+          <li v-for="result in testResults" :key="result">{{ result }}</li>
+        </ul>
+      </div>
+      <div class="video_container">
+        <video ref="videoElement" controls></video>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// import * as echarts from 'echarts';
-import header from "../components/header/header";
-import filter from "../components/filter/filter";
+import axios from "axios";
+import flvjs from "flv.js";
+import {
+  ElButton,
+  ElSelect,
+  ElOption,
+  ElMessage,
+  ElMessageBox,
+} from "element-plus";
 
 export default {
+  name: "FitnessTest",
+  components: {
+    ElButton,
+    ElSelect,
+    ElOption,
+  },
   data() {
     return {
-      legendArr: [],
-      charts: [],
-      color: "rgba(255, 255, 255, 0.69)",
-      myChart: {},
-      name: "训练数据",
+      streamCodes: ["摄像机1", "摄像机2", "摄像机3", "摄像机4"],
+      fitnessTests: [
+        "引体向上", //pullUp
+        "仰卧起坐", //sitUp
+        "深蹲", //squat
+        "俯卧撑", //pushUp
+      ],
+      TestTime: [30, 60, 90, 120],
+      selectedStreamCode: null,
+      selectedFitnessTest: null,
+      selectedTestTime: null,
+      testResults: [],
     };
   },
+
   methods: {
-    _init() {
-      this.legendArr = this.myChart.getOption().series;
-      this.legendArr.forEach((data) => {
-        data.selected = true;
-      });
-      this.charts.push(this.myChart);
-      window.addEventListener("resize", () => {
-        this.myChart.resize();
-      });
+    startFitnessTest() {
+      if (this.selectedStreamCode && this.selectedFitnessTest) {
+        ElMessageBox.confirm("确认开始体测?", "提示", {
+          confirmButtonText: "确认",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            let streamCode = null;
+            let actionName = null;
+
+            switch (this.selectedStreamCode) {
+              case "摄像机1":
+                streamCode = 100;
+                break;
+              case "摄像机2":
+                streamCode = 101;
+                break;
+              case "摄像机3":
+                streamCode = 102;
+                break;
+              case "摄像机4":
+                streamCode = 103;
+                break;
+            }
+
+            switch (this.selectedFitnessTest) {
+              case "引体向上":
+                actionName = "pullUp";
+                break;
+              case "仰卧起坐":
+                actionName = "sitUp";
+                break;
+              case "深蹲":
+                actionName = "squat";
+                break;
+              case "俯卧撑":
+                actionName = "pushUp";
+                break;
+            }
+
+            const data = {
+              streamCode: streamCode,
+              actionName: actionName,
+              selectedTestTime: this.selectedTestTime,
+            };
+
+            console.log(
+              "推流码/体测项目/训练时间为" +
+                streamCode +
+                actionName +
+                this.selectedTestTime
+            );
+
+            let videoElement = this.$refs.videoElement;
+            let flvPlayer = flvjs.createPlayer({
+              type: "flv",
+              url: `http://39.106.13.47:8080/live/${streamCode}.live.flv`,
+            });
+            flvPlayer.attachMediaElement(videoElement);
+            flvPlayer.load();
+            flvPlayer.play();
+
+            axios
+              .post("http://127.0.0.1:9090/stream/limitTime", data)
+              .then((response) => {
+                console.log(response);
+                this.testResults = response.data.data;
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          })
+          .catch(() => {
+            // Cancel fitness test
+          });
+      } else {
+        ElMessage.error("请选择推流码、体测项目和训练时长");
+      }
     },
-  },
-  components: {
-    "v-header": header,
-    "v-filter": filter,
-  },
-  mounted() {
-    // 基于准备好的dom，初始化echarts实例
-    this.myChart = this.$echarts.init(document.querySelector(".line .main"));
-    this.myChart.setOption({
-      title: {
-        show: false,
-      },
-      tooltip: {
-        trigger: "axis",
-      },
-      legend: {
-        show: false,
-      },
-      toolbox: {
-        show: false,
-      },
-      color: this.color,
-      calculable: true,
-      xAxis: [
-        {
-          name: "时间",
-          type: "category",
-          axisLine: {
-            show: false,
-          },
-          axisTick: {
-            show: false,
-          },
-          nameTextStyle: {
-            color: "rgba(255, 255, 255, 0.69)",
-          },
-          axisLabel: {
-            textStyle: {
-              color: "white",
-            },
-          },
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-        },
-      ],
-      yAxis: [
-        {
-          axisLine: {
-            show: false,
-          },
-          nameLocation: "end",
-          nameGap: 20,
-          nameRotate: 0,
-          axisTick: {
-            show: false,
-          },
-          splitLine: {
-            lineStyle: {
-              color: ["rgba(230, 230, 230, 0.2)"],
-            },
-          },
-          axisLabel: {
-            textStyle: {
-              color: "white",
-              fontSize: 14,
-            },
-          },
-          name: "数值",
-          type: "value",
-          nameTextStyle: {
-            color: "rgba(255, 255, 255, 0.69)",
-          },
-        },
-      ],
-      series: [
-        {
-          name: "标签1",
-          type: "line",
-          stack: "总量",
-          data: [120, 132, 101, 134, 90, 230, 210],
-        },
-        {
-          name: "标签2",
-          type: "line",
-          stack: "总量",
-          data: [220, 182, 191, 234, 290, 330, 310],
-        },
-        {
-          name: "标签3",
-          type: "line",
-          stack: "总量",
-          data: [150, 232, 201, 154, 190, 330, 410],
-        },
-        {
-          name: "标签4",
-          type: "line",
-          stack: "总量",
-          data: [320, 332, 301, 334, 390, 330, 320],
-        },
-        {
-          name: "标签5",
-          type: "line",
-          stack: "总量",
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
-        },
-      ],
-    });
-    this._init();
   },
 };
 </script>
 
 <style scoped>
-.line {
-  width: 1000px;
-  height: 650px;
-  /* background: url('../assets/bg.jpg') no-repeat; */
-  background: rgba(34, 34, 34, 0.5);
-  background-size: 100% 100%;
+.option_container {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 80vh;
+  margin-top: 90px;
 }
 
-.main {
-  width: 100%;
-  height: calc(100% - 100px);
-  margin-top: -15px;
+.left-panel,
+.right-panel {
+  width: 50%;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.option_item {
+  padding: 50px;
+}
+
+.left-panel label,
+.right-panel label {
+  margin-right: 10px;
+}
+
+.center-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.center-panel .el-button {
+  width: 150px;
+}
+
+.video_container {
+  max-width: 100%;
+  max-height: 300px;
+}
+
+.result_container {
+  display: flex;
+  padding: 20px;
 }
 </style>

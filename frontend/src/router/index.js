@@ -5,6 +5,7 @@ import PersonView from "@/views/PersonView";
 import TestView from "@/views/TestView";
 import GradeView from "@/views/GradeView";
 import TrainView from "@/views/TrainView";
+import PreviewView from "@/views/PreviewView";
 import SubmitView from "@/views/SubmitView";
 import AuthenticationView from "@/views/AuthenticationView";
 import PushstreamView from "@/views/PushstreamView";
@@ -25,6 +26,11 @@ const routes = [
     name: "layout",
     component: LayOut,
     children: [
+      {
+        path: "train",
+        name: "train",
+        component: TrainView,
+      },
       {
         path: "option",
         name: "option",
@@ -58,7 +64,7 @@ const routes = [
       {
         path: "preview",
         name: "preview",
-        component: TrainView,
+        component: PreviewView,
       },
       {
         path: "test",

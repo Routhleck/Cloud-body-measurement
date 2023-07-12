@@ -2,7 +2,7 @@
   <div class="option_container">
     <div class="left-panel">
       <div class="option_item">
-        <label for="stream-code">选择推流码:</label>
+        <label for="stream-code">选择摄像机:</label>
         <el-select v-model="selectedStreamCode" placeholder="请选择">
           <el-option
             v-for="code in streamCodes"
@@ -66,33 +66,30 @@ export default {
   },
   data() {
     return {
-      streamCodes: Array.from({ length: 4 }, (_, index) => 100 + index),
+      streamCodes: ["摄像机1", "摄像机2", "摄像机3", "摄像机4"],
       fitnessTests: [
-        "引体向上",
-        "仰卧起坐",
-        "深蹲",
-        "俯卧撑",
-        "跳远",
-        "800/1000米",
-        "坐位体前屈",
+        "引体向上", //pullUp
+        "仰卧起坐", //sitUp
+        "深蹲", //squat
+        "俯卧撑", //pushUp
       ],
       selectedStreamCode: null,
       selectedFitnessTest: null,
       testResults: [],
     };
   },
-  mounted() {
-    if (flvjs.isSupported()) {
-      let videoElement = this.$refs.videoElement;
-      let flvPlayer = flvjs.createPlayer({
-        type: "flv",
-        url: "http://39.106.13.47:8080/live/100.live.flv",
-      });
-      flvPlayer.attachMediaElement(videoElement);
-      flvPlayer.load();
-      flvPlayer.play();
-    }
-  },
+  // mounted() {
+  //   if (flvjs.isSupported()) {
+  //     let videoElement = this.$refs.videoElement;
+  //     let flvPlayer = flvjs.createPlayer({
+  //       type: "flv",
+  //       url: "http://39.106.13.47:8080/live/100.live.flv",
+  //     });
+  //     flvPlayer.attachMediaElement(videoElement);
+  //     flvPlayer.load();
+  //     flvPlayer.play();
+  //   }
+  // },
   methods: {
     startFitnessTest() {
       if (this.selectedStreamCode && this.selectedFitnessTest) {
@@ -102,21 +99,60 @@ export default {
           type: "warning",
         })
           .then(() => {
+            let streamCode = null;
+            let actionName = null;
+
+            switch (this.selectedStreamCode) {
+              case "摄像机1":
+                streamCode = 100;
+                break;
+              case "摄像机2":
+                streamCode = 101;
+                break;
+              case "摄像机3":
+                streamCode = 102;
+                break;
+              case "摄像机4":
+                streamCode = 103;
+                break;
+            }
+
+            switch (this.selectedFitnessTest) {
+              case "引体向上":
+                actionName = "pullUp";
+                break;
+              case "仰卧起坐":
+                actionName = "sitUp";
+                break;
+              case "深蹲":
+                actionName = "squat";
+                break;
+              case "俯卧撑":
+                actionName = "pushUp";
+                break;
+            }
+
             const data = {
-              streamCode: this.selectedStreamCode,
-              actionName: this.selectedFitnessTest,
+              streamCode: streamCode,
+              actionName: actionName,
             };
 
-            console.log(
-              "推流码和体测项目为" +
-                this.selectedStreamCode +
-                this.selectedFitnessTest
-            );
+            console.log("推流码和体测项目为" + streamCode + actionName);
+
+            let videoElement = this.$refs.videoElement;
+            let flvPlayer = flvjs.createPlayer({
+              type: "flv",
+              url: `http://39.106.13.47:8080/live/${streamCode}.live.flv`,
+            });
+            flvPlayer.attachMediaElement(videoElement);
+            flvPlayer.load();
+            flvPlayer.play();
+
             axios
               .post("http://127.0.0.1:9090/stream/limitTime", data)
               .then((response) => {
                 console.log(response);
-                this.testResults = response.data.count;
+                this.testResults = response.data.data;
               })
               .catch((error) => {
                 console.error(error);
@@ -176,5 +212,10 @@ export default {
 .video_container {
   max-width: 100%;
   max-height: 300px;
+}
+
+.result_container {
+  display: flex;
+  padding: 20px;
 }
 </style>
