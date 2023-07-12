@@ -15,10 +15,6 @@ object ArrayOperation {
     }
 
 
-    fun getItemByIndex(array2D: Array<DoubleArray>, index: Int): DoubleArray {
-        return array2D[index]
-    }
-
     fun getNorm(array: DoubleArray): Double {
         return sqrt(array.sumOf { it.pow(2) })
     }
@@ -32,7 +28,7 @@ object ArrayOperation {
     }
 
     fun absArrayDoubleArray(array: Array<DoubleArray>): Array<DoubleArray> {
-        return array.map { it.map { abs(it) }.toDoubleArray() }.toTypedArray()
+        return array.map { it -> it.map { abs(it) }.toDoubleArray() }.toTypedArray()
     }
 
     fun subArrayDoubleArrayByDoubleArray(array: Array<DoubleArray>, arrayI: DoubleArray): Array<DoubleArray> {
@@ -72,37 +68,4 @@ object ArrayOperation {
         return arrays.toTypedArray()
     }
 
-    fun absSubMulMax(sample: DoubleArray, pose_embedding: DoubleArray, axes_weights_array: DoubleArray): Double {
-        val absSubMul = sample.zip(pose_embedding) { a, b -> abs(a - b) }.toDoubleArray()
-        return absSubMul.zip(axes_weights_array) { a, b -> a * b }.maxOrNull()!!
-    }
-
-    fun absSubMulMean(sample: DoubleArray, pose_embedding: DoubleArray, axes_weights_array: DoubleArray): Double {
-        val absSubMul = sample.zip(pose_embedding) { a, b -> abs(a - b) }.toDoubleArray()
-        return absSubMul.zip(axes_weights_array) { a, b -> a * b }.average()
-    }
-
-    fun Double.sqrt() = kotlin.math.sqrt(this)
-
-//    fun topNSamples(samples: Array<DoubleArray>, pose_embedding: DoubleArray, flipped_pose_embedding: DoubleArray, axes_weights_array: DoubleArray, topN: Int): List<Int> {
-//        return samples.mapIndexed { index, sample ->
-//            max(
-//                absSubMulMax(sample, pose_embedding, axes_weights_array),
-//                absSubMulMax(sample, flipped_pose_embedding, axes_weights_array)
-//            ) to index
-//        }.sortedBy { it.first }.take(topN).map { it.second }
-//    }
-//
-//    fun topNSamplesMean(samples: List<DoubleArray>, pose_embedding: DoubleArray, flipped_pose_embedding: DoubleArray, axes_weights_array: DoubleArray, topN: Int): List<Int> {
-//        return samples.mapIndexed { index, sample ->
-//            min(
-//                absSubMulMean(sample, pose_embedding, axes_weights_array),
-//                absSubMulMean(sample, flipped_pose_embedding, axes_weights_array)
-//            ) to index
-//        }.sortedBy { it.first }.take(topN).map { it.second }
-//    }
-
-    fun getClassesCount(samples: List<String>, indices: List<Int>): Map<String, Int> {
-        return indices.map { samples[it] }.groupingBy { it }.eachCount()
-    }
 }

@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -431,7 +430,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         }
     }
 
-    fun startCountdown(view: View) {
+    private fun startCountdown(view: View) {
         val countdownContainer = view.findViewById<FrameLayout>(R.id.countdown_container)
         val countdownText = view.findViewById<TextView>(R.id.countdown_text)
 

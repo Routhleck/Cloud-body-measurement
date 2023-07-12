@@ -25,7 +25,7 @@ class SportsHistoryAdapter(private val sports: List<Sport>) : RecyclerView.Adapt
         val sport = sports[position]
         holder.name.text = sport.name
         holder.time.text = sport.time
-        holder.results.text = sport.results.toString()
+        holder.results.text = sport.results
     }
 
     override fun getItemCount() = sports.size

@@ -10,20 +10,12 @@ class MyDoubleArray(var array: DoubleArray) {
         return MyDoubleArray(array.map { it / divider }.toDoubleArray()).array
     }
 
-    fun toDoubleVector(): DoubleArray {
-        return array
-    }
-
     fun sub(other: MyDoubleArray): DoubleArray {
         return MyDoubleArray(array.zip(other.array).map { it.first - it.second }.toDoubleArray()).array
     }
 
     fun getDistance(other: MyDoubleArray): DoubleArray {
         return MyDoubleArray(array.zip(other.array).map { it.first - it.second }.toDoubleArray()).array
-    }
-
-    fun toDoubleArray(): DoubleArray {
-        return array
     }
 
     fun multiply(multiplier: Double): DoubleArray {

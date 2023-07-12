@@ -1,6 +1,5 @@
 package com.cloudsports.actiondetect.data
 
-import kotlin.properties.Delegates
 
 class Grade(
     val year: Int,

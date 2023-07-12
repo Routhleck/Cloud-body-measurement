@@ -18,7 +18,6 @@ import com.cloudsports.actiondetect.model.DetectViewModel
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
-import org.json.JSONArray
 import kotlin.math.max
 import kotlin.math.min
 
@@ -85,7 +84,6 @@ class OverlayView(
 
         results?.let { poseLandmarkerResult ->
             for(landmark in poseLandmarkerResult.landmarks()) {
-                val landmarkArray = JSONArray()
                 for(normalizedLandmark in landmark) {
                     canvas.drawPoint(
                         normalizedLandmark.x() * imageWidth * scaleFactor,
@@ -95,13 +93,13 @@ class OverlayView(
                 }
                 PoseLandmarker.POSE_LANDMARKS.forEach {
                     canvas.drawLine(
-                        poseLandmarkerResult.landmarks().get(0).get(it!!.start())
+                        poseLandmarkerResult.landmarks()[0][it!!.start()]
                             .x() * imageWidth * scaleFactor,
-                        poseLandmarkerResult.landmarks().get(0).get(it.start())
+                        poseLandmarkerResult.landmarks()[0][it.start()]
                             .y() * imageHeight * scaleFactor,
-                        poseLandmarkerResult.landmarks().get(0).get(it.end())
+                        poseLandmarkerResult.landmarks()[0][it.end()]
                             .x() * imageWidth * scaleFactor,
-                        poseLandmarkerResult.landmarks().get(0).get(it.end())
+                        poseLandmarkerResult.landmarks()[0][it.end()]
                             .y() * imageHeight * scaleFactor,
                         linePaint
                     )
@@ -124,7 +122,7 @@ class OverlayView(
         this.imageWidth = imageWidth
 
         // 将results.landmarks()转化为Array<DoubleArray>
-        val poseLandmarks = Array<DoubleArray>(33) { DoubleArray(3) }
+        val poseLandmarks = Array(33) { DoubleArray(3) }
 
         if (poseLandmarkerResults.landmarks().isNotEmpty()) {
             for (i in 0..32) {
