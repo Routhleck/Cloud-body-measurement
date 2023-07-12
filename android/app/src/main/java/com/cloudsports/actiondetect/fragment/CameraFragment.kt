@@ -1,29 +1,18 @@
-/*
- * Copyright 2023 The TensorFlow Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.cloudsports.actiondetect.fragment
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.camera.core.Preview
@@ -41,11 +30,14 @@ import com.cloudsports.actiondetect.R
 import com.cloudsports.actiondetect.algorithm.PoseLandmarkerHelper
 import com.cloudsports.actiondetect.model.DetectViewModel
 import com.cloudsports.actiondetect.databinding.FragmentCameraBinding
+import com.cloudsports.actiondetect.view.OverlayView
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
 
@@ -70,6 +62,10 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     private lateinit var backgroundExecutor: ExecutorService
 
     private lateinit var binding: FragmentCameraBinding
+
+
+
+
 
     override fun onResume() {
         super.onResume()
@@ -128,9 +124,33 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         return fragmentCameraBinding.root
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val counterText = requireView().findViewById<TextView>(R.id.counter_text)
+        val startStopButton = requireView().findViewById<FloatingActionButton>(R.id.start_stop_button)
+        val overlayView = view.findViewById<OverlayView>(R.id.overlay)
+
+        var isStarted = false
+
+        // startStopButton set
+        startStopButton.setOnClickListener {
+            if (isStarted) {
+                startStopButton.setImageResource(R.drawable.media_play)
+                // 停止你的任务
+                overlayView.stop()
+            } else {
+                startStopButton.setImageResource(R.drawable.media_stop)
+                startStopButton.isEnabled = false
+                overlayView.reset()
+                view.findViewById<TextView>(R.id.countdown_text).text = "3"
+                counterText.text = "count: 0"
+                startCountdown(view)
+                // 开始你的任务
+            }
+            isStarted = !isStarted
+        }
 
         // Initialize our background executor
         backgroundExecutor = Executors.newSingleThreadExecutor()
@@ -381,6 +401,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     // Update UI after pose have been detected. Extracts original
     // image height/width to scale and place the landmarks properly through
     // OverlayView
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResults(
         resultBundle: PoseLandmarkerHelper.ResultBundle
@@ -397,7 +418,9 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                     resultBundle.inputImageWidth,
                     RunningMode.LIVE_STREAM
                 )
-
+                // 从ViewModel获得count值
+                val count = viewModel.getCount()
+                requireView().findViewById<TextView>(R.id.counter_text).text = "count: $count"
 
                 // Force a redraw
                 fragmentCameraBinding.overlay.invalidate()
@@ -415,4 +438,37 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
             }
         }
     }
+
+    private fun startCountdown(view: View) {
+        val countdownContainer = view.findViewById<FrameLayout>(R.id.countdown_container)
+        val countdownText = view.findViewById<TextView>(R.id.countdown_text)
+        val overlayView = view.findViewById<OverlayView>(R.id.overlay)
+        val startStopButton = requireView().findViewById<FloatingActionButton>(R.id.start_stop_button)
+
+        val countdownSound = MediaPlayer.create(view.context, R.raw.countdown_3)
+
+        val countDownTimer = object: CountDownTimer(4000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsUntilFinished = millisUntilFinished / 1000
+                countdownText.text = secondsUntilFinished.toString()
+
+                // 播放倒数音效
+                countdownSound.start()
+            }
+
+            override fun onFinish() {
+                countdownText.text = "0"
+                countdownContainer.visibility = View.GONE
+                startStopButton.isEnabled = true
+                // 开始你的任务
+                overlayView.start()
+
+                countdownSound.reset()
+            }
+        }
+
+        countdownContainer.visibility = View.VISIBLE
+        countDownTimer.start()
+    }
+
 }

@@ -34,7 +34,7 @@ class UserRegister {
         // 如果成功，返回响应的 body（也就是服务器返回的数据）
         // 如果失败，返回 null
         return if (response.isSuccessful) {
-            JSONObject(response.body())
+            response.body()?.let { JSONObject(it) }
         } else {
             null
         }

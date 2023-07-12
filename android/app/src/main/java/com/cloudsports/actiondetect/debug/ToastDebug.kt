@@ -1,9 +1,9 @@
 package com.cloudsports.actiondetect.debug
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.Toast;
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
 
 class ToastDebug(private var context: Context?) {
     private var toast: Toast? = null

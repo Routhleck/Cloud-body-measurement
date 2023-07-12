@@ -1,17 +1,15 @@
 package com.cloudsports.actiondetect
 
-import com.cloudsports.actiondetect.netWorkUtils.UserLogin
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.cloudsports.actiondetect.data.User
 import com.cloudsports.actiondetect.debug.ToastDebug
+import com.cloudsports.actiondetect.netWorkUtils.UserLogin
 import kotlinx.coroutines.runBlocking
 
 class LoginActivity : AppCompatActivity() {
@@ -41,10 +39,6 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             val account = etAccount.text.toString()
             val password = etPassword.text.toString()
-            if (userName.isEmpty()) {
-                toast.show("还没有注册账号！")
-                return@setOnClickListener
-            }
             if (check(account,password)==1) {
                 toast.show("恭喜你，登录成功！")
                 val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
@@ -76,13 +70,13 @@ class LoginActivity : AppCompatActivity() {
         val judge = runBlocking {
             val result = repository.userLogin(loginRequest)
             if (result != null){
-                val code_judge=result.get("code")
+                val codeJudge=result.get("code")
                 /*
                 1:表示用户名和密码匹配并传递成功
                 2:传输过程出现问题
                 0：用户名和密码不匹配
                  */
-                if (code_judge=="200"){
+                if (codeJudge=="200"){
 
                     return@runBlocking 1
                 }

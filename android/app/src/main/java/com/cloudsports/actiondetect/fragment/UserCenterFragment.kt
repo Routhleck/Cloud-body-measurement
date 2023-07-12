@@ -1,5 +1,6 @@
 package com.cloudsports.actiondetect.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.cloudsports.actiondetect.LoginActivity
 import com.cloudsports.actiondetect.R
@@ -21,6 +21,7 @@ class UserCenterFragment : Fragment() {
     private lateinit var tvSportsCount: TextView
     private lateinit var account: String
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

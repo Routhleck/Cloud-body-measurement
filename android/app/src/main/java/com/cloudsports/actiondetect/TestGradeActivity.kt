@@ -1,16 +1,11 @@
 package com.cloudsports.actiondetect
 
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.cloudsports.actiondetect.adapter.TestGradeAdapter
 import com.cloudsports.actiondetect.adapter.ViewPagerAdapter
 import com.cloudsports.actiondetect.data.Grade
 import com.cloudsports.actiondetect.data.GradeItem
-import com.cloudsports.actiondetect.fragment.YearFragment
 
 class TestGradeActivity : AppCompatActivity() {
 

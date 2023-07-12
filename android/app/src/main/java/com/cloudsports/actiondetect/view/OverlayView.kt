@@ -1,18 +1,3 @@
-/*
- * Copyright 2023 The TensorFlow Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.cloudsports.actiondetect.view
 
 import android.annotation.SuppressLint
@@ -20,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.media.MediaPlayer
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
@@ -33,7 +19,6 @@ import com.cloudsports.actiondetect.model.DetectViewModel
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
-import org.json.JSONArray
 import kotlin.math.max
 import kotlin.math.min
 
@@ -61,6 +46,12 @@ class OverlayView(
 
     private lateinit var viewModel: DetectViewModel
 
+    private var isStarted = false
+    private var isStopped = false
+
+    private val detectSound = MediaPlayer.create(context, R.raw.action_detect)
+
+
     init {
         initPaints()
     }
@@ -74,6 +65,23 @@ class OverlayView(
         }
         actionName = viewModel.actionName.value!!
         mainActionCount = MainActionCount(context, actionName)
+    }
+
+    fun start() {
+        isStarted = true
+        isStopped = false
+    }
+
+    fun reset() {
+        mainActionCount = MainActionCount(context, actionName)
+        isStarted = false
+        isStopped = false
+        lastCount = 0
+        count = 0
+    }
+
+    fun stop() {
+        isStopped = true
     }
 
     fun clear() {
@@ -100,7 +108,6 @@ class OverlayView(
 
         results?.let { poseLandmarkerResult ->
             for(landmark in poseLandmarkerResult.landmarks()) {
-                val landmarkArray = JSONArray()
                 for(normalizedLandmark in landmark) {
                     canvas.drawPoint(
                         normalizedLandmark.x() * imageWidth * scaleFactor,
@@ -110,13 +117,13 @@ class OverlayView(
                 }
                 PoseLandmarker.POSE_LANDMARKS.forEach {
                     canvas.drawLine(
-                        poseLandmarkerResult.landmarks().get(0).get(it!!.start())
+                        poseLandmarkerResult.landmarks()[0][it!!.start()]
                             .x() * imageWidth * scaleFactor,
-                        poseLandmarkerResult.landmarks().get(0).get(it.start())
+                        poseLandmarkerResult.landmarks()[0][it.start()]
                             .y() * imageHeight * scaleFactor,
-                        poseLandmarkerResult.landmarks().get(0).get(it.end())
+                        poseLandmarkerResult.landmarks()[0][it.end()]
                             .x() * imageWidth * scaleFactor,
-                        poseLandmarkerResult.landmarks().get(0).get(it.end())
+                        poseLandmarkerResult.landmarks()[0][it.end()]
                             .y() * imageHeight * scaleFactor,
                         linePaint
                     )
@@ -126,6 +133,7 @@ class OverlayView(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
     fun setResults(
         poseLandmarkerResults: PoseLandmarkerResult,
@@ -139,23 +147,27 @@ class OverlayView(
         this.imageWidth = imageWidth
 
         // 将results.landmarks()转化为Array<DoubleArray>
-        val poseLandmarks = Array<DoubleArray>(33) { DoubleArray(3) }
+        val poseLandmarks = Array(33) { DoubleArray(3) }
 
-        if (poseLandmarkerResults.landmarks().isNotEmpty()) {
-            for (i in 0..32) {
-                poseLandmarks[i][0] = poseLandmarkerResults.landmarks()[0][i].x().toDouble()
-                poseLandmarks[i][1] = poseLandmarkerResults.landmarks()[0][i].y().toDouble()
-                poseLandmarks[i][2] = poseLandmarkerResults.landmarks()[0][i].z().toDouble()
-            }
-            lastCount = count
-            count = mainActionCount(poseLandmarks, imageHeight, imageWidth)
-            if (lastCount != count) {
-                toast?.show("count: $count")
+        if (isStarted) {
+            if (!isStopped) {
+                if (poseLandmarkerResults.landmarks().isNotEmpty()) {
+                    for (i in 0..32) {
+                        poseLandmarks[i][0] = poseLandmarkerResults.landmarks()[0][i].x().toDouble()
+                        poseLandmarks[i][1] = poseLandmarkerResults.landmarks()[0][i].y().toDouble()
+                        poseLandmarks[i][2] = poseLandmarkerResults.landmarks()[0][i].z().toDouble()
+                    }
+                    lastCount = count
+                    count = mainActionCount(poseLandmarks, imageHeight, imageWidth)
+                    if (lastCount != count) {
+                        // 将count传递给DetectViewModel
+                        viewModel.setCount(count)
+                        // 播放音效
+                        detectSound.start()
+                    }
+                }
             }
         }
-
-
-
 
         scaleFactor = when (runningMode) {
             RunningMode.IMAGE,

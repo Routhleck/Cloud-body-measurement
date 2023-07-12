@@ -18,7 +18,7 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
         return 7
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         // 返回页面的标题，如果你的ViewPager使用了TabLayout，这个标题会显示在Tab上面
         val year = 2023 - position
         return year.toString()
