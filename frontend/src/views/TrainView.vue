@@ -1,3 +1,4 @@
+<!-- 训练界面 -->
 <template>
   <div class="option_container">
     <div class="left-panel">
@@ -55,6 +56,15 @@
       <div class="video_container">
         <video ref="videoElement" controls></video>
       </div>
+      <div class="upload_container">
+        <el-button
+          type="primary"
+          :disabled="testResults === null"
+          @click="showConfirmationDialog"
+        >
+          上传成绩
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -90,11 +100,50 @@ export default {
       selectedStreamCode: null,
       selectedFitnessTest: null,
       selectedTestTime: null,
-      testResults: [],
+      testResults: null,
     };
   },
 
   methods: {
+    showConfirmationDialog() {
+      ElMessageBox.confirm("确认上传成绩?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.uploadTestResults();
+        })
+        .catch(() => {
+          // Cancel upload
+        });
+    },
+    uploadTestResults() {
+      const userJson = sessionStorage.getItem("user");
+      const user = JSON.parse(userJson);
+      const userId = user.user_id;
+      const actionName = this.selectedFitnessTest;
+      const data = {
+        actionName: actionName,
+        userId: userId,
+        testResults: this.testResults,
+      };
+
+      console.log(
+        "体测项目/用户ID/测试结果为" + actionName + userId + this.testResults
+      );
+
+      axios
+        .post("http://127.0.0.1:9090/upload/results", data)
+        .then((response) => {
+          console.log(response);
+          ElMessage.success("成绩上传成功");
+        })
+        .catch((error) => {
+          console.error(error);
+          ElMessage.error("成绩上传失败");
+        });
+    },
     startFitnessTest() {
       if (this.selectedStreamCode && this.selectedFitnessTest) {
         ElMessageBox.confirm("确认开始体测?", "提示", {
@@ -136,22 +185,17 @@ export default {
                 break;
             }
 
-            const userJson = sessionStorage.getItem("user");
-            const user = JSON.parse(userJson);
-            const userId = user.user_id;
             const data = {
               streamCode: streamCode,
               actionName: actionName,
-              selectedTestTime: this.selectedTestTime,
-              userId: userId,
+              train_time: this.selectedTestTime,
             };
 
             console.log(
-              "推流码/体测项目/训练时间/用户ID为" +
+              "推流码/体测项目/训练时间为" +
                 streamCode +
                 actionName +
-                this.selectedTestTime +
-                userId
+                this.selectedTestTime
             );
 
             let videoElement = this.$refs.videoElement;
@@ -232,5 +276,16 @@ export default {
 .result_container {
   display: flex;
   padding: 20px;
+}
+
+.upload_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+.upload_container .el-button {
+  width: 150px;
 }
 </style>
