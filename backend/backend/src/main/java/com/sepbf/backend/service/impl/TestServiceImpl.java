@@ -43,5 +43,10 @@ public class TestServiceImpl extends ServiceImpl<TestMapper, Test> implements Te
         return testMapper.getTestCountByIdAndYear(id, year);
     }
 
+    @Override
+    public Test getTestByIdAndYear(Integer id, Integer year) {
+        return testMapper.getTestByIdAndYear(id, year);
+    }
+
 
 }

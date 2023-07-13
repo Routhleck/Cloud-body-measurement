@@ -50,7 +50,7 @@ public class UploadGradeController {
         }else {
             //如果有，更新对应项目的数据
             //TODO:替换getTestById方法为getTestByIdAndYear方法
-            Test test = testService.getTestById(id);
+            Test test = testService.getTestByIdAndYear(id,year);
             insertGrade(item, number, test);
             //更新数据
             testService.updateTest(test);
