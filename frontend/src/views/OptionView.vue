@@ -132,12 +132,18 @@ export default {
                 break;
             }
 
+            const userJson = sessionStorage.getItem("user");
+            const user = JSON.parse(userJson);
+            const userId = user.user_id;
             const data = {
               streamCode: streamCode,
               actionName: actionName,
+              userId: userId,
             };
 
-            console.log("推流码和体测项目为" + streamCode + actionName);
+            console.log(
+              "推流码/体测项目/用户ID为" + streamCode + actionName + userId
+            );
 
             let videoElement = this.$refs.videoElement;
             let flvPlayer = flvjs.createPlayer({

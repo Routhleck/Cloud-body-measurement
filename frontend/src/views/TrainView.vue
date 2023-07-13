@@ -136,17 +136,22 @@ export default {
                 break;
             }
 
+            const userJson = sessionStorage.getItem("user");
+            const user = JSON.parse(userJson);
+            const userId = user.user_id;
             const data = {
               streamCode: streamCode,
               actionName: actionName,
               selectedTestTime: this.selectedTestTime,
+              userId: userId,
             };
 
             console.log(
-              "推流码/体测项目/训练时间为" +
+              "推流码/体测项目/训练时间/用户ID为" +
                 streamCode +
                 actionName +
-                this.selectedTestTime
+                this.selectedTestTime +
+                userId
             );
 
             let videoElement = this.$refs.videoElement;
