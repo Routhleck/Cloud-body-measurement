@@ -3,50 +3,57 @@ package com.sepbf.backend.pojo;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 @TableName("test")
 @Data
 public class Test {
 
-    private int UserId;
-
-    private Date TestTime;
-
-    private float Height;
-
-    private float Weight;
-
-    private int VitalCapacity;
-
-    private float StandingLongJump;
-
-    private float SitAndReach;
-
-    private int PullOrSitUp;
-
-    private float Sprint50m;
-
-    private float LongDistanceRun;
-
     @TableId
-    private int TestId;
+    private int test_id;
 
-    public Test (int UserId,Date TestTime, float Height, float Weight, int VitalCapacity, float StandingLongJump, float SitAndReach, int PullOrSitUp, float Sprint50m, float LongDistanceRun,int TestId) {
-        this.UserId = UserId;
-        this.TestTime = TestTime;
-        this.Height = Height;
-        this.Weight = Weight;
-        this.VitalCapacity = VitalCapacity;
-        this.StandingLongJump = StandingLongJump;
-        this.SitAndReach = SitAndReach;
-        this.PullOrSitUp = PullOrSitUp;
-        this.Sprint50m = Sprint50m;
-        this.LongDistanceRun = LongDistanceRun;
-        this.TestId = TestId;
+    private int user_id;
+
+    private float height;
+
+    private float weight;
+
+    private int vital_capacity;
+
+    private float standing_long_jump;
+
+    private float sit_and_reach;
+
+    private int pull_up;
+
+    private float sprint_50m;
+
+    private float long_distance_run;
+
+    private int push_up;
+
+    private int sit_up;
+
+    private int squat;
+
+    private String test_time;
+
+
+    public Test(int testid,int userid, float height, float weight, int vital_capacity, float standinglongjump, float sitandreach, int pullup, float sprint50M, float longdistancerun, int pushup, int situp, int squat,String test_time) {
+        user_id = userid;
+        this.test_time = test_time;
+        this.height = height;
+        this.weight = weight;
+        this.vital_capacity = vital_capacity;
+        standing_long_jump = standinglongjump;
+        sit_and_reach = sitandreach;
+        pull_up = pullup;
+        sprint_50m = sprint50M;
+        long_distance_run = longdistancerun;
+        push_up = pushup;
+        sit_up = situp;
+        this.squat = squat;
+        test_id = testid;
     }
 
 }
