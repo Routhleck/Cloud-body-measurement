@@ -49,6 +49,7 @@ public class UploadGradeController {
             return Result.success();
         }else {
             //如果有，更新对应项目的数据
+            //TODO:替换getTestById方法为getTestByIdAndYear方法
             Test test = testService.getTestById(id);
             insertGrade(item, number, test);
             //更新数据

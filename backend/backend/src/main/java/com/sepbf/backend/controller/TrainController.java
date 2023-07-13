@@ -11,6 +11,11 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/train")
 public class TrainController {
+    @Resource
+    private TrainService trainService;
 
-
+    @GetMapping
+    public Result findAllByUserId(@RequestParam("UserId") Integer userId) {
+        return Result.success(trainService.getTrainById(userId));
+    }
 }

@@ -19,4 +19,9 @@ public class TrainServiceImpl extends ServiceImpl<TrainMapper, Train> implements
         return trainMapper.selectById(id);
     }
 
+    @Override
+    public boolean addTrain(Train train) {
+        return trainMapper.insert(train) > 0;
+    }
+
 }
