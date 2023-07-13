@@ -56,11 +56,11 @@ class Grade { //创建retrofit对象
     }
 
 }
-fun main(){
-    val repository= Grade()
-//    // 创建一个 User.LoginRequest 对象
-    runBlocking {
-        val result = repository.upadteGradeByUserId(1)
-        println(result)
-    }
-}
+//fun main(){
+//    val repository= Grade()
+////    // 创建一个 User.LoginRequest 对象
+//    runBlocking {
+//        val result = repository.upadteGradeByUserId(1)
+//        println(result)
+//    }
+//}

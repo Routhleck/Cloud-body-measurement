@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.cloudsports.actiondetect.data.Sport
 import com.cloudsports.actiondetect.data.User
 import com.cloudsports.actiondetect.debug.ToastDebug
 import com.cloudsports.actiondetect.model.GlobalVariable
@@ -72,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     /*
-    输入用户id，得到一个jsonobject
+    输入用户id，得到一个json object
      */
     private fun getRecordById(user_id:Int):JSONObject?{
         val repository = Grade()
@@ -85,8 +86,30 @@ class LoginActivity : AppCompatActivity() {
                 return@runBlocking null
             }
         }
+        // 从record提取totalCount和totalTime以及ItemList
+        GlobalVariable.totalCount = result?.get("totalCount") as Int
+        GlobalVariable.totalTime = (result.get("totalTime") as Int) / 60
+        val temp_sportsHistoryList = result.get("itemList") as List<*>?
+
+        // 将temp提取count, value, time, practiceTime, name放到sportsHistoryList中
+        val sportsHistoryList = mutableListOf<Sport>()
+        if (temp_sportsHistoryList != null) {
+            for (i in temp_sportsHistoryList.indices) {
+                val temp = temp_sportsHistoryList[i] as JSONObject
+                val count = temp.get("count") as Int
+//                val value = temp.get("value") as Int
+                val time = (temp.get("time") as String)
+                val practiceTime = (temp.get("practiceTime") as Int)
+                val name = temp.get("name") as String
+                sportsHistoryList.add(Sport(name, practiceTime, count.toString(), time))
+            }
+        }
+
+        GlobalVariable.sportsHistoryList = sportsHistoryList
+
         return result
     }
+
     private fun check(name : String,password : String ): Int? {
         val repository = UserLogin()
         val loginRequest = User.LoginRequest(name,password)
@@ -95,7 +118,7 @@ class LoginActivity : AppCompatActivity() {
             val result = repository.userLogin(loginRequest)
             if (result != null){
                 val codeJudge=result.get("code")
-                val user_id= result.get("data") as Int
+                val userId= result.get("data") as Int
                 /*
                 user_id:表示用户名和密码匹配并传递成功并且回传user_id
                 -2:传输过程出现问题
@@ -103,7 +126,7 @@ class LoginActivity : AppCompatActivity() {
                  */
                 if (codeJudge=="200"){
 
-                    return@runBlocking user_id
+                    return@runBlocking userId
                 }
                 else{
                     return@runBlocking -1
