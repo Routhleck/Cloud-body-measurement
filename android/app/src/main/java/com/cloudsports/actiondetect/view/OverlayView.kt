@@ -84,6 +84,10 @@ class OverlayView(
         isStopped = true
     }
 
+    fun getCount(): Int {
+        return count
+    }
+
     fun clear() {
         results = null
         pointPaint.reset()

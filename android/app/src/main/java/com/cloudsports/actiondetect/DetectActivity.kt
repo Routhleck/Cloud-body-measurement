@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.cloudsports.actiondetect.databinding.ActivityMainBinding
 import com.cloudsports.actiondetect.model.DetectViewModel
 

@@ -1,6 +1,7 @@
 package com.cloudsports.actiondetect.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Build
@@ -28,9 +29,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.cloudsports.actiondetect.R
+import com.cloudsports.actiondetect.UploadHistoryActivity
 import com.cloudsports.actiondetect.algorithm.PoseLandmarkerHelper
 import com.cloudsports.actiondetect.model.DetectViewModel
 import com.cloudsports.actiondetect.databinding.FragmentCameraBinding
+import com.cloudsports.actiondetect.model.GlobalVariable
 import com.cloudsports.actiondetect.view.OverlayView
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
@@ -155,6 +158,14 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 handler.removeCallbacks(runnable)
                 // 停止你的任务
                 overlayView.stop()
+                val intent = Intent(requireContext(), UploadHistoryActivity::class.java)
+                viewModel.actionName.observe(viewLifecycleOwner) { name ->
+                    GlobalVariable.actionName = name
+                }
+                GlobalVariable.actionCount = viewModel.getCount()
+                GlobalVariable.actionTime = this.secondsElapsed
+                startActivity(intent)
+
             } else {
                 startStopButton.setImageResource(R.drawable.media_stop)
                 startStopButton.isEnabled = false

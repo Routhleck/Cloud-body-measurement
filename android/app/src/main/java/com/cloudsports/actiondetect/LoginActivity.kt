@@ -9,12 +9,14 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.cloudsports.actiondetect.data.User
 import com.cloudsports.actiondetect.debug.ToastDebug
+import com.cloudsports.actiondetect.model.GlobalVariable
 import com.cloudsports.actiondetect.netWorkUtils.UserLogin
 import kotlinx.coroutines.runBlocking
 
 class LoginActivity : AppCompatActivity() {
 
     private val toast = ToastDebug(this)
+
 
     companion object {
         const val REQUEST_CODE_REGISTER = 1
@@ -41,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
             if (check(account,password)==1) {
                 toast.show("恭喜你，登录成功！")
+                GlobalVariable.userName = account
+
                 val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
                 val edit = spf.edit()
                 edit.putBoolean("isRemember", cbRemember.isChecked)
