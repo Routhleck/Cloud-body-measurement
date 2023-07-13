@@ -13,4 +13,6 @@ public interface TestService extends IService<Test>{
     boolean updateTest(Test test);
 
     Test getTestById(Integer id);
+
+    int getTestCountByIdAndYear(String id, int year);
 }
