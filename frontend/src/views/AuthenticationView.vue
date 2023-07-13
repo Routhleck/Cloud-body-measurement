@@ -137,6 +137,7 @@ export default {
     },
     comfirm_4() {
       this.dialogVisible_4 = false;
+      location.reload();
     },
     captureImage() {
       const video = document.getElementById("videoCamera");
@@ -227,7 +228,7 @@ export default {
           userId: userId,
         };
 
-        console.log("userid为=================》" + userId);
+        console.log("userid为---->" + userId);
 
         axios
           .post("http://127.0.0.1:9090/auth", requestData)
