@@ -2,6 +2,7 @@ package com.cloudsports.actiondetect
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -15,6 +16,7 @@ import com.cloudsports.actiondetect.netWorkUtils.Grade
 import com.cloudsports.actiondetect.netWorkUtils.UserLogin
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
+import java.util.Objects
 
 class LoginActivity : AppCompatActivity() {
 
@@ -33,6 +35,8 @@ class LoginActivity : AppCompatActivity() {
     private var userName = "a"
     private var pass = "123"
 
+    private var isSuccess = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -44,30 +48,33 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             val account = etAccount.text.toString()
             val password = etPassword.text.toString()
-            if (check(account,password)==-1) {
-                toast.show("密码错误或用户名和密码不匹配")
-            }
-            else if (check(account,password)==-2){
-                toast.show("传输过程出现问题，请检查网络或练习服务器管理员")
-            }
-            else{
-                GlobalVariable.userId=check(account,password)
-                toast.show("恭喜你，登录成功！")
-//                GlobalVariable.userName = account
 
-                val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
-                val edit = spf.edit()
-                edit.putBoolean("isRemember", cbRemember.isChecked)
-                if (cbRemember.isChecked) {
-                    edit.putString("account", account)
-                    edit.putString("password", password)
+            when (val result = check(account, password)) {
+                -1 -> toast.show("密码错误或用户名和密码不匹配")
+
+                -2 -> toast.show("传输过程出现问题，请检查网络或练习服务器管理员")
+
+                1 -> {
+                    GlobalVariable.userId = result
+                    toast.show("恭喜你，登录成功！")
+                    val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
+                    val edit = spf.edit()
+                    edit.putBoolean("isRemember", cbRemember.isChecked)
+                    if (cbRemember.isChecked) {
+                        edit.putString("account", account)
+                        edit.putString("password", password)
+                    }
+                    edit.apply()
+
+                    getRecordById(GlobalVariable.userId!!)
+
+                    if (isSuccess) {
+                        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                        intent.putExtra("account", account)
+                        startActivity(intent)
+                        this@LoginActivity.finish()
+                    }
                 }
-                edit.apply()
-
-                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                intent.putExtra("account", account)
-                startActivity(intent)
-                this@LoginActivity.finish()
             }
         }
     }
@@ -75,69 +82,82 @@ class LoginActivity : AppCompatActivity() {
     /*
     输入用户id，得到一个json object
      */
-    private fun getRecordById(user_id:Int):JSONObject?{
+    private fun getRecordById(user_id:Int) {
         val repository = Grade()
-        val result = runBlocking {
-            val result =repository.getRecord(user_id)
-            if(result!=null){
-                return@runBlocking result
+        var result: JSONObject? = null
+        try {
+            result = runBlocking {
+                val response = repository.getRecord(user_id)
+                if (response != null) {
+                    return@runBlocking response
+                } else {
+                    return@runBlocking null
+                }
             }
-            else{
-                return@runBlocking null
-            }
-        }
-        // 从record提取totalCount和totalTime以及ItemList
-        GlobalVariable.totalCount = result?.get("totalCount") as Int
-        GlobalVariable.totalTime = (result.get("totalTime") as Int) / 60
-        val temp_sportsHistoryList = result.get("itemList") as List<*>?
+            result = result?.get("data") as JSONObject?
 
-        // 将temp提取count, value, time, practiceTime, name放到sportsHistoryList中
-        val sportsHistoryList = mutableListOf<Sport>()
-        if (temp_sportsHistoryList != null) {
-            for (i in temp_sportsHistoryList.indices) {
-                val temp = temp_sportsHistoryList[i] as JSONObject
-                val count = temp.get("count") as Int
-//                val value = temp.get("value") as Int
-                val time = (temp.get("time") as String)
-                val practiceTime = (temp.get("practiceTime") as Int)
-                val name = temp.get("name") as String
+            // 从record提取totalCount和totalTime以及ItemList
+            GlobalVariable.totalCount = (result?.get("totalCount") as Double).toInt()
+            GlobalVariable.totalTime = ((result.get("totalTime") as Double) / 60).toInt()
+            // 将itemList的元素转换为 Map 而不是 JSONObject
+            val temp_sportsHistoryList = result.getJSONArray("ItemList")
+
+            // 处理sportsHistoryList
+            val sportsHistoryList = mutableListOf<Sport>()
+            for (i in 0 until temp_sportsHistoryList.length()) {
+                val temp = temp_sportsHistoryList.getJSONObject(i)
+                val count = temp.getDouble("count").toInt()
+                val time = temp.getString("time")
+                val practiceTime = temp.getDouble("practiceTime").toInt()
+                val name = temp.getString("name")
                 sportsHistoryList.add(Sport(name, practiceTime, count.toString(), time))
             }
+
+
+            GlobalVariable.sportsHistoryList = sportsHistoryList
+
+        } catch (e: Exception) {
+            // Log error message
+            isSuccess = false
+            Log.e("Network request failed", e.toString())
+            toast.show("网络请求失败")
         }
 
-        GlobalVariable.sportsHistoryList = sportsHistoryList
-
-        return result
     }
 
     private fun check(name : String,password : String ): Int? {
         val repository = UserLogin()
         val loginRequest = User.LoginRequest(name,password)
 
-        val judge = runBlocking {
-            val result = repository.userLogin(loginRequest)
-            if (result != null){
-                val codeJudge=result.get("code")
-                val userId= result.get("data") as Int
-                /*
-                user_id:表示用户名和密码匹配并传递成功并且回传user_id
-                -2:传输过程出现问题
-                -1：用户名和密码不匹配
-                 */
-                if (codeJudge=="200"){
-
-                    return@runBlocking userId
+        try {
+            val judge = runBlocking {
+                val result = repository.userLogin(loginRequest)
+                if (result != null){
+                    val codeJudge=result.get("code")
+                    /*
+                    user_id:表示用户名和密码匹配并传递成功并且回传user_id
+                    -2:传输过程出现问题
+                    -1：用户名和密码不匹配
+                     */
+                    if (codeJudge=="200"){
+                        val userId = (result.get("data") as Double).toInt()
+                        return@runBlocking userId
+                    }
+                    else{
+                        return@runBlocking -1
+                    }
                 }
-                else{
-                    return@runBlocking -1
+                else {
+                    return@runBlocking -2
                 }
             }
-            else {
-                return@runBlocking -2
-            }
-
+            return judge
+        } catch (e: Exception) {
+            // Log error message
+            isSuccess = false
+            Log.e("Network request failed", e.toString())
         }
-        return judge
+        return -2
     }
     private fun initData() {
         val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)

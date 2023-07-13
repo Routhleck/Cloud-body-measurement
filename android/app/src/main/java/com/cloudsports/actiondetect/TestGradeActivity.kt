@@ -1,11 +1,14 @@
 package com.cloudsports.actiondetect
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.cloudsports.actiondetect.adapter.ViewPagerAdapter
 import com.cloudsports.actiondetect.data.Grade
 import com.cloudsports.actiondetect.data.GradeItem
+import com.cloudsports.actiondetect.debug.ToastDebug
+import com.cloudsports.actiondetect.model.GlobalVariable
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 
@@ -13,6 +16,14 @@ class TestGradeActivity : AppCompatActivity() {
 
 
     private lateinit var viewPager: ViewPager
+
+    private var gradeList: List<Grade>
+
+    private val toast = ToastDebug(this)
+
+    init {
+        gradeList = GlobalVariable.userId?.let { updateGradeForUserId(it) }!!
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,26 +56,53 @@ class TestGradeActivity : AppCompatActivity() {
     }
 
     fun updateGradeForYear(year: Int): Grade {
-        // 更新Grade数据
-        return getGrade(year, 175.0, 60.0, 3000, 220.0, 20.0, 20, 6.0, 200.0)
-    }
+        // 找到对应年份的Grade数据
+        val grade = gradeList.find { it.year == year }
+        return grade!!
+        }
 
     /*
-    根据用户id获取测试成绩，jsonobject
+    根据用户id获取测试成绩，json object
 
      */
-    fun updateGradeForUserId(user_id : Int) : JSONObject?{
+    private fun updateGradeForUserId(user_id : Int) : List<Grade>{
         val repository = com.cloudsports.actiondetect.netWorkUtils.Grade()
-        val result= runBlocking {
-            val result =repository.upadteGradeByUserId(user_id)
-            if(result!=null){
-                return@runBlocking result
+        var response: JSONObject? = null
+        try {
+            response= runBlocking {
+                val result =repository.upadteGradeByUserId(user_id)
+                if(result!=null){
+                    return@runBlocking result
+                }
+                else{
+                    return@runBlocking null
+                }
             }
-            else{
-                return@runBlocking null
+            val result = response?.getJSONArray("data")
+
+            val tempList = mutableListOf<Grade>()
+
+            // 将result转换为gradeList
+            for (i in 0 until result!!.length()){
+                val jsonObj = result.getJSONObject(i)
+                val year = jsonObj.getInt("year")
+                val height = jsonObj.getDouble("height")
+                val weight = jsonObj.getDouble("weight")
+                val vitalCapacity = jsonObj.getInt("vital_capacity")
+                val standingLongJump = jsonObj.getDouble("standing_long_jump")
+                val sitAndReach = jsonObj.getDouble("sit_and_reach")
+                val pullOrSitUp = jsonObj.getInt("pull_up")
+                val sprint50m = jsonObj.getDouble("sprint_50m")
+                val longDistanceRun = jsonObj.getDouble("long_distance_run")
+                val grade = getGrade(year, height, weight, vitalCapacity, standingLongJump, sitAndReach, pullOrSitUp, sprint50m, longDistanceRun)
+                tempList.add(grade)
             }
+            return tempList.toList()
+        } catch (e: Exception) {
+            Log.e("Network request failed", e.toString())
+            toast.show("网络请求失败")
         }
-        return result
+        return emptyList()
     }
 
     private fun getGrade(
