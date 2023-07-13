@@ -3,6 +3,7 @@ package com.sepbf.backend.controller;
 import com.sepbf.backend.service.ActionService;
 import com.sepbf.backend.utils.Result;
 import okhttp3.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/stream")
 public class StreamController {

@@ -1,4 +1,3 @@
-<!-- 训练数据展示 -->
 <template>
   <div class="element-main">
     <div class="select-container">
@@ -53,28 +52,15 @@ export default {
     return {
       selectedSport: null,
       sports: ["引体向上", "俯卧撑", "仰卧起坐", "深蹲"],
-      tableData: [
-        { time: "2022/1/1", sport: "引体向上", duration: 10, result: "10次" },
-        { time: "2022/1/1", sport: "俯卧撑", duration: 15, result: "15次" },
-        { time: "2022/1/1", sport: "仰卧起坐", duration: 8, result: "8次" },
-        { time: "2022/1/1", sport: "深蹲", duration: 12, result: "12次" },
-        { time: "2022/1/1", sport: "引体向上", duration: 12, result: "12次" },
-        { time: "2022/1/1", sport: "俯卧撑", duration: 18, result: "18次" },
-        { time: "2022/1/1", sport: "仰卧起坐", duration: 10, result: "10次" },
-        { time: "2022/1/1", sport: "深蹲", duration: 14, result: "14次" },
-        { time: "2022/1/1", sport: "引体向上", duration: 8, result: "8次" },
-        { time: "2022/1/1", sport: "俯卧撑", duration: 14, result: "14次" },
-        { time: "2022/1/1", sport: "仰卧起坐", duration: 6, result: "6次" },
-        { time: "2022/1/1", sport: "深蹲", duration: 10, result: "10次" },
-      ],
+      tableData: [],
       filteredTableData: [],
       columns: [
         { prop: "time", label: "运动时间" },
-        { prop: "sport", label: "运动项目" },
-        { prop: "duration", label: "运动时长" },
-        { prop: "result", label: "运动结果" },
+        { prop: "name", label: "运动项目" },
+        { prop: "practiceTime", label: "运动时长" },
+        { prop: "count", label: "运动结果" },
       ],
-      totalDuration: 600,
+      totalDuration: null,
     };
   },
   methods: {
@@ -82,15 +68,18 @@ export default {
       const userJson = sessionStorage.getItem("user");
       const user = JSON.parse(userJson);
       const userId = user.user_id;
-      const data = {
-        userId: userId,
-      };
       try {
-        const response = await axios.get("http://127.0.0.1:9090/sports", data);
-        this.tableData = response.data.tableData;
-        this.totalDuration = response.data.totalDuration;
+        const response = await axios.get(
+          `http://127.0.0.1:9090/train/record?UserId=${userId}`
+        );
+        if (response.data.code === "200") {
+          this.tableData = response.data.data.ItemList;
+          this.totalDuration = response.data.data.totalTime;
+        } else {
+          console.error("请求失败:", response.data.message);
+        }
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        console.error("请求失败:", error);
       }
     },
     handleQuery() {
@@ -98,7 +87,7 @@ export default {
         this.filteredTableData = this.tableData;
       } else if (this.selectedSport) {
         const filteredData = this.tableData.filter(
-          (item) => item.sport === this.selectedSport
+          (item) => item.name === this.selectedSport
         );
         this.filteredTableData = filteredData;
       } else {
@@ -106,7 +95,6 @@ export default {
       }
     },
   },
-
   mounted() {
     this.fetchData();
   },
