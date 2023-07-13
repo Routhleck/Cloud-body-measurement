@@ -8,12 +8,17 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.cloudsports.actiondetect.debug.ToastDebug
 import com.cloudsports.actiondetect.model.GlobalVariable
+import com.cloudsports.actiondetect.netWorkUtils.Grade
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class UploadHistoryActivity : AppCompatActivity() {
     private val toast: ToastDebug = ToastDebug(this)
 
+    private fun check(user_id: Int? =GlobalVariable.userId,item:String,number:String) {
+
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -62,11 +67,23 @@ class UploadHistoryActivity : AppCompatActivity() {
         val uploadButton = findViewById<Button>(R.id.upload_button)
         uploadButton.setOnClickListener {
             // 处理上传逻辑
+            val repository = Grade()
+            val judge = runBlocking {
+                val updateRequest =com.cloudsports.actiondetect.data.Grade.updateRequest(GlobalVariable.userId,actionName!!,actionCount.toString(),actionTime.toString())
+                val result =repository.updateGrade(GlobalVariable.userId,actionName!!,actionCount.toString(),actionTime.toString())
+                if(result != null){
+                    val codeJudge = result.get("code")
+                    if (codeJudge == "200")
+                    {
+                        toast.show("上传成功")
 
-            // 上传成功就显示上传成功然后返回
-            toast.show("上传成功")
+                    }
+                    else{
+                        toast.show("上传失败")
 
-            // 上传失败就显示失败然后不返回
+                    }
+                }
+            }
 
         }
     }

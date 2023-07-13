@@ -1,7 +1,8 @@
 package com.cloudsports.actiondetect.actiondetect
 
-import UserLogin
 import com.cloudsports.actiondetect.data.User
+import com.cloudsports.actiondetect.model.GlobalVariable
+import com.cloudsports.actiondetect.netWorkUtils.Grade
 import com.cloudsports.actiondetect.netWorkUtils.UserLogin
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
@@ -29,6 +30,7 @@ class ExampleUnitTest {
         // 创建一个 User.LoginRequest 对象
         val loginRequest = User.LoginRequest("admin", "admin")
 
+
         // 使用 runBlocking 函数来在主线程中执行协程代码
         runBlocking {
             val result = repository.userLogin(loginRequest)
@@ -39,6 +41,33 @@ class ExampleUnitTest {
                 println("请求失败")
             }
         }
+        println(GlobalVariable.userId)
+    }
+    @Test
+    fun main(){
+        val repository= Grade()
+//    // 创建一个 User.LoginRequest 对象
+        runBlocking {
+            val result = repository.upadteGradeByUserId(1)
+            println(result)
+        }
+    }
+    @Test
+    fun main1(){
+        val repository = Grade()
+        runBlocking {
+            val result = repository.updateGrade(1,"pullUp","3","4")
+            println(result)
+        }
+    }
 
+
+    @Test
+    fun main2(){
+        val repository = Grade()
+        runBlocking {
+            val result = repository.getRecord(1)
+            println(result)
+        }
     }
 }

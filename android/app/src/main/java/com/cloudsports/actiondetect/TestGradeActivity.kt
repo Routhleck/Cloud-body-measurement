@@ -6,6 +6,8 @@ import androidx.viewpager.widget.ViewPager
 import com.cloudsports.actiondetect.adapter.ViewPagerAdapter
 import com.cloudsports.actiondetect.data.Grade
 import com.cloudsports.actiondetect.data.GradeItem
+import kotlinx.coroutines.runBlocking
+import org.json.JSONObject
 
 class TestGradeActivity : AppCompatActivity() {
 
@@ -45,6 +47,24 @@ class TestGradeActivity : AppCompatActivity() {
     fun updateGradeForYear(year: Int): Grade {
         // 更新Grade数据
         return getGrade(year, 175.0, 60.0, 3000, 220.0, 20.0, 20, 6.0, 200.0)
+    }
+
+    /*
+    根据用户id获取测试成绩，jsonobject
+
+     */
+    fun updateGradeForUserId(user_id : Int) : JSONObject?{
+        val repository = com.cloudsports.actiondetect.netWorkUtils.Grade()
+        val result= runBlocking {
+            val result =repository.upadteGradeByUserId(user_id)
+            if(result!=null){
+                return@runBlocking result
+            }
+            else{
+                return@runBlocking null
+            }
+        }
+        return result
     }
 
     private fun getGrade(

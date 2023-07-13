@@ -10,8 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.cloudsports.actiondetect.data.User
 import com.cloudsports.actiondetect.debug.ToastDebug
 import com.cloudsports.actiondetect.model.GlobalVariable
+import com.cloudsports.actiondetect.netWorkUtils.Grade
 import com.cloudsports.actiondetect.netWorkUtils.UserLogin
 import kotlinx.coroutines.runBlocking
+import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
 
@@ -41,9 +43,16 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             val account = etAccount.text.toString()
             val password = etPassword.text.toString()
-            if (check(account,password)==1) {
+            if (check(account,password)==-1) {
+                toast.show("密码错误或用户名和密码不匹配")
+            }
+            else if (check(account,password)==-2){
+                toast.show("传输过程出现问题，请检查网络或练习服务器管理员")
+            }
+            else{
+                GlobalVariable.userId=check(account,password)
                 toast.show("恭喜你，登录成功！")
-                GlobalVariable.userName = account
+//                GlobalVariable.userName = account
 
                 val spf = getSharedPreferences("spfRecorid", MODE_PRIVATE)
                 val edit = spf.edit()
@@ -59,38 +68,51 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
                 this@LoginActivity.finish()
             }
-            else if (check(account,password)==0) {
-                toast.show("密码错误或用户名和密码不匹配")
-            }
-            else if (check(account,password)==2){
-                toast.show("传输过程出现问题，请检查网络或练习服务器管理员")
-            }
         }
     }
 
-    private fun check(name : String,password : String ):Int{
+    /*
+    输入用户id，得到一个jsonobject
+     */
+    private fun getRecordById(user_id:Int):JSONObject?{
+        val repository = Grade()
+        val result = runBlocking {
+            val result =repository.getRecord(user_id)
+            if(result!=null){
+                return@runBlocking result
+            }
+            else{
+                return@runBlocking null
+            }
+        }
+        return result
+    }
+    private fun check(name : String,password : String ): Int? {
         val repository = UserLogin()
         val loginRequest = User.LoginRequest(name,password)
+
         val judge = runBlocking {
             val result = repository.userLogin(loginRequest)
             if (result != null){
                 val codeJudge=result.get("code")
+                val user_id= result.get("data") as Int
                 /*
-                1:表示用户名和密码匹配并传递成功
-                2:传输过程出现问题
-                0：用户名和密码不匹配
+                user_id:表示用户名和密码匹配并传递成功并且回传user_id
+                -2:传输过程出现问题
+                -1：用户名和密码不匹配
                  */
                 if (codeJudge=="200"){
 
-                    return@runBlocking 1
+                    return@runBlocking user_id
                 }
                 else{
-                    return@runBlocking 0
+                    return@runBlocking -1
                 }
             }
             else {
-                return@runBlocking 2
+                return@runBlocking -2
             }
+
         }
         return judge
     }

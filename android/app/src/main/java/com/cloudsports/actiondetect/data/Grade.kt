@@ -2,9 +2,14 @@ package com.cloudsports.actiondetect.data
 
 
 class Grade(
+
     val year: Int,
     val items: List<GradeItem>
+
 ) {
+    data class updateRequest(val id: Int?,val item : String,val number: String,val train_time : String)
+    data class recordRequest(val UserId : String)
+
     var level: String? = null
     var score: Double? = null
 
