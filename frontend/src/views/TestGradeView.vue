@@ -1,4 +1,4 @@
-<!-- 体测成绩展示 -->
+<!-- eslint-disable vue/no-deprecated-filter -->
 <template>
   <div class="element-main">
     <div class="select-container">
@@ -29,7 +29,8 @@
         :label="column.label"
       >
         <template v-slot="{ row }">
-          {{ row[column.prop] }}
+          <span v-if="column.prop !== 'test_time'">{{ row[column.prop] }}</span>
+          <span v-else>{{ row[column.prop] | formatDate }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -38,37 +39,20 @@
 </template>
 
 <script>
+// eslint-disable-next-line
 import axios from "axios";
 
 export default {
+  filters: {
+    formatDate(value) {
+      return value.toString(); // Modify this to format the date as per your requirement
+    },
+  },
   data() {
     return {
       selectedYear: null,
       years: null, // 年份下拉框选项
-      tableData: [
-        {
-          test_time: 2022,
-          height: 170,
-          weight: 65,
-          vital_capacity: 4000,
-          standing_long_jump: 200,
-          sit_and_reach: 30,
-          pull_or_sitUp: 15,
-          "50m": 7,
-          "800_or_1000m": 180,
-        },
-        {
-          test_time: 2023,
-          height: 175,
-          weight: 68,
-          vital_capacity: 4200,
-          standing_long_jump: 205,
-          sit_and_reach: 32,
-          pull_or_sitUp: 18,
-          "50m": 6.5,
-          "800_or_1000m": 170,
-        },
-      ],
+      tableData: [],
       filteredTableData: [],
       columns: [
         // 表格列配置
@@ -78,9 +62,9 @@ export default {
         { prop: "vital_capacity", label: "肺活量(ml)" },
         { prop: "standing_long_jump", label: "立定跳远(cm)" },
         { prop: "sit_and_reach", label: "坐位体前屈(cm)" },
-        { prop: "pull_or_sitUp", label: "引体向上/仰卧起坐(time)" },
-        { prop: "50m", label: "50米跑(second)" },
-        { prop: "800_or_1000m", label: "800或1000米(second)" },
+        { prop: "pull_up", label: "引体向上/仰卧起坐(time)" },
+        { prop: "sprint_50m", label: "50米跑(second)" },
+        { prop: "long_distance_run", label: "800或1000米(second)" },
       ],
     };
   },
@@ -88,15 +72,14 @@ export default {
     async fetchData() {
       const userJson = sessionStorage.getItem("user");
       const user = JSON.parse(userJson);
-      const userId = user.user_id;
-      const data = {
-        userId: userId,
-      };
+      const userId = user.user_id; // 更新为正确的属性名
       try {
-        const response = await axios.get("http://127.0.0.1:9090/test", data);
-        this.tableData = response.data;
+        const response = await axios.get(
+          `http://127.0.0.1:9090/test?UserId=${userId}`
+        );
+        this.tableData = response.data.data;
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        console.error("获取数据失败：", error);
       }
     },
     handleQuery() {
