@@ -119,7 +119,22 @@ export default {
       const userJson = sessionStorage.getItem("user");
       const user = JSON.parse(userJson);
       const userId = user.user_id;
-      const actionName = this.selectedFitnessTest;
+
+      let actionName = this.selectedFitnessTest;
+      switch (this.selectedFitnessTest) {
+        case "引体向上":
+          actionName = "pullUp";
+          break;
+        case "仰卧起坐":
+          actionName = "sitUp";
+          break;
+        case "深蹲":
+          actionName = "squat";
+          break;
+        case "俯卧撑":
+          actionName = "pushUp";
+          break;
+      }
       const data = {
         item: actionName,
         id: userId,

@@ -54,7 +54,7 @@
         </ul>
       </div>
       <div class="video_container">
-        <video ref="videoElement" controls></video>
+        <video ref="videoElement" controls width="250"></video>
       </div>
       <div class="upload_container">
         <el-button
@@ -122,11 +122,26 @@ export default {
       const userJson = sessionStorage.getItem("user");
       const user = JSON.parse(userJson);
       const userId = user.user_id;
-      const actionName = this.selectedFitnessTest;
+      let actionName = this.selectedFitnessTest;
+      switch (this.selectedFitnessTest) {
+        case "引体向上":
+          actionName = "pullUp";
+          break;
+        case "仰卧起坐":
+          actionName = "sitUp";
+          break;
+        case "深蹲":
+          actionName = "squat";
+          break;
+        case "俯卧撑":
+          actionName = "pushUp";
+          break;
+      }
       const data = {
-        actionName: actionName,
-        userId: userId,
-        testResults: this.testResults,
+        item: actionName,
+        id: userId,
+        number: this.testResults,
+        train_time: this.selectedTestTime,
       };
 
       console.log(
@@ -134,7 +149,7 @@ export default {
       );
 
       axios
-        .post("http://127.0.0.1:9090/upload/results", data)
+        .post("http://127.0.0.1:9090/uploadTrainGrade", data)
         .then((response) => {
           console.log(response);
           ElMessage.success("成绩上传成功");
