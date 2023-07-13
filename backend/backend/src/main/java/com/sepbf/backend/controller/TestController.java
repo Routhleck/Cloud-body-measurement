@@ -6,6 +6,7 @@ import com.sepbf.backend.utils.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -16,7 +17,7 @@ public class TestController {
 
     @GetMapping
     public Result getTestById(@RequestParam("UserId") Integer userId) {
-        Test test = testService.getTestById(userId);
+        List<Test> test = testService.getTestById(userId);
         if (test != null) {
             return Result.success(test);
         } else {

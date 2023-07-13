@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.sepbf.backend.pojo.Test;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public interface TestService extends IService<Test>{
     boolean addTest(Test test);
@@ -12,7 +14,7 @@ public interface TestService extends IService<Test>{
 
     boolean updateTest(Test test);
 
-    Test getTestById(Integer id);
+    List<Test> getTestById(Integer id);
 
     Test getTestByIdAndYear(Integer id, Integer year);
 

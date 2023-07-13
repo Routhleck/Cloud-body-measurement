@@ -7,6 +7,7 @@ import com.sepbf.backend.service.TestService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service("testService")
 public class TestServiceImpl extends ServiceImpl<TestMapper, Test> implements TestService {
@@ -34,7 +35,7 @@ public class TestServiceImpl extends ServiceImpl<TestMapper, Test> implements Te
     }
 
     @Override
-    public Test getTestById(Integer id) {
+    public List<Test> getTestById(Integer id) {
         return testMapper.selectById(id);
     }
 
