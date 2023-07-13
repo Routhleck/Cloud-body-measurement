@@ -1,92 +1,282 @@
+<!-- 体测界面 -->
 <template>
-  <div class="element-main">
-    <el-table style="width: 100%" :data="tableData">
-      <el-table-column prop="date" label="日期" width="180"> </el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"> </el-table-column>
-      <el-table-column prop="address" label="地址"> </el-table-column>
-    </el-table>
+  <div class="option_container">
+    <div class="left-panel">
+      <div class="option_item">
+        <label for="stream-code">选择摄像机:</label>
+        <el-select v-model="selectedStreamCode" placeholder="请选择">
+          <el-option
+            v-for="code in streamCodes"
+            :key="code"
+            :value="code"
+            :label="code"
+          ></el-option>
+        </el-select>
+      </div>
+      <div class="option_item">
+        <label for="fitness-test">选择体测项目:</label>
+        <el-select v-model="selectedFitnessTest" placeholder="请选择">
+          <el-option
+            v-for="test in fitnessTests"
+            :key="test"
+            :value="test"
+            :label="test"
+          ></el-option>
+        </el-select>
+      </div>
+      <div class="center-panel">
+        <el-button
+          type="primary"
+          :disabled="!selectedStreamCode || !selectedFitnessTest"
+          @click="startFitnessTest"
+          >开始体测</el-button
+        >
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="result_container">
+        <h3>测试结果值:</h3>
+        <ul>
+          <li v-for="result in testResults" :key="result">{{ result }}</li>
+        </ul>
+      </div>
 
-    <el-table style="width: 100%" :data="getValues()" :show-header="false">
-      <el-table-column
-        v-for="(item, index) in getHeaders()"
-        :key="index"
-        :prop="item"
-      >
-      </el-table-column>
-    </el-table>
+      <div class="video_container">
+        <video ref="videoElement" controls></video>
+      </div>
+      <div class="upload_container">
+        <el-button
+          type="primary"
+          :disabled="testResults === null"
+          @click="showConfirmationDialog"
+        >
+          上传成绩
+        </el-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import flvjs from "flv.js";
+import {
+  ElButton,
+  ElSelect,
+  ElOption,
+  ElMessage,
+  ElMessageBox,
+} from "element-plus";
+
 export default {
+  name: "FitnessTest",
+  components: {
+    ElButton,
+    ElSelect,
+    ElOption,
+  },
   data() {
     return {
-      headers: [
-        {
-          prop: "date",
-          label: "日期",
-        },
-        {
-          prop: "name",
-          label: "姓名",
-        },
-        {
-          prop: "address",
-          label: "地址",
-        },
+      streamCodes: ["摄像机1", "摄像机2", "摄像机3", "摄像机4"],
+      fitnessTests: [
+        "引体向上", //pullUp
+        "仰卧起坐", //sitUp
+        "深蹲", //squat
+        "俯卧撑", //pushUp
       ],
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      selectedStreamCode: null,
+      selectedFitnessTest: null,
+      testResults: null,
     };
   },
-  computed: {
-    getHeaders() {
-      //["title", "value0", "value1", "value2", "value3"]
-      return this.tableData.reduce(
-        (pre, cur, index) => pre.concat(`value${index}`),
-        ["title"]
-      );
+  // mounted() {
+  //   if (flvjs.isSupported()) {
+  //     let videoElement = this.$refs.videoElement;
+  //     let flvPlayer = flvjs.createPlayer({
+  //       type: "flv",
+  //       url: "http://39.106.13.47:8080/live/100.live.flv",
+  //     });
+  //     flvPlayer.attachMediaElement(videoElement);
+  //     flvPlayer.load();
+  //     flvPlayer.play();
+  //   }
+  // },
+  methods: {
+    showConfirmationDialog() {
+      ElMessageBox.confirm("确认上传成绩?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.uploadTestResults();
+        })
+        .catch(() => {
+          // Cancel upload
+        });
     },
-    getValues() {
-      //[ {title: "日期", value0: "2016-05-02", value1: "2016-05-04", value2: "2016-05-01", value3: "2016-05-03"} ]
-      return this.headers.map((item) => {
-        return this.tableData.reduce(
-          (pre, cur, index) =>
-            Object.assign(pre, { ["value" + index]: cur[item.prop] }),
-          { title: item.label }
-        );
-      });
+    uploadTestResults() {
+      const userJson = sessionStorage.getItem("user");
+      const user = JSON.parse(userJson);
+      const userId = user.user_id;
+      const actionName = this.selectedFitnessTest;
+      const data = {
+        actionName: actionName,
+        userId: userId,
+        testResults: this.testResults,
+      };
+
+      console.log(
+        "体测项目/用户ID/测试结果为" + actionName + userId + this.testResults
+      );
+
+      axios
+        .post("http://127.0.0.1:9090/upload/results", data)
+        .then((response) => {
+          console.log(response);
+          ElMessage.success("成绩上传成功");
+        })
+        .catch((error) => {
+          console.error(error);
+          ElMessage.error("成绩上传失败");
+        });
+    },
+    startFitnessTest() {
+      if (this.selectedStreamCode && this.selectedFitnessTest) {
+        ElMessageBox.confirm("确认开始体测?", "提示", {
+          confirmButtonText: "确认",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            let streamCode = null;
+            let actionName = null;
+
+            switch (this.selectedStreamCode) {
+              case "摄像机1":
+                streamCode = 100;
+                break;
+              case "摄像机2":
+                streamCode = 101;
+                break;
+              case "摄像机3":
+                streamCode = 102;
+                break;
+              case "摄像机4":
+                streamCode = 103;
+                break;
+            }
+
+            switch (this.selectedFitnessTest) {
+              case "引体向上":
+                actionName = "pullUp";
+                break;
+              case "仰卧起坐":
+                actionName = "sitUp";
+                break;
+              case "深蹲":
+                actionName = "squat";
+                break;
+              case "俯卧撑":
+                actionName = "pushUp";
+                break;
+            }
+
+            const data = {
+              streamCode: streamCode,
+              actionName: actionName,
+            };
+
+            console.log("推流码/体测项目" + streamCode + actionName);
+
+            let videoElement = this.$refs.videoElement;
+            let flvPlayer = flvjs.createPlayer({
+              type: "flv",
+              url: `http://39.106.13.47:8080/live/${streamCode}.live.flv`,
+            });
+            flvPlayer.attachMediaElement(videoElement);
+            flvPlayer.load();
+            flvPlayer.play();
+
+            axios
+              .post("http://127.0.0.1:9090/stream/limitTime", data)
+              .then((response) => {
+                console.log(response);
+                this.testResults = response.data.data;
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          })
+          .catch(() => {
+            // Cancel fitness test
+          });
+      } else {
+        ElMessage.error("请选择推流码和体测项目");
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-.element-main {
-  max-width: 100%;
+.option_container {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 80vh;
+  margin-top: 90px;
+}
+
+.left-panel,
+.right-panel {
+  width: 50%;
+  height: 80vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+}
+
+.option_item {
+  padding: 50px;
+}
+
+.left-panel label,
+.right-panel label {
+  margin-right: 10px;
+}
+
+.center-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.center-panel .el-button {
+  width: 150px;
+}
+
+.video_container {
+  max-width: 100%;
+  max-height: 300px;
+}
+
+.result_container {
+  display: flex;
+  padding: 20px;
+}
+
+.upload_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+.upload_container .el-button {
+  width: 150px;
 }
 </style>

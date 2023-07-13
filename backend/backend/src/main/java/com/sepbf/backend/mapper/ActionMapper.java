@@ -11,4 +11,6 @@ public interface ActionMapper extends BaseMapper<Action>{
     @Select("SELECT limit_time FROM action WHERE name = #{name}")
     Integer selectLimitTimeByName(String name);
 
+    @Select("SELECT action_id FROM action WHERE name = #{item}")
+    int selectIdByActionName(String item);
 }

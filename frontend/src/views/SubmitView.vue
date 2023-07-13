@@ -1,3 +1,4 @@
+<!-- 体测成绩上传 -->
 <template>
   <div class="form-container">
     <div class="form">
@@ -101,16 +102,14 @@ export default {
       // 发送POST请求到后端API
       axios
         .post("/api/submitTest", data)
-        // eslint-disable-next-line
         .then((response) => {
           // 请求成功处理逻辑
           console.log("数据提交成功");
-          // 在这里可以根据API返回的响应做出相应的处理
+          console.log(response);
         })
         .catch((error) => {
           // 请求失败处理逻辑
           console.error("数据提交失败:", error);
-          // 在这里可以根据错误进行适当的处理，例如显示错误消息
         });
     },
   },
@@ -131,6 +130,5 @@ export default {
   height: 100%;
   display: flex;
   justify-content: center;
-  
 }
 </style>

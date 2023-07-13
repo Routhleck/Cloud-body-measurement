@@ -16,5 +16,7 @@ public interface TestMapper extends BaseMapper<Test>{
     @Select("SELECT COUNT(*) FROM test WHERE user_id = #{id} AND test_time = #{year}")
     int getTestCountByIdAndYear(String id, int year);
 
+    @Select("SELECT * FROM test WHERE user_id = #{id} AND test_time = #{year}")
+    Test getTestByIdAndYear(Integer id, Integer year);
 
 }

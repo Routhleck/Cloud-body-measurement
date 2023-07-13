@@ -15,25 +15,24 @@ public class Train {
 
         private int ActionId;
 
-        private DateTime Time;
+        private String Time;
 
-        private int PracticeTime;
+        private Integer PracticeTime;
 
-        private int Count;
+        private Integer Count;
 
-        private float value;
+        private double value;
 
         @TableId
         private int PracticeId;
 
-        public Train( int UserId, int ActionId, DateTime Time, int PracticeTime, int Count, float value, int PracticeId) {
+        public Train( int UserId, int ActionId, String Time, Integer PracticeTime, Integer Count, double value) {
             this.UserId = UserId;
             this.ActionId = ActionId;
             this.Time = Time;
             this.PracticeTime = PracticeTime;
             this.Count = Count;
             this.value = value;
-            this.PracticeId = PracticeId;
         }
 
 }

@@ -1,3 +1,4 @@
+<!-- 用户认证 -->
 <template>
   <div class="main">
     <div class="image_container">

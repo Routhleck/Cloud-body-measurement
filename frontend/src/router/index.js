@@ -2,14 +2,13 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/LoginView";
 import LayOut from "@/layout/LayOut";
 import PersonView from "@/views/PersonView";
-import TestView from "@/views/TestView";
-import GradeView from "@/views/GradeView";
+import TestGradeView from "@/views/TestGradeView";
 import TrainView from "@/views/TrainView";
-import PreviewView from "@/views/PreviewView";
+import TrainRecordView from "@/views/TrainRecordView";
 import SubmitView from "@/views/SubmitView";
 import AuthenticationView from "@/views/AuthenticationView";
 import PushstreamView from "@/views/PushstreamView";
-import OptionView from "@/views/OptionView";
+import TestView from "@/views/TestView";
 
 const routes = [
   {
@@ -32,9 +31,9 @@ const routes = [
         component: TrainView,
       },
       {
-        path: "option",
-        name: "option",
-        component: OptionView,
+        path: "test",
+        name: "test",
+        component: TestView,
       },
       {
         path: "submit",
@@ -56,20 +55,16 @@ const routes = [
         name: "person",
         component: PersonView,
       },
+
+      {
+        path: "record",
+        name: "record",
+        component: TrainRecordView,
+      },
       {
         path: "grade",
         name: "grade",
-        component: GradeView,
-      },
-      {
-        path: "preview",
-        name: "preview",
-        component: PreviewView,
-      },
-      {
-        path: "test",
-        name: "test",
-        component: TestView,
+        component: TestGradeView,
       },
     ],
   },
