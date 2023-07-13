@@ -26,14 +26,13 @@ public class Train {
         @TableId
         private int PracticeId;
 
-        public Train( int UserId, int ActionId, String Time, Integer PracticeTime, Integer Count, double value, int PracticeId) {
+        public Train( int UserId, int ActionId, String Time, Integer PracticeTime, Integer Count, double value) {
             this.UserId = UserId;
             this.ActionId = ActionId;
             this.Time = Time;
             this.PracticeTime = PracticeTime;
             this.Count = Count;
             this.value = value;
-            this.PracticeId = PracticeId;
         }
 
 }

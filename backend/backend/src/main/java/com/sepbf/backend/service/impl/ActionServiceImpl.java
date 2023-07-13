@@ -17,4 +17,9 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action> impleme
     public Integer getActionLimitByName(String name) {
         return actionMapper.selectLimitTimeByName(name);
     }
+
+    @Override
+    public int getActionIdByActionName(String item) {
+        return actionMapper.selectIdByActionName(item);
+    }
 }

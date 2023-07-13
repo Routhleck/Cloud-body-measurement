@@ -9,4 +9,6 @@ public interface ActionService extends IService<Action>{
 
     Integer getActionLimitByName(String name);
 
+    int getActionIdByActionName(String item);
 }
+

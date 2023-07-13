@@ -7,4 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface TrainService extends IService<Train>{
     Train getTrainById(Integer id);
+
+    boolean addTrain(Train train);
+
 }
