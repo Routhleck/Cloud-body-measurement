@@ -1,3 +1,4 @@
+<!-- 侧边栏 -->
 <template>
   <div>
     <el-menu
@@ -11,11 +12,11 @@
           <el-icon><location /></el-icon>
           <span style="padding: 20px; font-weight: bold">用户中心</span>
         </template>
-        <el-menu-item index="/layout/test">
+        <el-menu-item index="/layout/grade">
           <el-icon><User /></el-icon>体测成绩查询
         </el-menu-item>
 
-        <el-menu-item index="/layout/preview">
+        <el-menu-item index="/layout/record">
           <el-icon><User /></el-icon>训练数据
         </el-menu-item>
 
@@ -34,11 +35,7 @@
           <el-icon><View /></el-icon>身份验证
         </el-menu-item>
 
-        <el-menu-item index="/layout/push">
-          <el-icon><View /></el-icon>视频推流
-        </el-menu-item>
-
-        <el-menu-item index="/layout/option">
+        <el-menu-item index="/layout/test">
           <el-icon><View /></el-icon>体测
         </el-menu-item>
       </el-sub-menu>

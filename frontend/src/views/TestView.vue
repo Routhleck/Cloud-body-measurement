@@ -1,159 +1,282 @@
+<!-- 体测界面 -->
 <template>
-  <div class="element-main">
-    <div class="select-container">
-      <span class="select-label">请选择年份：</span>
-      <el-select v-model="selectedYear" placeholder="请选择年份" class="select">
-        <el-option
-          v-for="year in years"
-          :key="year"
-          :label="year"
-          :value="year"
-        />
-      </el-select>
-      <el-button type="primary" @click="handleQuery" class="query-button">
-        查询
-      </el-button>
+  <div class="option_container">
+    <div class="left-panel">
+      <div class="option_item">
+        <label for="stream-code">选择摄像机:</label>
+        <el-select v-model="selectedStreamCode" placeholder="请选择">
+          <el-option
+            v-for="code in streamCodes"
+            :key="code"
+            :value="code"
+            :label="code"
+          ></el-option>
+        </el-select>
+      </div>
+      <div class="option_item">
+        <label for="fitness-test">选择体测项目:</label>
+        <el-select v-model="selectedFitnessTest" placeholder="请选择">
+          <el-option
+            v-for="test in fitnessTests"
+            :key="test"
+            :value="test"
+            :label="test"
+          ></el-option>
+        </el-select>
+      </div>
+      <div class="center-panel">
+        <el-button
+          type="primary"
+          :disabled="!selectedStreamCode || !selectedFitnessTest"
+          @click="startFitnessTest"
+          >开始体测</el-button
+        >
+      </div>
     </div>
+    <div class="right-panel">
+      <div class="result_container">
+        <h3>测试结果值:</h3>
+        <ul>
+          <li v-for="result in testResults" :key="result">{{ result }}</li>
+        </ul>
+      </div>
 
-    <el-table
-      v-if="tableData.length > 0"
-      :data="filteredTableData"
-      style="width: 80%"
-    >
-      <el-table-column
-        v-for="column in columns"
-        :key="column.prop"
-        :prop="column.prop"
-        :label="column.label"
-      >
-        <template v-slot="{ row }">
-          {{ row[column.prop] }}
-        </template>
-      </el-table-column>
-    </el-table>
-    <div v-else class="no-data">暂无数据</div>
+      <div class="video_container">
+        <video ref="videoElement" controls></video>
+      </div>
+      <div class="upload_container">
+        <el-button
+          type="primary"
+          :disabled="testResults === null"
+          @click="showConfirmationDialog"
+        >
+          上传成绩
+        </el-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import flvjs from "flv.js";
+import {
+  ElButton,
+  ElSelect,
+  ElOption,
+  ElMessage,
+  ElMessageBox,
+} from "element-plus";
 
 export default {
+  name: "FitnessTest",
+  components: {
+    ElButton,
+    ElSelect,
+    ElOption,
+  },
   data() {
     return {
-      selectedYear: null,
-      years: null, // 年份下拉框选项
-      tableData: [
-        {
-          test_time: 2022,
-          height: 170,
-          weight: 65,
-          vital_capacity: 4000,
-          standing_long_jump: 200,
-          sit_and_reach: 30,
-          pull_or_sitUp: 15,
-          "50m": 7,
-          "800_or_1000m": 180,
-        },
-        {
-          test_time: 2023,
-          height: 175,
-          weight: 68,
-          vital_capacity: 4200,
-          standing_long_jump: 205,
-          sit_and_reach: 32,
-          pull_or_sitUp: 18,
-          "50m": 6.5,
-          "800_or_1000m": 170,
-        },
+      streamCodes: ["摄像机1", "摄像机2", "摄像机3", "摄像机4"],
+      fitnessTests: [
+        "引体向上", //pullUp
+        "仰卧起坐", //sitUp
+        "深蹲", //squat
+        "俯卧撑", //pushUp
       ],
-      filteredTableData: [],
-      columns: [
-        // 表格列配置
-        { prop: "test_time", label: "年份" },
-        { prop: "height", label: "身高(cm)" },
-        { prop: "weight", label: "体重(kg)" },
-        { prop: "vital_capacity", label: "肺活量(ml)" },
-        { prop: "standing_long_jump", label: "立定跳远(cm)" },
-        { prop: "sit_and_reach", label: "坐位体前屈(cm)" },
-        { prop: "pull_or_sitUp", label: "引体向上/仰卧起坐(time)" },
-        { prop: "50m", label: "50米跑(second)" },
-        { prop: "800_or_1000m", label: "800或1000米(second)" },
-      ],
+      selectedStreamCode: null,
+      selectedFitnessTest: null,
+      testResults: null,
     };
   },
+  // mounted() {
+  //   if (flvjs.isSupported()) {
+  //     let videoElement = this.$refs.videoElement;
+  //     let flvPlayer = flvjs.createPlayer({
+  //       type: "flv",
+  //       url: "http://39.106.13.47:8080/live/100.live.flv",
+  //     });
+  //     flvPlayer.attachMediaElement(videoElement);
+  //     flvPlayer.load();
+  //     flvPlayer.play();
+  //   }
+  // },
   methods: {
-    async fetchData() {
+    showConfirmationDialog() {
+      ElMessageBox.confirm("确认上传成绩?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.uploadTestResults();
+        })
+        .catch(() => {
+          // Cancel upload
+        });
+    },
+    uploadTestResults() {
       const userJson = sessionStorage.getItem("user");
       const user = JSON.parse(userJson);
       const userId = user.user_id;
+      const actionName = this.selectedFitnessTest;
       const data = {
+        actionName: actionName,
         userId: userId,
+        testResults: this.testResults,
       };
-      try {
-        const response = await axios.get("http://127.0.0.1:9090/test", data);
-        this.tableData = response.data;
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
+
+      console.log(
+        "体测项目/用户ID/测试结果为" + actionName + userId + this.testResults
+      );
+
+      axios
+        .post("http://127.0.0.1:9090/upload/results", data)
+        .then((response) => {
+          console.log(response);
+          ElMessage.success("成绩上传成功");
+        })
+        .catch((error) => {
+          console.error(error);
+          ElMessage.error("成绩上传失败");
+        });
     },
-    handleQuery() {
-      if (this.selectedYear) {
-        const filteredData = this.tableData.filter(
-          (item) => item.test_time === this.selectedYear
-        );
-        this.filteredTableData = filteredData;
+    startFitnessTest() {
+      if (this.selectedStreamCode && this.selectedFitnessTest) {
+        ElMessageBox.confirm("确认开始体测?", "提示", {
+          confirmButtonText: "确认",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            let streamCode = null;
+            let actionName = null;
+
+            switch (this.selectedStreamCode) {
+              case "摄像机1":
+                streamCode = 100;
+                break;
+              case "摄像机2":
+                streamCode = 101;
+                break;
+              case "摄像机3":
+                streamCode = 102;
+                break;
+              case "摄像机4":
+                streamCode = 103;
+                break;
+            }
+
+            switch (this.selectedFitnessTest) {
+              case "引体向上":
+                actionName = "pullUp";
+                break;
+              case "仰卧起坐":
+                actionName = "sitUp";
+                break;
+              case "深蹲":
+                actionName = "squat";
+                break;
+              case "俯卧撑":
+                actionName = "pushUp";
+                break;
+            }
+
+            const data = {
+              streamCode: streamCode,
+              actionName: actionName,
+            };
+
+            console.log("推流码/体测项目" + streamCode + actionName);
+
+            let videoElement = this.$refs.videoElement;
+            let flvPlayer = flvjs.createPlayer({
+              type: "flv",
+              url: `http://39.106.13.47:8080/live/${streamCode}.live.flv`,
+            });
+            flvPlayer.attachMediaElement(videoElement);
+            flvPlayer.load();
+            flvPlayer.play();
+
+            axios
+              .post("http://127.0.0.1:9090/stream/limitTime", data)
+              .then((response) => {
+                console.log(response);
+                this.testResults = response.data.data;
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          })
+          .catch(() => {
+            // Cancel fitness test
+          });
       } else {
-        this.filteredTableData = [];
+        ElMessage.error("请选择推流码和体测项目");
       }
     },
-  },
-  mounted() {
-    const currentYear = new Date().getFullYear();
-    this.years = [
-      currentYear - 4,
-      currentYear - 3,
-      currentYear - 2,
-      currentYear - 1,
-      currentYear,
-      currentYear + 1,
-    ];
-    this.selectedYear = currentYear; // 默认选择当前年份
-    this.fetchData(); // 初始化时获取数据
   },
 };
 </script>
 
 <style scoped>
-.element-main {
+.option_container {
   width: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: center;
+  height: 80vh;
+  margin-top: 90px;
 }
 
-.select-container {
+.left-panel,
+.right-panel {
+  width: 50%;
+  height: 80vh;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
 }
 
-.select-label {
+.option_item {
+  padding: 50px;
+}
+
+.left-panel label,
+.right-panel label {
   margin-right: 10px;
 }
 
-.select {
-  width: 120px;
-  margin-right: 10px;
-}
-
-.query-button {
-  width: 80px;
-}
-
-.no-data {
+.center-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
-  color: #999;
+}
+
+.center-panel .el-button {
+  width: 150px;
+}
+
+.video_container {
+  max-width: 100%;
+  max-height: 300px;
+}
+
+.result_container {
+  display: flex;
+  padding: 20px;
+}
+
+.upload_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+.upload_container .el-button {
+  width: 150px;
 }
 </style>
