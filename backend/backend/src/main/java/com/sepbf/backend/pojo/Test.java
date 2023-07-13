@@ -9,9 +9,10 @@ import lombok.Data;
 @Data
 public class Test {
 
-    private int user_id;
+    @TableId
+    private int test_id;
 
-    private String test_time;
+    private int user_id;
 
     private float height;
 
@@ -35,10 +36,10 @@ public class Test {
 
     private int squat;
 
-    @TableId
-    private int test_id;
+    private String test_time;
 
-    public Test(int userid, String test_time, float height, float weight, int vital_capacity, float standinglongjump, float sitandreach, int pullup, float sprint50M, float longdistancerun, int pushup, int situp, int squat, int testid) {
+
+    public Test(int testid,int userid, float height, float weight, int vital_capacity, float standinglongjump, float sitandreach, int pullup, float sprint50M, float longdistancerun, int pushup, int situp, int squat,String test_time) {
         user_id = userid;
         this.test_time = test_time;
         this.height = height;
@@ -55,6 +56,4 @@ public class Test {
         test_id = testid;
     }
 
-    public Test() {
-    }
 }

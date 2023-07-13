@@ -33,11 +33,12 @@ public class UploadGradeController {
 
         //查询该用户该年是否已经有体测数据
         int count = testService.getTestCountByIdAndYear(String.valueOf(id),year);
+        System.out.println("查询到的数据条数为："+count);
 
         //如果没有，插入新数据，其中其他项目的数据为0
         if(count==0){
             //构造新的Test对象，填入数据
-            Test test = new Test();
+            Test test = new Test(0,0,0,0,0,0,0,0,0,0,0,0,0,"");
             test.setUser_id(id);
             test.setTest_time(String.valueOf(year));
             //根据项目名称，填入对应的数据[pullUp, pushUp, sitUp, squat]
