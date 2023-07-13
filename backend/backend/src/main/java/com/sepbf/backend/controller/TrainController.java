@@ -25,7 +25,7 @@ public class TrainController {
         return Result.success(trainService.getTrainById(userId));
     }
 
-    @GetMapping("/record")
+    @PostMapping("/record")
     public Result getTrainByUserIdjoinAction(@RequestParam("UserId") Integer userId) {
         Map<String, Object> map = new HashMap<>();
         List<TrainAction> tempList = trainService.getTrainByUserIdjoinAction(userId);

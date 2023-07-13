@@ -36,13 +36,13 @@
     <div class="right-panel">
       <div class="result_container">
         <h3>测试结果值:</h3>
-        <ul>
+        <ul class="result_count">
           <li v-for="result in testResults" :key="result">{{ result }}</li>
         </ul>
       </div>
 
       <div class="video_container">
-        <video ref="videoElement" controls></video>
+        <video ref="videoElement" controls width="250"></video>
       </div>
       <div class="upload_container">
         <el-button
@@ -121,9 +121,9 @@ export default {
       const userId = user.user_id;
       const actionName = this.selectedFitnessTest;
       const data = {
-        actionName: actionName,
-        userId: userId,
-        testResults: this.testResults,
+        item: actionName,
+        id: userId,
+        number: this.testResults,
       };
 
       console.log(
@@ -131,7 +131,7 @@ export default {
       );
 
       axios
-        .post("http://127.0.0.1:9090/upload/results", data)
+        .post("http://127.0.0.1:9090/uploadGrade", data)
         .then((response) => {
           console.log(response);
           ElMessage.success("成绩上传成功");
@@ -278,5 +278,9 @@ export default {
 
 .upload_container .el-button {
   width: 150px;
+}
+
+.result_count {
+  margin-left: 10px;
 }
 </style>

@@ -69,7 +69,7 @@ export default {
       const user = JSON.parse(userJson);
       const userId = user.user_id;
       try {
-        const response = await axios.get(
+        const response = await axios.post(
           `http://127.0.0.1:9090/train/record?UserId=${userId}`
         );
         if (response.data.code === "200") {
