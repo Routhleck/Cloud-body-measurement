@@ -3,17 +3,16 @@ package com.cloudsports.actiondetect.netWorkUtils
 
 import com.cloudsports.actiondetect.api.ApiService
 import com.cloudsports.actiondetect.data.User
-import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class UserRegister {
+class UserRegisterAPI {
     //创建retrofit对象
     private val retrofit =Retrofit.Builder()
         //设置服务器的基础URL
-        .baseUrl("http://cloudsports.top:9090")
+        .baseUrl("http://39.106.13.47:9090")
         // 添加 Gson 转换器，用于将服务器的响应转化为 Kotlin 对象
         .addConverterFactory(GsonConverterFactory.create())
         //构建retrofit对象

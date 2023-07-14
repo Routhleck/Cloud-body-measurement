@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cloudsports.actiondetect.adapter.SportsHistoryAdapter
 import com.cloudsports.actiondetect.data.Sport
+import com.cloudsports.actiondetect.model.GlobalVariable
 
 class SportsHistoryActivity : AppCompatActivity() {
 
@@ -17,11 +18,7 @@ class SportsHistoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sports_history)
 
-        val sports = listOf(  // 填充一些模拟数据
-            Sport("Running", "10:00 AM", 5000.toString()),
-            Sport("Swimming", "2:00 PM", 2000.toString()),
-            // Add more sports as needed
-        )
+        val sports = GlobalVariable.sportsHistoryList ?: listOf<Sport>()
 
         viewManager = LinearLayoutManager(this)
         viewAdapter = SportsHistoryAdapter(sports)
@@ -32,4 +29,5 @@ class SportsHistoryActivity : AppCompatActivity() {
             adapter = viewAdapter
         }
     }
+
 }

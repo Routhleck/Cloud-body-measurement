@@ -1,11 +1,13 @@
 package com.cloudsports.actiondetect.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,9 +29,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.cloudsports.actiondetect.R
+import com.cloudsports.actiondetect.UploadHistoryActivity
 import com.cloudsports.actiondetect.algorithm.PoseLandmarkerHelper
 import com.cloudsports.actiondetect.model.DetectViewModel
 import com.cloudsports.actiondetect.databinding.FragmentCameraBinding
+import com.cloudsports.actiondetect.model.GlobalVariable
 import com.cloudsports.actiondetect.view.OverlayView
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
@@ -62,6 +66,10 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     private lateinit var backgroundExecutor: ExecutorService
 
     private lateinit var binding: FragmentCameraBinding
+
+    private lateinit var handler: Handler
+    private lateinit var runnable: Runnable
+    private var secondsElapsed: Int = 0
 
 
 
@@ -129,23 +137,43 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         super.onViewCreated(view, savedInstanceState)
 
         val counterText = requireView().findViewById<TextView>(R.id.counter_text)
+        val sportsTime = requireView().findViewById<TextView>(R.id.sports_time)
         val startStopButton = requireView().findViewById<FloatingActionButton>(R.id.start_stop_button)
         val overlayView = view.findViewById<OverlayView>(R.id.overlay)
 
         var isStarted = false
 
+        // 正计时
+        handler = Handler()
+        runnable = Runnable {
+            secondsElapsed++
+            sportsTime.text = "Time: $secondsElapsed s"
+            handler.postDelayed(runnable, 1000) // 每隔一秒更新计时器
+        }
+
         // startStopButton set
         startStopButton.setOnClickListener {
             if (isStarted) {
                 startStopButton.setImageResource(R.drawable.media_play)
+                handler.removeCallbacks(runnable)
                 // 停止你的任务
                 overlayView.stop()
+                val intent = Intent(requireContext(), UploadHistoryActivity::class.java)
+                viewModel.actionName.observe(viewLifecycleOwner) { name ->
+                    GlobalVariable.actionName = name
+                }
+                GlobalVariable.actionCount = viewModel.getCount()
+                GlobalVariable.actionTime = this.secondsElapsed
+                startActivity(intent)
+
             } else {
                 startStopButton.setImageResource(R.drawable.media_stop)
                 startStopButton.isEnabled = false
                 overlayView.reset()
                 view.findViewById<TextView>(R.id.countdown_text).text = "3"
-                counterText.text = "count: 0"
+                counterText.text = "Count: 0"
+                secondsElapsed = 0
+                sportsTime.text = "Time: $secondsElapsed s"
                 startCountdown(view)
                 // 开始你的任务
             }
@@ -420,7 +448,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 )
                 // 从ViewModel获得count值
                 val count = viewModel.getCount()
-                requireView().findViewById<TextView>(R.id.counter_text).text = "count: $count"
+                requireView().findViewById<TextView>(R.id.counter_text).text = "Count: $count"
 
                 // Force a redraw
                 fragmentCameraBinding.overlay.invalidate()
@@ -457,12 +485,12 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
             }
 
             override fun onFinish() {
-                countdownText.text = "0"
+                countdownText.text = "Go!"
                 countdownContainer.visibility = View.GONE
                 startStopButton.isEnabled = true
                 // 开始你的任务
                 overlayView.start()
-
+                handler.postDelayed(runnable, 1000)
                 countdownSound.reset()
             }
         }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/username_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="用户名: "
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/sport_name_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="运动名: "
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/sport_result_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="运动结果: "
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/sport_time_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="运动用时: "
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/sport_date_time_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="运动时间: "
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:padding="8dp" />
+
+    <Button
+        android:id="@+id/upload_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="上传成绩"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:layout_margin="8dp" />
+
+</LinearLayout>
+

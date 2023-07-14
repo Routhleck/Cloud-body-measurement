@@ -13,6 +13,7 @@ import com.cloudsports.actiondetect.LoginActivity
 import com.cloudsports.actiondetect.R
 import com.cloudsports.actiondetect.SportsHistoryActivity
 import com.cloudsports.actiondetect.TestGradeActivity
+import com.cloudsports.actiondetect.model.GlobalVariable
 
 class UserCenterFragment : Fragment() {
 
@@ -37,6 +38,11 @@ class UserCenterFragment : Fragment() {
         account = arguments?.getString("account")!!
 
         tvContent.text = "欢迎你：$account"
+
+        // 通过全局变量获取运动记录以及运动次数
+        tvSportsRecord.text = "运动时长: ${GlobalVariable.totalTime}分钟"
+        tvSportsCount.text = "运动次数: ${GlobalVariable.totalCount}次"
+
 
         val btnTestGrade: Button = view.findViewById(R.id.btn_test_grade)
         val btnSportsHistory: Button = view.findViewById(R.id.btn_sports_history)

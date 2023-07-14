@@ -10,7 +10,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.cloudsports.actiondetect.data.User
 import com.cloudsports.actiondetect.debug.ToastDebug
-import com.cloudsports.actiondetect.netWorkUtils.UserRegister
+import com.cloudsports.actiondetect.netWorkUtils.UserRegisterAPI
 import kotlinx.coroutines.runBlocking
 
 class RegisterActivity : AppCompatActivity(), View.OnClickListener {
@@ -70,7 +70,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 edit.putString("password", pass)
                 edit.apply()
                 val registerRequest= User.RegisterRequest(name,pass)
-                val repository = UserRegister()
+                val repository = UserRegisterAPI()
                 runBlocking {
                     val result = repository.userRegitser(registerRequest)
                     if (result != null) {

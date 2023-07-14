@@ -7,11 +7,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class UserLogin {
+class UserLoginAPI {
     //创建retrofit对象
     private val retrofit =Retrofit.Builder()
         //设置服务器的基础URL
-        .baseUrl("http://cloudsports.top:9090")
+        .baseUrl("http://39.106.13.47:9090")
         // 添加 Gson 转换器，用于将服务器的响应转化为 Kotlin 对象
         .addConverterFactory(GsonConverterFactory.create())
         //构建retrofit对象
@@ -27,7 +27,6 @@ class UserLogin {
         // 使用 apiService 发起网络请求
         // 注意：因为 ApiService.userLogin 是一个挂起函数，所以这里不会阻塞线程
         val response = apiService.userLogin(request)
-
         // 检查响应是否成功
         // 如果成功，返回响应的 body（也就是服务器返回的数据）
         // 如果失败，返回 null
