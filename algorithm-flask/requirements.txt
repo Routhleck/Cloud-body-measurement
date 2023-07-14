@@ -13,3 +13,4 @@ numpy==1.23.1
 opencv-contrib-python==4.6.0.66
 opencv-python==4.6.0.66
 tqdm==4.64.0
+flask_failsafe
