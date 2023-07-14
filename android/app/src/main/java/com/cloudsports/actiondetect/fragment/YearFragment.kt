@@ -102,27 +102,39 @@ class YearFragment : Fragment() {
         val textView = requireView().findViewById<TextView>(R.id.tv_year)
         textView.text = year.toString()
 
+        viewManager = LinearLayoutManager(context)
+        viewAdapter = TestGradeAdapter(grade!!.items)
+
+        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview).apply {
+            setHasFixedSize(true)
+            layoutManager = viewManager
+            adapter = viewAdapter
+        }!!
+
         // 在获取到数据后，设置得分和等级的文本
         val tvGrade = requireView().findViewById<TextView>(R.id.tv_grade)
         tvGrade.text = "得分：${grade.score}"
         val tvGradeLevel = requireView().findViewById<TextView>(R.id.tv_grade_level)
-        tvGradeLevel.text = grade.level
         when (grade.level) {
             "flunk" -> {
                 // textView背景色设置为浅红色
+                tvGradeLevel.text = "不及格"
                 tvGradeLevel.setBackgroundColor(0xffff0000.toInt())
             }
             "pass" -> {
                 // textView背景色设置为浅黄色
+                tvGradeLevel.text = "及格"
                 tvGradeLevel.setBackgroundColor(0xffffff00.toInt())
             }
             "good" -> {
                 // textView背景色设置为浅蓝色
+                tvGradeLevel.text = "良好"
                 tvGradeLevel.setBackgroundColor(0xff00ffff.toInt())
             }
 
             "excellent" -> {
                 // textView背景色设置为浅绿色
+                tvGradeLevel.text = "优秀"
                 tvGradeLevel.setBackgroundColor(0xff00ff00.toInt())
             }
         }
