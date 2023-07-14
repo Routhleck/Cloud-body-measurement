@@ -102,41 +102,44 @@ export default {
   },
   methods: {
     login() {
-    const requestData = {
-      name: this.form.username,
-      password: this.form.password,
-    };
+      const requestData = {
+        name: this.form.username,
+        password: this.form.password,
+      };
 
-    request
-      .post("http://127.0.0.1:9090/user/login", requestData)
-      .then((res) => {
-        if (res.code === "200") {
-          this.$message({
-            type: "success",
-            message: "登录成功",
-          });
-          console.log(res);
-          console.log(res.data);
-          sessionStorage.setItem("user", JSON.stringify({ user_id: res.data }));
+      request
+        .post("http://cloudsports.top:9090/user/login", requestData)
+        .then((res) => {
+          if (res.code === "200") {
+            this.$message({
+              type: "success",
+              message: "登录成功",
+            });
+            console.log(res);
+            console.log(res.data);
+            sessionStorage.setItem(
+              "user",
+              JSON.stringify({ user_id: res.data })
+            );
 
-          // 根据需要进行页面跳转
-          // if (res.user_id === "admin") {
-          //   this.$router.push("/admin");
-          // } else {
-          //   this.$router.push("/user");
-          // }
-          this.$router.push("/layout");
-        } else {
-          this.$message({
-            type: "error",
-            message: res.message,
-          });
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to login:", error);
-      });
-  },
+            // 根据需要进行页面跳转
+            // if (res.user_id === "admin") {
+            //   this.$router.push("/admin");
+            // } else {
+            //   this.$router.push("/user");
+            // }
+            this.$router.push("/layout");
+          } else {
+            this.$message({
+              type: "error",
+              message: res.message,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to login:", error);
+        });
+    },
 
     register() {
       if (this.form.password !== this.form.confirm) {
@@ -151,7 +154,7 @@ export default {
         };
 
         request
-          .post("http://127.0.0.1:9090/user/register", requestData)
+          .post("http://cloudsports.top:9090/user/register", requestData)
           .then((res) => {
             if (res.code === "200") {
               this.$message({

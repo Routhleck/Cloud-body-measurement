@@ -79,7 +79,7 @@ export default {
       const userId = user.user_id;
       try {
         const response = await axios.post(
-          `http://127.0.0.1:9090/train/record?UserId=${userId}`
+          `http://cloudsports.top:9090/train/record?UserId=${userId}`
         );
         if (response.data.code === "200") {
           this.tableData = response.data.data.ItemList.map((item) => ({
