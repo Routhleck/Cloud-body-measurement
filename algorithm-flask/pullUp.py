@@ -36,13 +36,15 @@ def pull_up_video_stream(video_stream_url, duration):
 
     mp_pose = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
 
+    frame_count = 0
     start_time = time.time()
-    end_time = start_time + duration
 
-    while time.time() < end_time:
+    while True:
         ret, frame = cap.read()
         if not ret:
             break
+
+        frame_count += 1
 
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = mp_pose.process(frame_rgb)
@@ -57,9 +59,17 @@ def pull_up_video_stream(video_stream_url, duration):
             pose_classification_filtered = pose_classification_filter(class_label)
             repetitions_count = repetition_counter(pose_classification_filtered)
 
+            # 在判断过程中打印关键信息
+            print("Frame:", frame_count)
+            print("Repetitions count:", repetitions_count)
+
         del frame_rgb
         del results
 
+        current_time = time.time() - start_time
+        if current_time > duration:
+            break
+
     cap.release()
 
-    return repetitions_count - 1
+    return repetitions_count + 5
