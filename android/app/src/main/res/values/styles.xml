@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar" >
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/mp_color_primary</item>
+        <item name="colorPrimaryVariant">@color/mp_color_primary_variant</item>
+        <item name="colorPrimaryDark">@color/mp_color_primary_dark</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/mp_color_secondary</item>
+        <item name="colorSecondaryVariant">@color/mp_color_secondary_variant</item>
+        <item name="colorError">@color/mp_color_error</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="BottomSheetSpinnerItemStyle" parent="Widget.AppCompat.Light.DropDownItem.Spinner">
+        <item name="android:textSize">@dimen/bottom_sheet_text_size</item>
+    </style>
+
+    <style name="AppThemeProgressStyle">
+        <item name="colorAccent">@color/mp_color_primary_variant</item>
+    </style>
+
+    <style name="MyBtnStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:background">@drawable/btn_bg_selector</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+    </style>
+
+    <style name="MyEditStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">@drawable/edit_text_bg</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
+</resources>

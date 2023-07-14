@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/camera_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/counter_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#CCFFFFFF"
+            android:gravity="center"
+            android:text="Count: 0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/sports_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#CCFFFFFF"
+            android:gravity="center"
+            android:text="Time: 0"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/view_finder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/counter_text"
+        android:layout_marginTop="?attr/actionBarSize"
+        app:scaleType="fillStart" />
+
+    <com.cloudsports.actiondetect.view.OverlayView
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"/>
+
+    <include
+        android:id="@+id/bottom_sheet_layout"
+        layout="@layout/info_bottom_sheet" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/start_stop_button"
+        android:layout_width="@dimen/fab_custom_size"
+        android:layout_height="@dimen/fab_custom_size"
+        android:layout_marginBottom="60dp"
+        android:clickable="true"
+        android:src="@drawable/media_play"
+        app:backgroundTint="@color/mp_color_primary_variant"
+        app:elevation="6dp"
+        app:fabCustomSize="@dimen/fab_custom_size"
+        app:fabSize="auto"
+        app:layout_anchor="@id/bottom_sheet_layout"
+        app:layout_anchorGravity="center_horizontal|bottom"
+        app:maxImageSize="64dp"
+        app:tint="@android:color/white"
+        app:useCompatPadding="false" />
+
+    <!-- 添加倒计时布局 -->
+    <FrameLayout
+        android:id="@+id/countdown_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/countdown_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="100sp"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="欢迎！"
+        android:textSize="40sp"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tv_sports_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="运动时长："
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tv_sports_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="运动次数："
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/btn_test_grade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="体测成绩"
+        android:textSize="25sp"
+        android:layout_margin="20dp"
+        style="@style/MyBtnStyle"/>
+
+    <Button
+        android:id="@+id/btn_sports_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="运动记录"
+        android:textSize="25sp"
+        android:layout_margin="20dp"
+        style="@style/MyBtnStyle"/>
+
+    <Button
+        android:id="@+id/btn_user_center_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="退出登录"
+        android:textSize="25sp"
+        android:layout_margin="20dp"
+        style="@style/MyBtnStyle"/>
+
+</LinearLayout>
