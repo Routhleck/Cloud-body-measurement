@@ -1,5 +1,6 @@
 package com.cloudsports.actiondetect.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,12 +23,21 @@ class SportsHistoryAdapter(private val sports: List<Sport>) : RecyclerView.Adapt
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val sport = sports[position]
-        holder.name.text = sport.name
-        holder.time.text = sport.time.toString()
-        holder.results.text = sport.results
-        holder.dateTime.text = sport.dateTime
+        val actionName_CN = when (sport.name) {
+            "pullUp" -> "引体向上"
+            "pushUp" -> "俯卧撑"
+            "squat" -> "深蹲"
+            "sitUp" -> "仰卧起坐"
+            else -> "未知"
+        }
+
+        holder.name.text = "运动名: ${actionName_CN}"
+        holder.time.text = "运动时长: ${sport.time}秒"
+        holder.results.text = "运动结果: ${sport.results}次"
+        holder.dateTime.text = "运动时间: ${sport.dateTime}"
     }
 
     override fun getItemCount() = sports.size
