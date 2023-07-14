@@ -12,11 +12,10 @@ import com.cloudsports.actiondetect.data.Sport
 import com.cloudsports.actiondetect.data.User
 import com.cloudsports.actiondetect.debug.ToastDebug
 import com.cloudsports.actiondetect.model.GlobalVariable
-import com.cloudsports.actiondetect.netWorkUtils.Grade
-import com.cloudsports.actiondetect.netWorkUtils.UserLogin
+import com.cloudsports.actiondetect.netWorkUtils.GradeAPI
+import com.cloudsports.actiondetect.netWorkUtils.UserLoginAPI
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
-import java.util.Objects
 
 class LoginActivity : AppCompatActivity() {
 
@@ -66,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                     edit.apply()
 
+                    GlobalVariable.userName = account
                     getRecordById(GlobalVariable.userId!!)
 
                     if (isSuccess) {
@@ -83,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
     输入用户id，得到一个json object
      */
     private fun getRecordById(user_id:Int) {
-        val repository = Grade()
+        val repository = GradeAPI()
         var result: JSONObject? = null
         try {
             result = runBlocking {
@@ -126,7 +126,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun check(name : String,password : String ): Int? {
-        val repository = UserLogin()
+        val repository = UserLoginAPI()
         val loginRequest = User.LoginRequest(name,password)
 
         try {

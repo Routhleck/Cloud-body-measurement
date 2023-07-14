@@ -2,15 +2,12 @@ package com.cloudsports.actiondetect.actiondetect
 
 import com.cloudsports.actiondetect.data.User
 import com.cloudsports.actiondetect.model.GlobalVariable
-import com.cloudsports.actiondetect.netWorkUtils.Grade
-import com.cloudsports.actiondetect.netWorkUtils.UserLogin
+import com.cloudsports.actiondetect.netWorkUtils.GradeAPI
+import com.cloudsports.actiondetect.netWorkUtils.UserLoginAPI
 import kotlinx.coroutines.runBlocking
-import org.json.JSONObject
 import org.junit.Test
 
-import org.junit.Assert.*
 import org.junit.Before
-import org.mockito.Mockito.mock
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -26,7 +23,7 @@ class ExampleUnitTest {
     @Test
     fun login(){
 
-        val repository= UserLogin()
+        val repository= UserLoginAPI()
         // 创建一个 User.LoginRequest 对象
         val loginRequest = User.LoginRequest("admin", "admin")
 
@@ -45,7 +42,7 @@ class ExampleUnitTest {
     }
     @Test
     fun main(){
-        val repository= Grade()
+        val repository= GradeAPI()
 //    // 创建一个 User.LoginRequest 对象
         runBlocking {
             val result = repository.upadteGradeByUserId(1)
@@ -54,7 +51,7 @@ class ExampleUnitTest {
     }
     @Test
     fun main1(){
-        val repository = Grade()
+        val repository = GradeAPI()
         runBlocking {
             val result = repository.updateGrade(1,"pullUp","3","4")
             println(result)
@@ -64,7 +61,7 @@ class ExampleUnitTest {
 
     @Test
     fun main2(){
-        val repository = Grade()
+        val repository = GradeAPI()
         runBlocking {
             val result = repository.getRecord(1)
             println(result)

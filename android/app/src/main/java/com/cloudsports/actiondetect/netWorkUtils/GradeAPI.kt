@@ -1,15 +1,11 @@
 package com.cloudsports.actiondetect.netWorkUtils
 
-import android.webkit.JsPromptResult
-import com.cloudsports.actiondetect.api.ApiService
 import com.cloudsports.actiondetect.api.SportsService
-import com.cloudsports.actiondetect.data.User
-import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class Grade { //创建retrofit对象
+class GradeAPI { //创建retrofit对象
     private val retrofit = Retrofit.Builder()
         //设置服务器的基础URL
         .baseUrl("http://39.106.13.47:9090")

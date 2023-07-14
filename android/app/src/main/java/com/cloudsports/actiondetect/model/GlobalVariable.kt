@@ -1,5 +1,6 @@
 package com.cloudsports.actiondetect.model
 
+import com.cloudsports.actiondetect.data.Grade
 import com.cloudsports.actiondetect.data.Sport
 
 object GlobalVariable {
@@ -20,4 +21,8 @@ object GlobalVariable {
     var totalCount: Int? = null
 
     var sportsHistoryList: List<Sport>? = null
+
+    var gradeList: List<Grade>? = null
+
+    var tempGrade: Grade? = null
 }

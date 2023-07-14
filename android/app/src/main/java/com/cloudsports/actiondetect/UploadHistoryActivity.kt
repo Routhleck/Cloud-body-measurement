@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.cloudsports.actiondetect.debug.ToastDebug
 import com.cloudsports.actiondetect.model.GlobalVariable
-import com.cloudsports.actiondetect.netWorkUtils.Grade
+import com.cloudsports.actiondetect.netWorkUtils.GradeAPI
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -48,17 +48,17 @@ class UploadHistoryActivity : AppCompatActivity() {
 
         val actionDateTime = formattedDateTime
 
-        // 转化动作名
-        when (actionName) {
-            "pullUp" -> actionName = "引体向上"
-            "pushUp" -> actionName = "俯卧撑"
-            "squat" -> actionName = "深蹲"
-            "sitUp" -> actionName = "仰卧起坐"
+        val actionName_CN = when (actionName) {
+            "pullUp" -> "引体向上"
+            "pushUp" -> "俯卧撑"
+            "squat" -> "深蹲"
+            "sitUp" -> "仰卧起坐"
+            else -> "未知"
         }
 
         // 设置界面
         username_text.text = "用户名: $username"
-        sport_name_text.text = "动作名: $actionName"
+        sport_name_text.text = "动作名: $actionName_CN"
         sport_result_text.text = "运动结果: $actionCount"
         sport_time_text.text = "运动用时: $actionTime"
         sport_date_time_text.text = "运动时间: $actionDateTime"
@@ -67,23 +67,35 @@ class UploadHistoryActivity : AppCompatActivity() {
         val uploadButton = findViewById<Button>(R.id.upload_button)
         uploadButton.setOnClickListener {
             // 处理上传逻辑
-            val repository = Grade()
-            val judge = runBlocking {
-                val updateRequest =com.cloudsports.actiondetect.data.Grade.updateRequest(GlobalVariable.userId,actionName!!,actionCount.toString(),actionTime.toString())
-                val result =repository.updateGrade(GlobalVariable.userId,actionName!!,actionCount.toString(),actionTime.toString())
-                if(result != null){
-                    val codeJudge = result.get("code")
-                    if (codeJudge == "200")
-                    {
-                        toast.show("上传成功")
-
-                    }
-                    else{
-                        toast.show("上传失败")
-
+            val repository = GradeAPI()
+            try {
+                val judge = runBlocking {
+                    val updateRequest =com.cloudsports.actiondetect.data.Grade.updateRequest(GlobalVariable.userId,actionName!!,actionCount.toString(),actionTime.toString())
+                    val result =repository.updateGrade(
+                        GlobalVariable.userId,
+                        actionName,
+                        actionCount.toString(),
+                        actionTime.toString())
+                    val codeJudge = result?.get("code")
+                    if(result != null){
+                        return@runBlocking codeJudge
+                    } else {
+                        return@runBlocking "-1"
                     }
                 }
+                if (judge == "200")
+                {
+                    toast.show("上传成功")
+                    // 返回上一个界面
+                    finish()
+                }
+                else{
+                    toast.show("上传失败")
+                }
+            } catch (e: Exception) {
+                toast.show("网络请求失败")
             }
+
 
         }
     }

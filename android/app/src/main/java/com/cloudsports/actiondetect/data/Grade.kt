@@ -3,7 +3,7 @@ package com.cloudsports.actiondetect.data
 
 class Grade(
 
-    val year: Int,
+    val year: String,
     val items: List<GradeItem>
 
 ) {

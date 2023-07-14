@@ -13,12 +13,15 @@ import com.cloudsports.actiondetect.R
 import com.cloudsports.actiondetect.adapter.TestGradeAdapter
 import com.cloudsports.actiondetect.data.Grade
 import com.cloudsports.actiondetect.data.GradeItem
+import com.cloudsports.actiondetect.model.GlobalVariable
 
 class YearFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
+
+    private lateinit var grade: Grade
 
     companion object {
         private const val ARG_YEAR = "year"
@@ -49,10 +52,14 @@ class YearFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_year, container, false)
 
-        val grade = getGrade(2023, 175.0, 60.0, 3000, 220.0, 20.0, 20, 6.0, 200.0) // 提供具体的数据来获取 Grade 对象
+        if (GlobalVariable.tempGrade != null) {
+            grade = GlobalVariable.tempGrade!!
+        } else {
+            grade = Grade(year.toString(), listOf())
+        }
 
         viewManager = LinearLayoutManager(context)
-        viewAdapter = TestGradeAdapter(grade.items)
+        viewAdapter = TestGradeAdapter(grade!!.items)
 
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview).apply {
             setHasFixedSize(true)
@@ -91,40 +98,37 @@ class YearFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // 在这里，你可以使用year变量来获取你需要的数据，并显示在你的视图上
-        // 例如：
+
         val textView = requireView().findViewById<TextView>(R.id.tv_year)
         textView.text = year.toString()
+
+        // 在获取到数据后，设置得分和等级的文本
+        val tvGrade = requireView().findViewById<TextView>(R.id.tv_grade)
+        tvGrade.text = "得分：${grade.score}"
+        val tvGradeLevel = requireView().findViewById<TextView>(R.id.tv_grade_level)
+        tvGradeLevel.text = grade.level
+        when (grade.level) {
+            "flunk" -> {
+                // textView背景色设置为浅红色
+                tvGradeLevel.setBackgroundColor(0xffff0000.toInt())
+            }
+            "pass" -> {
+                // textView背景色设置为浅黄色
+                tvGradeLevel.setBackgroundColor(0xffffff00.toInt())
+            }
+            "good" -> {
+                // textView背景色设置为浅蓝色
+                tvGradeLevel.setBackgroundColor(0xff00ffff.toInt())
+            }
+
+            "excellent" -> {
+                // textView背景色设置为浅绿色
+                tvGradeLevel.setBackgroundColor(0xff00ff00.toInt())
+            }
+        }
+
     }
 
-
-
-
-    private fun getGrade(
-        year: Int,
-        height: Double,
-        weight: Double,
-        vitalCapacity: Int,
-        standingLongJump: Double,
-        sitAndReach: Double,
-        pullOrSitUp: Int,
-        sprint50m: Double,
-        longDistanceRun: Double
-    ): Grade {
-        // 通过提供的具体数据来获取 Grade 对象
-        val gradeItemList: List<GradeItem> = listOf(
-            GradeItem("height", "身高（厘米）", height),
-            GradeItem("weight", "体重（千克）", weight),
-            GradeItem("vital_capacity", "肺活量（毫升）", vitalCapacity.toDouble()),
-            GradeItem("standing_long_jump", "立定跳远（厘米）", standingLongJump),
-            GradeItem("sit_and_reach", "坐位体前屈（厘米）", sitAndReach),
-            GradeItem("pull_or_sit_up", "引体/仰卧（次）", pullOrSitUp.toDouble()),
-            GradeItem("sprint_50m", "50米（秒）", sprint50m),
-            GradeItem("long_distance_run", "800/1000米（分'秒）", longDistanceRun)
-        )
-
-        return Grade(year, gradeItemList)
-    }
 
     // 根据具体逻辑计算总得分等级
     private fun calculateOverallScoreLevel(score: Int): String {

@@ -17,17 +17,17 @@ class TestGradeActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager
 
-    private var gradeList: List<Grade>
-
     private val toast = ToastDebug(this)
 
     init {
-        gradeList = GlobalVariable.userId?.let { updateGradeForUserId(it) }!!
+        GlobalVariable.gradeList = GlobalVariable.userId?.let { updateGradeForUserId(it) }!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_grade)
+
+        updateGradeForYear(2023)
 
 
         viewPager = findViewById(R.id.viewpager)
@@ -55,18 +55,20 @@ class TestGradeActivity : AppCompatActivity() {
 
     }
 
-    fun updateGradeForYear(year: Int): Grade {
+    fun updateGradeForYear(year: Int) {
         // 找到对应年份的Grade数据
-        val grade = gradeList.find { it.year == year }
-        return grade!!
-        }
+        val grade = GlobalVariable.gradeList?.find { it.year == year.toString() }
+        // 更新GlobalVariable中的tempGrade
+        GlobalVariable.tempGrade = grade
+
+    }
 
     /*
     根据用户id获取测试成绩，json object
 
      */
     private fun updateGradeForUserId(user_id : Int) : List<Grade>{
-        val repository = com.cloudsports.actiondetect.netWorkUtils.Grade()
+        val repository = com.cloudsports.actiondetect.netWorkUtils.GradeAPI()
         var response: JSONObject? = null
         try {
             response= runBlocking {
@@ -85,7 +87,7 @@ class TestGradeActivity : AppCompatActivity() {
             // 将result转换为gradeList
             for (i in 0 until result!!.length()){
                 val jsonObj = result.getJSONObject(i)
-                val year = jsonObj.getInt("year")
+                val year = jsonObj.getString("test_time")
                 val height = jsonObj.getDouble("height")
                 val weight = jsonObj.getDouble("weight")
                 val vitalCapacity = jsonObj.getInt("vital_capacity")
@@ -106,7 +108,7 @@ class TestGradeActivity : AppCompatActivity() {
     }
 
     private fun getGrade(
-        year: Int,
+        year: String,
         height: Double,
         weight: Double,
         vitalCapacity: Int,
