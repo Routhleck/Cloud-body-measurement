@@ -86,7 +86,7 @@ export default {
             ...item,
             name: this.mapSportName(item.name),
           }));
-          this.totalDuration = response.data.data.totalTime / 60;
+          this.totalDuration = (response.data.data.totalTime / 60).toFixed(2);
           this.handleQuery();
         } else {
           console.error("请求失败:", response.data.message);
