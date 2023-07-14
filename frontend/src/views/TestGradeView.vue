@@ -75,7 +75,7 @@ export default {
       const userId = user.user_id; // 更新为正确的属性名
       try {
         const response = await axios.get(
-          `http://127.0.0.1:9090/test?UserId=${userId}`
+          `http://cloudsports.top:9090/test?UserId=${userId}`
         );
         this.tableData = response.data.data;
         this.handleQuery();

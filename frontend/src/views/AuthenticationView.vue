@@ -230,7 +230,7 @@ export default {
       formData.append("prefix", "/action/userImages");
 
       axios
-        .post("http://127.0.0.1:9090/upload", formData)
+        .post("http://cloudsports.top:9090/upload", formData)
         .then((response) => {
           console.log("身份证照片上传成功！");
           console.log(response);
@@ -256,7 +256,7 @@ export default {
       formData.append("prefix", "/action/checkImages");
 
       axios
-        .post("http://127.0.0.1:9090/upload", formData)
+        .post("http://cloudsports.top:9090/upload", formData)
         .then((response) => {
           console.log("拍摄照片上传成功！");
           console.log(response);
@@ -283,7 +283,7 @@ export default {
         console.log("userid为---->" + userId);
 
         axios
-          .post("http://127.0.0.1:9090/auth", requestData)
+          .post("http://cloudsports.top:9090/auth", requestData)
           .then((response) => {
             console.log("认证成功！");
             console.log(response);

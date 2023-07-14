@@ -7,7 +7,6 @@ import TrainView from "@/views/TrainView";
 import TrainRecordView from "@/views/TrainRecordView";
 import SubmitView from "@/views/SubmitView";
 import AuthenticationView from "@/views/AuthenticationView";
-import PushstreamView from "@/views/PushstreamView";
 import TestView from "@/views/TestView";
 
 const routes = [
@@ -40,11 +39,7 @@ const routes = [
         name: "submit",
         component: SubmitView,
       },
-      {
-        path: "push",
-        name: "push",
-        component: PushstreamView,
-      },
+
       {
         path: "authen",
         name: "authen",

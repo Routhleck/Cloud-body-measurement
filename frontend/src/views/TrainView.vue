@@ -159,7 +159,7 @@ export default {
       );
 
       axios
-        .post("http://127.0.0.1:9090/uploadTrainGrade", data)
+        .post("http://cloudsports.top:9090/uploadTrainGrade", data)
         .then((response) => {
           console.log(response);
           ElMessage.success("成绩上传成功");
@@ -233,7 +233,7 @@ export default {
             flvPlayer.play();
 
             axios
-              .post("http://127.0.0.1:9090/stream/limitTime", data)
+              .post("http://cloudsports.top:9090/stream/limitTime", data)
               .then((response) => {
                 console.log(response);
                 this.testResults = response.data.data;

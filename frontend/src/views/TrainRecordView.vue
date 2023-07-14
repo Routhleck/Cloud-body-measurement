@@ -79,14 +79,14 @@ export default {
       const userId = user.user_id;
       try {
         const response = await axios.post(
-          `http://127.0.0.1:9090/train/record?UserId=${userId}`
+          `http://cloudsports.top:9090/train/record?UserId=${userId}`
         );
         if (response.data.code === "200") {
           this.tableData = response.data.data.ItemList.map((item) => ({
             ...item,
             name: this.mapSportName(item.name),
           }));
-          this.totalDuration = response.data.data.totalTime / 60;
+          this.totalDuration = (response.data.data.totalTime / 60).toFixed(2);
           this.handleQuery();
         } else {
           console.error("请求失败:", response.data.message);
