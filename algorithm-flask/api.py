@@ -3,10 +3,12 @@ from pullUp import pull_up_video_stream
 from pushUp import push_up_video_stream
 from sitUp import sit_up_video_stream
 from squat import squat_video_stream
+from flask_failsafe import failsafe
 
 app = Flask(__name__)
 
 
+@failsafe
 @app.route('/exercise', methods=['POST'])
 def exercise():
     data = request.get_json()
@@ -36,5 +38,5 @@ def exercise():
 
 
 if __name__ == '__main__':
-    app.config['JSONIFY_TIMEOUT'] = 60  # 设置超时时间为60秒
+    app.config['JSONIFY_TIMEOUT'] = 360  # 设置超时时间为60秒
     app.run(threaded=True, port=5000, host='0.0.0.0', debug=True)
