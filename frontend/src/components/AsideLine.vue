@@ -12,12 +12,9 @@
           <el-icon><location /></el-icon>
           <span style="padding: 20px; font-weight: bold">用户中心</span>
         </template>
-        <el-menu-item index="/layout/grade">
-          <el-icon><User /></el-icon>体测成绩查询
-        </el-menu-item>
 
-        <el-menu-item index="/layout/record">
-          <el-icon><User /></el-icon>训练数据
+        <el-menu-item index="/layout/authen">
+          <el-icon><View /></el-icon>身份验证
         </el-menu-item>
 
         <el-menu-item index="/layout/submit">
@@ -31,8 +28,8 @@
           <span style="padding: 20px; font-weight: bold">体测中心</span>
         </template>
 
-        <el-menu-item index="/layout/authen">
-          <el-icon><View /></el-icon>身份验证
+        <el-menu-item index="/layout/grade">
+          <el-icon><User /></el-icon>体测成绩查询
         </el-menu-item>
 
         <el-menu-item index="/layout/test">
@@ -45,6 +42,10 @@
           <el-icon><location /></el-icon>
           <span style="padding: 20px; font-weight: bold">运动中心</span>
         </template>
+
+        <el-menu-item index="/layout/record">
+          <el-icon><User /></el-icon>训练数据
+        </el-menu-item>
         <el-menu-item index="/layout/train">
           <el-icon><View /></el-icon>训练
         </el-menu-item>

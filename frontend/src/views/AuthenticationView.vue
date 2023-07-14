@@ -1,6 +1,13 @@
 <!-- 用户认证 -->
 <template>
   <div class="main">
+    <el-alert
+      v-if="!isVerified"
+      title="请先进行身份验证再进行体测"
+      type="error"
+      center
+      @close="hello"
+    ></el-alert>
     <div class="image_container">
       <div class="left_section">
         <div v-if="idCardImage" class="img_preview">
@@ -94,13 +101,35 @@
         <el-button @click="comfirm_4">确定</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog title="上传成功" v-model="dialogVisibleSuccess" width="30%">
+      <template #default>
+        <span>上传成功！</span>
+      </template>
+      <template #footer>
+        <el-button @click="closeSuccessDialog">确定</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="上传失败" v-model="dialogVisibleFailure" width="30%">
+      <template #default>
+        <span>上传失败，请重试！</span>
+      </template>
+      <template #footer>
+        <el-button @click="closeFailureDialog">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { ElAlert } from "element-plus";
 
 export default {
+  components: {
+    ElAlert,
+  },
   data() {
     return {
       videoWidth: 250,
@@ -114,7 +143,18 @@ export default {
       dialogVisible_2: false,
       dialogVisible_3: false,
       dialogVisible_4: false,
+      dialogVisibleSuccess: false, // 上传成功弹窗
+      dialogVisibleFailure: false, // 上传失败弹窗
     };
+  },
+  computed: {
+    isVerified() {
+      // 根据用户信息或其他方式判断用户是否通过身份验证
+      // 返回一个布尔值
+      const isVerifiedJson = sessionStorage.getItem("isVerified");
+      const Verified = JSON.parse(isVerifiedJson);
+      return Verified?.isVerified || false;
+    },
   },
   methods: {
     // 打开上传身份证对话框
@@ -139,6 +179,15 @@ export default {
     comfirm_4() {
       this.dialogVisible_4 = false;
       location.reload();
+    },
+    closeSuccessDialog() {
+      // 关闭上传成功的弹窗
+      this.dialogVisibleSuccess = false;
+    },
+
+    closeFailureDialog() {
+      // 关闭上传失败的弹窗
+      this.dialogVisibleFailure = false;
     },
     captureImage() {
       const video = document.getElementById("videoCamera");
@@ -185,6 +234,7 @@ export default {
         .then((response) => {
           console.log("身份证照片上传成功！");
           console.log(response);
+          this.dialogVisibleSuccess = true;
         })
         .catch((error) => {
           console.error("身份证照片上传失败！", error);
@@ -210,6 +260,7 @@ export default {
         .then((response) => {
           console.log("拍摄照片上传成功！");
           console.log(response);
+          this.dialogVisibleSuccess = true;
         })
         .catch((error) => {
           console.error("拍摄照片上传失败！", error);
@@ -239,9 +290,18 @@ export default {
             if (response.data.result.score > 60) {
               this.authResult = "认证通过";
               this.dialogVisible_3 = true;
+              sessionStorage.setItem(
+                "isVerified",
+                JSON.stringify({ isVerified: true })
+              );
+              this.$router.push("/layout/test");
             } else {
               this.authResult = "认证未通过";
               this.dialogVisible_4 = true;
+              sessionStorage.setItem(
+                "isVerified",
+                JSON.stringify({ isVerified: false })
+              );
             }
           })
           .catch((error) => {

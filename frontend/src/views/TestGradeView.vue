@@ -78,6 +78,7 @@ export default {
           `http://127.0.0.1:9090/test?UserId=${userId}`
         );
         this.tableData = response.data.data;
+        this.handleQuery();
       } catch (error) {
         console.error("获取数据失败：", error);
       }
@@ -87,7 +88,7 @@ export default {
         this.filteredTableData = this.tableData;
       } else if (this.selectedYear) {
         const filteredData = this.tableData.filter(
-          (item) => item.test_time === this.selectedYear
+          (item) => item.test_time === this.selectedYear.toString()
         );
         this.filteredTableData = filteredData;
       } else {
