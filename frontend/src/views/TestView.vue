@@ -75,6 +75,19 @@ export default {
     ElSelect,
     ElOption,
   },
+  beforeRouteEnter(to, from, next) {
+    const isVerifiedJson = sessionStorage.getItem("isVerified");
+    const Verified = JSON.parse(isVerifiedJson);
+    const isVerified = Verified?.isVerified;
+
+    if (isVerified) {
+      // 用户通过身份验证，继续导航到目标页面
+      next();
+    } else {
+      // 用户未通过身份验证，跳转到身份验证界面
+      next({ name: "authen" });
+    }
+  },
   data() {
     return {
       streamCodes: ["摄像机1", "摄像机2", "摄像机3", "摄像机4"],

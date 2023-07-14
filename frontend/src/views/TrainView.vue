@@ -1,39 +1,49 @@
 <!-- 训练界面 -->
 <template>
-  <div class="option_container">
+  <div class="main_container">
     <div class="left-panel">
-      <div class="option_item">
-        <label for="stream-code">选择摄像机:</label>
-        <el-select v-model="selectedStreamCode" placeholder="请选择">
-          <el-option
-            v-for="code in streamCodes"
-            :key="code"
-            :value="code"
-            :label="code"
-          ></el-option>
-        </el-select>
-      </div>
-      <div class="option_item">
-        <label for="fitness-test">选择体测项目:</label>
-        <el-select v-model="selectedFitnessTest" placeholder="请选择">
-          <el-option
-            v-for="test in fitnessTests"
-            :key="test"
-            :value="test"
-            :label="test"
-          ></el-option>
-        </el-select>
-      </div>
-      <div class="option_item">
-        <label for="time">选择训练时长（单位：秒）:</label>
-        <el-select v-model="selectedTestTime" placeholder="请选择">
-          <el-option
-            v-for="time in TestTime"
-            :key="time"
-            :value="time"
-            :label="time"
-          ></el-option>
-        </el-select>
+      <div class="option_container">
+        <div class="option_item">
+          <label for="stream-code">选择摄像机:</label>
+          <el-select
+            v-model="selectedStreamCode"
+            placeholder="请选择"
+            class="selectedStreamCode"
+          >
+            <el-option
+              v-for="code in streamCodes"
+              :key="code"
+              :value="code"
+              :label="code"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="option_item">
+          <label for="fitness-test">选择体测项目:</label>
+          <el-select
+            v-model="selectedFitnessTest"
+            placeholder="请选择"
+            class="selectedFitnessTest"
+          >
+            <el-option
+              v-for="test in fitnessTests"
+              :key="test"
+              :value="test"
+              :label="test"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="option_item">
+          <label for="time">选择训练时长（单位：秒）:</label>
+          <el-select v-model="selectedTestTime" placeholder="请选择">
+            <el-option
+              v-for="time in TestTime"
+              :key="time"
+              :value="time"
+              :label="time"
+            ></el-option>
+          </el-select>
+        </div>
       </div>
       <div class="center-panel">
         <el-button
@@ -244,7 +254,7 @@ export default {
 </script>
 
 <style scoped>
-.option_container {
+.main_container {
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -265,6 +275,14 @@ export default {
 
 .option_item {
   padding: 50px;
+}
+
+.selectedStreamCode {
+  margin-left: 110px;
+}
+
+.selectedFitnessTest {
+  margin-left: 95px;
 }
 
 .left-panel label,

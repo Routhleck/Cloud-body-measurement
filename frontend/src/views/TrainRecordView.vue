@@ -57,13 +57,22 @@ export default {
       columns: [
         { prop: "time", label: "运动时间" },
         { prop: "name", label: "运动项目" },
-        { prop: "practiceTime", label: "运动时长" },
+        { prop: "practiceTime", label: "运动时长（秒）" },
         { prop: "count", label: "运动结果" },
       ],
       totalDuration: null,
     };
   },
   methods: {
+    mapSportName(name) {
+      const sportNames = {
+        pullUp: "引体向上",
+        sitUp: "仰卧起坐",
+        squat: "深蹲",
+        pushUp: "俯卧撑",
+      };
+      return sportNames[name] || name;
+    },
     async fetchData() {
       const userJson = sessionStorage.getItem("user");
       const user = JSON.parse(userJson);
@@ -73,8 +82,12 @@ export default {
           `http://127.0.0.1:9090/train/record?UserId=${userId}`
         );
         if (response.data.code === "200") {
-          this.tableData = response.data.data.ItemList;
-          this.totalDuration = response.data.data.totalTime;
+          this.tableData = response.data.data.ItemList.map((item) => ({
+            ...item,
+            name: this.mapSportName(item.name),
+          }));
+          this.totalDuration = response.data.data.totalTime / 60;
+          this.handleQuery();
         } else {
           console.error("请求失败:", response.data.message);
         }
@@ -97,6 +110,8 @@ export default {
   },
   mounted() {
     this.fetchData();
+
+    this.selectedSport = ""; //默认选中全部项目
   },
 };
 </script>

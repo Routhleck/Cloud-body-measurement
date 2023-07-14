@@ -75,4 +75,22 @@ const router = createRouter({
   routes,
 });
 
+// router.beforeEach((to, next) => {
+//   const userJson = sessionStorage.getItem("user");
+//   const user = JSON.parse(userJson);
+//   const isVerified = user.isVerified;
+
+//   if (to.name === "test") {
+//     // 检查用户身份验证状态
+//     if (!isVerified) {
+//       // 身份验证未通过，跳转到身份验证页面
+//       next({ name: "authen" });
+//     } else {
+//       next();
+//     }
+//   } else {
+//     next();
+//   }
+// });
+
 export default router;
