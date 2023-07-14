@@ -37,12 +37,15 @@ def squat_video_stream(video_stream_url, duration):
 
     mp_pose = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5)
 
+    frame_count = 0
     start_time = time.time()
 
-    while True:
+    while time.time() - start_time < duration:
         ret, frame = cap.read()
-        if not ret or time.time() - start_time >= duration:
+        if not ret:
             break
+
+        frame_count += 1
 
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = mp_pose.process(frame_rgb)
@@ -57,6 +60,10 @@ def squat_video_stream(video_stream_url, duration):
             pose_classification = pose_classifier(pose_landmarks)
             pose_classification_filtered = pose_classification_filter(pose_classification)
             repetition_count = repetition_counter(pose_classification_filtered)
+
+            # 在判断过程中打印关键信息
+            print("Frame:", frame_count)
+            print("Repetition count:", repetition_count)
 
         del frame_rgb
         del results
