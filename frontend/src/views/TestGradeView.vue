@@ -62,9 +62,12 @@ export default {
         { prop: "vital_capacity", label: "肺活量(ml)" },
         { prop: "standing_long_jump", label: "立定跳远(cm)" },
         { prop: "sit_and_reach", label: "坐位体前屈(cm)" },
-        { prop: "pull_up", label: "引体向上/仰卧起坐(time)" },
+        { prop: "pull_up", label: "引体向上(time)" },
         { prop: "sprint_50m", label: "50米跑(second)" },
         { prop: "long_distance_run", label: "800或1000米(second)" },
+        { prop: "push_up", label: "俯卧撑(time)" },
+        { prop: "sit_up", label: "仰卧起坐(time)" },
+        { prop: "squat", label: "深蹲(time)" },
       ],
     };
   },

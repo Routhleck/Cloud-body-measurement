@@ -19,7 +19,7 @@
           </el-select>
         </div>
         <div class="option_item">
-          <label for="fitness-test">选择体测项目:</label>
+          <label for="fitness-test">选择训练项目:</label>
           <el-select
             v-model="selectedFitnessTest"
             placeholder="请选择"
@@ -52,7 +52,7 @@
             !selectedStreamCode || !selectedFitnessTest || !selectedTestTime
           "
           @click="startFitnessTest"
-          >开始体测</el-button
+          >开始训练</el-button
         >
       </div>
     </div>
